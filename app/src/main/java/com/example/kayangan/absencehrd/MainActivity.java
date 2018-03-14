@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if ( (getFlag(currentUser.currentUserID).equals("0"))  ) {
+                if ( cekTable() ) {
 
                     DB = helper.getWritableDatabase();
 
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
 
 
 
@@ -212,6 +213,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return tanda;
+    }
+
+    private boolean cekTable() {
+        DB = helper.getWritableDatabase();
+
+        Cursor cursor = DB.query(DatabaseHandler.TABLE_ATTENDANCES, null, null, null, null, null, null);
+
+        if (cursor.getCount() > 0)
+            return true;
+
+        return false ;
     }
 
 
