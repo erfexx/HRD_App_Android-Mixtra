@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1080812537387",
+    "firebase_url": "https://attendance-94f12.firebaseio.com",
+    "project_id": "attendance-94f12",
+    "storage_bucket": "attendance-94f12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080812537387:android:df01fba2c6db1634",
+        "android_client_info": {
+          "package_name": "com.example.kayangan.absencehrd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080812537387-4gjo60bulsoo9kki7dqim6jqop1bag0q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kayangan.absencehrd",
+            "certificate_hash": "d3da2dbdad2f17555023b633af4167bd255d698e"
+          }
+        },
+        {
+          "client_id": "1080812537387-5mnspdvoqvtasas4qkqcmdnp8ble4rib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBY4W4luns7Wy1tXJiHxCfu87DELbZ1cY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080812537387-5mnspdvoqvtasas4qkqcmdnp8ble4rib.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
