@@ -18,6 +18,7 @@ import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     Time time;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     Handler handler;
     Runnable runnable;
 
+    SessionManager session;
+
     Button btn_in, btn_out;
 
     LoginActivity la = new LoginActivity();
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Session class instance
+        session = new SessionManager(getApplicationContext());
 
         time = new Time();
         helper = new DatabaseHandler(this);
@@ -73,6 +79,19 @@ public class MainActivity extends AppCompatActivity {
 
         btn_in = findViewById(R.id.btnIn);
         btn_out= findViewById(R.id.btnOut);
+
+        /**
+         * Call this function whenever you want to check user login
+         * This will redirect user to LoginActivity is he is not
+         * logged in
+         * */
+        session.checkLogin();
+
+        // get user data from session
+        HashMap<String, String> user = session.getUserDetails();
+
+        // name
+        String name = user.get(SessionManager.KEY_NAME);
 
         //la.setAwal();
 

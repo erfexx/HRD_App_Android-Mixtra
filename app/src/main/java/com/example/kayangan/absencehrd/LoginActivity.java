@@ -27,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     SQLiteDatabase db;
     Cursor cursor;
 
+    SessionManager session;
+
     Button login;
     EditText name, password;
 
@@ -61,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             if (cursor.getCount() > 0)
                             {
+                                session.createLoginSession(name.getText().toString());
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 Toast.makeText(LoginActivity.this, "LOGIN SUKSES", Toast.LENGTH_SHORT).show();
 
