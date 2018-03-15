@@ -23,14 +23,9 @@ import java.text.SimpleDateFormat;
 
 public class LoginActivity extends AppCompatActivity {
 
-    android.text.format.Time time;
-
-    Handler handler;
-    Runnable runnable;
-
     SQLiteOpenHelper helper;
     SQLiteDatabase db;
-    Cursor cursor, searchID;
+    Cursor cursor;
 
     Button login;
     EditText name, password;

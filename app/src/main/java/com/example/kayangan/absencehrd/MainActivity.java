@@ -81,26 +81,48 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if ( cekTable() ) {
+                //Cek jika tabel ada isinya(record data)
+                if ( cekTable() == true ) {
 
-                    DB = helper.getWritableDatabase();
+                    //cek jika sudah pernah clock in atau belum
+                    /*if (getFlag(currentUser.currentUserID).equals("0"))
+                    {
+                        DB = helper.getWritableDatabase();
+
+                        AttendanceRecord data = new AttendanceRecord();
+
+                        data.setFlag("1");
+                        data.setClock_in(getTime().toString());
+                        data.setUser_id(currentUser.currentUserID);
+                        data.setDate(getDate().toString());
+                        data.setClock_out("00:00:00");
+
+                        addRecord(data);
+                    }
+                    else
+                        Toast.makeText(MainActivity.this, "SUDAH MASUK", Toast.LENGTH_SHORT).show();*/
+
+                    //Toast.makeText(MainActivity.this, "FLAG: " + getFlag(currentUser.currentUserID), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "ADA ISI", Toast.LENGTH_SHORT).show();
+
+                }
+                else
+                {
+                    /*DB = helper.getWritableDatabase();
 
                     AttendanceRecord data = new AttendanceRecord();
 
-                    data.setFlag("1");
-                    /*data.setClock_in(getTime().toString());
+                    data.setFlag("0");
+                    data.setClock_in(getTime().toString());
                     data.setUser_id(currentUser.currentUserID);
                     data.setDate(getDate().toString());
-                    data.setClock_out("00:00:00");*/
+                    data.setClock_out("00:00:00");
 
-                    addRecord(data);
+                    addRecord(data);*/
 
-                    Toast.makeText(MainActivity.this, "MASUK", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "KOSONG" , Toast.LENGTH_SHORT).show();
                 }
-                else
-                    Toast.makeText(MainActivity.this, "SUDAH MASUK" , Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(MainActivity.this, "FLAG: " + getFlag(currentUser.currentUserID), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -129,9 +151,9 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "SUDAH PULANG" , Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 }
         );
+
     }
 
 
@@ -198,11 +220,11 @@ public class MainActivity extends AppCompatActivity {
         return jam;
     }
 
-    public String getFlag(String id){
+    public String getFlag(String idTable){
         DB = helper.getReadableDatabase();
 
         Cursor cursor = DB.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_ATTENDANCES +
-                " WHERE " + DatabaseHandler.ATT_USER_ID + "=?", new String[]{id});
+                " WHERE " + DatabaseHandler.ATT_USER_ID + "=?", new String[]{idTable});
 
         String tanda = "";
         if (cursor != null) {
@@ -234,10 +256,10 @@ public class MainActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
 
         values.put(DatabaseHandler.ATT_FLAG_TAP, data.getFlag());
-        /*values.put(DatabaseHandler.ATT_IN, data.getClock_in());
+        values.put(DatabaseHandler.ATT_IN, data.getClock_in());
         values.put(DatabaseHandler.ATT_DATE, data.getDate());
         values.put(DatabaseHandler.ATT_USER_ID, data.getUser_id());
-        values.put(DatabaseHandler.ATT_OUT, data.getClock_out());*/
+        values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
 
         DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, DatabaseHandler.ATT_USER_ID + "= ?", new String[]{currentUser.currentUserID});
         //DB.close();
