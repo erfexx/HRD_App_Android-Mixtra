@@ -23,9 +23,6 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
     Time time;
 
-
-    //hahahahahahahahhahaha
-
     SQLiteOpenHelper helper;
     SQLiteDatabase DB;
 
@@ -51,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         time = new Time();
         helper = new DatabaseHandler(this);
 
+        //buat tampilin jam dinamis
         runnable = new Runnable() {
             @Override
             public void run() {
                 time.setToNow();
-
 
                 TextView textView = findViewById(R.id.jam);
                 long date = System.currentTimeMillis();
@@ -72,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         handler = new Handler();
         handler.postDelayed(runnable, 1000);
 
-
+        //menampilkan nama user yang sedang login
         txtUser = findViewById(R.id.user);
         txtUser.setText(currentUser.currentUser.getName().toString() + " ID: " + currentUser.currentUserID);
 
@@ -93,81 +90,86 @@ public class MainActivity extends AppCompatActivity {
         // name
         String name = user.get(SessionManager.KEY_NAME);
 
-        //la.setAwal();
 
+        //button buat tap in
         btn_in.setOnClickListener(
                 new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    @Override
+                    public void onClick(View v) {
 
-                //Cek jika tabel ada isinya(record data)
-                if ( cekTable() == true ) {
+                        //Cek jika tabel ada isinya(record data)
+                        if ( cekTable() == true ) {
 
-                    //cek jika sudah pernah clock in atau belum
-                    /*if (getFlag(currentUser.currentUserID).equals("0"))
-                    {
-                        DB = helper.getWritableDatabase();
+                            //cek jika sudah pernah clock in atau belum
+                            if (getFlag(currentUser.currentUserID).equals("0"))
+                            {
+                                DB = helper.getWritableDatabase();
 
-                        AttendanceRecord data = new AttendanceRecord();
+                                AttendanceRecord data = new AttendanceRecord();
 
-                        data.setFlag("1");
-                        data.setClock_in(getTime().toString());
-                        data.setUser_id(currentUser.currentUserID);
-                        data.setDate(getDate().toString());
-                        data.setClock_out("00:00:00");
+                                data.setFlag("1");
+                                data.setClock_in(getTime().toString());
+                                data.setUser_id(currentUser.currentUserID);
+                                data.setDate(getDate().toString());
+                                data.setClock_out("00:00:00");
 
-                        addRecord(data);
+                                addRecord(data);
+
+                                Toast.makeText(MainActivity.this, "CLOCK IN", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                                Toast.makeText(MainActivity.this, "SUDAH MASUK", Toast.LENGTH_SHORT).show();
+
+                        }
+                        else
+                        {
+                            DB = helper.getWritableDatabase();
+
+                            AttendanceRecord data = new AttendanceRecord();
+
+                            data.setFlag("0");
+                            data.setClock_in(getTime().toString());
+                            data.setUser_id(currentUser.currentUserID);
+                            data.setDate(getDate().toString());
+                            data.setClock_out("00:00:00");
+
+                            addRecord(data);
+
+                            Toast.makeText(MainActivity.this, "CLOCK IN -" , Toast.LENGTH_SHORT).show();
+                        }
+
                     }
-                    else
-                        Toast.makeText(MainActivity.this, "SUDAH MASUK", Toast.LENGTH_SHORT).show();*/
-
-                    //Toast.makeText(MainActivity.this, "FLAG: " + getFlag(currentUser.currentUserID), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MainActivity.this, "ADA ISI", Toast.LENGTH_SHORT).show();
-
                 }
-                else
-                {
-                    /*DB = helper.getWritableDatabase();
+        );
 
-                    AttendanceRecord data = new AttendanceRecord();
 
-                    data.setFlag("0");
-                    data.setClock_in(getTime().toString());
-                    data.setUser_id(currentUser.currentUserID);
-                    data.setDate(getDate().toString());
-                    data.setClock_out("00:00:00");
-
-                    addRecord(data);*/
-
-                    Toast.makeText(MainActivity.this, "KOSONG" , Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
+        //button buat tap out
         btn_out.setOnClickListener(
                 new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
-                        if (cekTime() == false){
-                            Toast.makeText(MainActivity.this, "BELUM JAM PULANG", Toast.LENGTH_SHORT).show();
-                        }
-                        else{
-                            if (getFlag(currentUser.currentUserID).equals("1")) {
-                                Toast.makeText(MainActivity.this, "PULANG", Toast.LENGTH_SHORT).show();
-                                AttendanceRecord data = new AttendanceRecord();
-
-                                String a = getJamMasuk(currentUser.currentUserID, getDate().toString());
-
-                                data.setFlag("0");
-                                data.setClock_out(getTime().toString());
-
-                                updateRecord(data);
+                        if (cekTable() == true)
+                        {
+                            if (cekTime() == false){
+                                Toast.makeText(MainActivity.this, "BELUM JAM PULANG", Toast.LENGTH_SHORT).show();
                             }
-                            else
-                                Toast.makeText(MainActivity.this, "SUDAH PULANG" , Toast.LENGTH_SHORT).show();
+                            else{
+                                if (getFlag(currentUser.currentUserID).equals("1")) {
+                                    Toast.makeText(MainActivity.this, "PULANG", Toast.LENGTH_SHORT).show();
+                                    AttendanceRecord data = new AttendanceRecord();
+
+                                    String a = getJamMasuk(currentUser.currentUserID, getDate().toString());
+
+                                    data.setFlag("0");
+                                    data.setClock_out(getTime().toString());
+
+                                    updateRecord(data);
+                                }
+                                else
+                                    Toast.makeText(MainActivity.this, "SUDAH PULANG" , Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
@@ -175,9 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
+    //fungsi buat cek waktu, apakah sesua dengan waktu pulang
     public boolean cekTime(){
         time.setToNow();
 
@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //fungsi untuk get waktu terkini
     public String getTime(){
         time.setToNow();
 
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
         return timeString;
     }
 
+    //fungsi untuk get tanggal terkini
     public String getDate(){
         time.setToNow();
 
@@ -224,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
         return dateString;
     }
 
+    //fungsi untuk get jam masuk
     public String getJamMasuk(String id, String date){
 
         DB = helper.getReadableDatabase();
