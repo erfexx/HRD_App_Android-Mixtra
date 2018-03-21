@@ -1,12 +1,8 @@
 package com.example.kayangan.absencehrd;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.example.kayangan.absencehrd.Model.UserModel;
 
 /**
  * Created by KAYANGAN on 2/28/2018.
