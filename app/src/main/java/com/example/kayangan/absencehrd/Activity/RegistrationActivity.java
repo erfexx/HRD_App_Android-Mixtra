@@ -1,4 +1,4 @@
-package com.example.kayangan.absencehrd;
+package com.example.kayangan.absencehrd.Activity;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.kayangan.absencehrd.Model.UserModel;
+import com.example.kayangan.absencehrd.DatabaseHandler;
+import com.example.kayangan.absencehrd.Model.User;
+import com.example.kayangan.absencehrd.R;
 
 public class RegistrationActivity extends AppCompatActivity {
     SQLiteOpenHelper helper;
@@ -41,7 +43,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         String name = nama.getText().toString();
                         String password = pass.getText().toString();
 
-                        UserModel user = new UserModel();
+                        User user = new User();
                         user.setName(name);
                         user.setPassword(password);
 
@@ -55,7 +57,7 @@ public class RegistrationActivity extends AppCompatActivity {
         );
     }
 
-    public void insertData(UserModel user){
+    public void insertData(User user){
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.KEY_NAME, user.getName());
         values.put(DatabaseHandler.KEY_PASS, user.getPassword());

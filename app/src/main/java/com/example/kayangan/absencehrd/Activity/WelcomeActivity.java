@@ -1,13 +1,12 @@
-package com.example.kayangan.absencehrd;
+package com.example.kayangan.absencehrd.Activity;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+
+import com.example.kayangan.absencehrd.R;
 
 public class WelcomeActivity extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 4000;

@@ -5,14 +5,14 @@ package com.example.kayangan.absencehrd.Model;
  * Created by KAYANGAN on 2/27/2018.
  */
 
-public class UserModel {
+public class User {
     private String Name;
     private String Password;
 
-    public UserModel() {
+    public User() {
     }
 
-    public UserModel(String name, String password) {
+    public User(String name, String password) {
         Name = name;
         Password = password;
         /*Clock_In = clock_In;

@@ -1,25 +1,22 @@
-package com.example.kayangan.absencehrd;
+package com.example.kayangan.absencehrd.Activity;
 
-import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.kayangan.absencehrd.DatabaseHandler;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
-import com.example.kayangan.absencehrd.Model.UserModel;
-
-import java.sql.Time;
-import java.text.SimpleDateFormat;
+import com.example.kayangan.absencehrd.Model.User;
+import com.example.kayangan.absencehrd.R;
+import com.example.kayangan.absencehrd.SessionManager;
+import com.example.kayangan.absencehrd.currentUser;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UserModel user = new UserModel();
+                        User user = new User();
 
 
                         String nama = name.getText().toString();
@@ -63,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             if (cursor.getCount() > 0)
                             {
-                                session.createLoginSession(name.getText().toString());
+                                //session.createLoginSession(name.getText().toString());
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 Toast.makeText(LoginActivity.this, "LOGIN SUKSES", Toast.LENGTH_SHORT).show();
 

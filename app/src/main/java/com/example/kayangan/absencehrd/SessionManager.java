@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.example.kayangan.absencehrd.Activity.LoginActivity;
+
 import java.util.HashMap;
 
 public class SessionManager {

@@ -1,12 +1,12 @@
-package com.example.kayangan.absencehrd;
+package com.example.kayangan.absencehrd.Activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
+
+import com.example.kayangan.absencehrd.R;
 
 public class HomeActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.kayangan.absencehrd;
+package com.example.kayangan.absencehrd.Activity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -13,7 +13,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kayangan.absencehrd.DatabaseHandler;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
+import com.example.kayangan.absencehrd.R;
+import com.example.kayangan.absencehrd.SessionManager;
+import com.example.kayangan.absencehrd.currentUser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +26,8 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     Time time;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     SQLiteOpenHelper helper;
     SQLiteDatabase DB;
@@ -34,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
     SessionManager session;
 
     Button btn_in, btn_out;
-
-    LoginActivity la = new LoginActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
          * This will redirect user to LoginActivity is he is not
          * logged in
          * */
-        session.checkLogin();
+        //session.checkLogin();
 
         // get user data from session
         HashMap<String, String> user = session.getUserDetails();
