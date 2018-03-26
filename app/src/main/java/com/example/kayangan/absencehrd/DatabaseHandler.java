@@ -2,10 +2,14 @@ package com.example.kayangan.absencehrd;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.kayangan.absencehrd.Model.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by KAYANGAN on 2/28/2018.
@@ -104,5 +108,77 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Inserting Row
         db.insert(TABLE_TASKS, null, values);
         db.close(); // Closing database connection
+    }
+    // Getting single task
+    Task getTask(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_TASKS, new String[] { KEY_ID,
+                        TASK_TNAME, TASK_TDESC, TASK_TDUEDATE, TASK_TASSIGN }, KEY_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Task task = new Task(Integer.parseInt(cursor.getString(0)),
+                cursor.getString(1), cursor.getString(2), cursor.getString(3), Integer.parseInt(cursor.getString(4)));
+        // return task
+        return task;
+    }
+    // Getting All task
+    public List<Task> getAllTasks() {
+        List<Task> taskList = new ArrayList<Task>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_TASKS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task();
+                task.set_id(Integer.parseInt(cursor.getString(0)));
+                task.setTname(cursor.getString(1));
+                task.setTdesc(cursor.getString(2));
+                task.setTduedate(cursor.getString(3));
+                task.setTassign(Integer.parseInt(cursor.getString(4)));
+                // Adding contact to list
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+        // return task list
+        return taskList;
+    }
+    // Updating single task
+    public int updateTask(Task task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TASK_TNAME, task.getTname());
+        values.put(TASK_TDESC, task.getTdesc());
+        values.put(TASK_TDUEDATE, task.getTduedate());
+        values.put(TASK_TASSIGN, task.getTassign());
+
+        // updating row
+        return db.update(TABLE_TASKS, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(task.get_id()) });
+    }
+    // Deleting single task
+    public void deleteTask(Task task) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_TASKS, KEY_ID + " = ?",
+                new String[] { String.valueOf(task.get_id()) });
+        db.close();
+    }
+
+    // Getting task Count
+    public int getTaskCount() {
+        String countQuery = "SELECT  * FROM " + TABLE_TASKS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        cursor.close();
+
+        // return count
+        return cursor.getCount();
     }
 }
