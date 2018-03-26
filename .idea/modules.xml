@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HRD_App-master.iml" filepath="$PROJECT_DIR$/HRD_App-master.iml" />
+      <module fileurl="file://C:\Users\Kevin E\AndroidStudioProjects\HRD_App_Android-Mixtra\HRD_App-master.iml" filepath="C:\Users\Kevin E\AndroidStudioProjects\HRD_App_Android-Mixtra\HRD_App-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HRD_App_Android-Mixtra.iml" filepath="$PROJECT_DIR$/.idea/HRD_App_Android-Mixtra.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
