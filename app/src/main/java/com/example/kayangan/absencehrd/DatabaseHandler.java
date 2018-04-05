@@ -141,11 +141,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Task task = new Task();
-                task.set_id(Integer.parseInt(cursor.getString(0)));
-                task.setTname(cursor.getString(1));
-                task.setTdesc(cursor.getString(2));
-                task.setTduedate(cursor.getString(3));
-                task.setTassign(cursor.getString(4));
+                task.set_id(cursor.getInt(cursor.getColumnIndex(TASK_ID)));
+                task.setTname(cursor.getString(cursor.getColumnIndex(TASK_TNAME)));
+                task.setTdesc(cursor.getString(cursor.getColumnIndex(TASK_TDESC)));
+                task.setTduedate(cursor.getString(cursor.getColumnIndex(TASK_TDUEDATE)));
+                task.setTassign(cursor.getString(cursor.getColumnIndex(TASK_TASSIGN)));
                 // Adding contact to list
                 taskList.add(task);
             } while (cursor.moveToNext());
