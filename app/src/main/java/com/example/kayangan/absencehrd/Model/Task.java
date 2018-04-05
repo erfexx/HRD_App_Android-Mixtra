@@ -9,14 +9,14 @@ public class Task {
     String tname;
     String tdesc;
     String tduedate;
-    int tassign;
+    String tassign;
 
     // Empty constructor
     public Task(){
 
     }
     // constructor
-    public Task(int id, String tname, String tdesc, String tduedate, int tassign){
+    public Task(int id, String tname, String tdesc, String tduedate, String tassign){
         this._id = id;
         this.tname = tname;
         this.tdesc = tdesc;
@@ -25,7 +25,7 @@ public class Task {
     }
 
     // constructor
-    public Task(String tname, String tdesc, String tduedate, int tassign){
+    public Task(String tname, String tdesc, String tduedate, String tassign){
         this.tname = tname;
         this.tdesc = tdesc;
         this.tduedate = tduedate;
@@ -64,11 +64,11 @@ public class Task {
         this.tduedate = tduedate;
     }
 
-    public int getTassign() {
+    public String getTassign() {
         return tassign;
     }
 
-    public void setTassign(int tassign) {
+    public void setTassign(String tassign) {
         this.tassign = tassign;
     }
 }

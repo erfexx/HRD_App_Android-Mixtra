@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.kayangan.absencehrd.Model.Task;
 
@@ -20,13 +21,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
+    //Tag
+    String TAG = "DatabaseHandler";
+
     // Database Name
     private static final String DATABASE_NAME = "hrdManager.db";
 
     // Table name
     public static final String TABLE_USERS = "users";
     public static final String TABLE_ATTENDANCES = "attendances";
-    private static final String TABLE_TASKS = "tasks";
+    public static final String TABLE_TASKS = "tasks";
 
     // Users Table Columns names
     public static final String KEY_ID = "id";
@@ -73,7 +77,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TASK_TNAME + " TEXT,"
                 + TASK_TDESC + " TEXT,"
                 + TASK_TDUEDATE + " TEXT,"
-                + TASK_TASSIGN + " INTEGER,"
+                + TASK_TASSIGN + " TEXT,"
                 + "FOREIGN KEY(tassign) REFERENCES users(id)" + ")");
 
 
@@ -96,7 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
 
     // Adding new task
-    void addTask(Task task) {
+    public void addTask(Task task) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -120,7 +124,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         Task task = new Task(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), Integer.parseInt(cursor.getString(4)));
+                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
         // return task
         return task;
     }
@@ -141,7 +145,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 task.setTname(cursor.getString(1));
                 task.setTdesc(cursor.getString(2));
                 task.setTduedate(cursor.getString(3));
-                task.setTassign(Integer.parseInt(cursor.getString(4)));
+                task.setTassign(cursor.getString(4));
                 // Adding contact to list
                 taskList.add(task);
             } while (cursor.moveToNext());
@@ -181,4 +185,5 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return count
         return cursor.getCount();
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.kayangan.absencehrd.Activity;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.DatabaseHandler;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
+import com.example.kayangan.absencehrd.Model.Task;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.SessionManager;
 import com.example.kayangan.absencehrd.currentUser;
@@ -23,6 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     Time time;
@@ -39,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     SessionManager session;
 
-    Button btn_in, btn_out;
+    Button btn_in, btn_out, btnCreateTask, btnViewTask;
+    DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
         btn_in = findViewById(R.id.btnIn);
         btn_out= findViewById(R.id.btnOut);
+        btnCreateTask = findViewById(R.id.btnCreateTask);
+        btnViewTask = findViewById(R.id.btnViewTask);
 
         /**
          * Call this function whenever you want to check user login
@@ -179,9 +186,35 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        btnCreateTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent createIntent = new Intent(MainActivity.this, CreateTaskActivity.class);
+                startActivity(createIntent);
+            }
+        });
+
+        btnViewTask.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Log.d("Reading: ", "Reading all contacts..");
+                List <Task> tasks = db.getAllTasks();
+
+                for (Task tk : tasks) {
+                    String log = "Id: "+tk.get_id() +
+                            ", Name: " + tk.getTname() +
+                            ", Desc: " + tk.getTdesc() +
+                            ", Due Date: " + tk.getTduedate() +
+                            ", Assigned To: " + tk.getTassign();
+                    // Writing Contacts to log
+                    Log.d("Name: ", log);
+                }
+            }
+        });
+
     }
 
-    //fungsi buat cek waktu, apakah sesua dengan waktu pulang
+    //fungsi buat cek waktu, apakah sesuai dengan waktu pulang
     public boolean cekTime(){
         time.setToNow();
 
