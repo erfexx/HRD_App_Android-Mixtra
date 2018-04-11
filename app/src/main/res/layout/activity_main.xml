@@ -76,5 +76,14 @@
         android:layout_marginTop="23dp"
         android:text="View Task" />
 
+    <Button
+        android:id="@+id/btnListView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/btnCreateTask"
+        android:layout_marginEnd="72dp"
+        android:text="ListView" />
+
 
 </RelativeLayout>

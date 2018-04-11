@@ -114,7 +114,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
     // Getting single task
-    Task getTask(int id) {
+    public Task getTask(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_TASKS, new String[] { KEY_ID,
@@ -123,16 +123,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Task task = new Task(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4));
+        Task task = new Task(
+                Integer.parseInt(cursor.getString(0)),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                cursor.getString(4));
         // return task
+        cursor.close();
         return task;
     }
     // Getting All task
-    public List<Task> getAllTasks() {
-        List<Task> taskList = new ArrayList<Task>();
+    public ArrayList<Task> getAllTasks() {
+        ArrayList<Task> taskList = new ArrayList<Task>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_TASKS;
+        String selectQuery = "SELECT * FROM " + TABLE_TASKS;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -146,6 +151,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 task.setTdesc(cursor.getString(cursor.getColumnIndex(TASK_TDESC)));
                 task.setTduedate(cursor.getString(cursor.getColumnIndex(TASK_TDUEDATE)));
                 task.setTassign(cursor.getString(cursor.getColumnIndex(TASK_TASSIGN)));
+                // Adding contact to list
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+        // return task list
+        return taskList;
+    }
+    public ArrayList<Task> getAllTasksList(){
+        ArrayList<Task> taskList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + TABLE_TASKS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task();
+                task.setTname(cursor.getString(cursor.getColumnIndex(TASK_TNAME)));
+                task.setTdesc(cursor.getString(cursor.getColumnIndex(TASK_TDESC)));
                 // Adding contact to list
                 taskList.add(task);
             } while (cursor.moveToNext());
@@ -177,13 +203,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Getting task Count
     public int getTaskCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_TASKS;
+        String countQuery = "SELECT * FROM " + TABLE_TASKS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
         cursor.close();
 
         // return count
-        return cursor.getCount();
+        return count;
     }
 
 }

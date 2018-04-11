@@ -7,7 +7,7 @@
     tools:context="com.example.kayangan.absencehrd.Activity.CreateTaskActivity">
 
     <EditText
-        android:id="@+id/tname"
+        android:id="@+id/dtname"
         android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
-        android:id="@+id/tdesc"
+        android:id="@+id/dtdesc"
         android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tname" />
+        app:layout_constraintTop_toBottomOf="@+id/dtname" />
 
     <TextView
         android:id="@+id/textView3"
@@ -73,10 +73,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tdesc" />
+        app:layout_constraintTop_toBottomOf="@+id/dtdesc" />
 
     <EditText
-        android:id="@+id/tduedate"
+        android:id="@+id/dtduedate"
         android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -98,7 +98,7 @@
         android:layout_marginTop="8dp"
         android:text="Submit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tassign" />
+        app:layout_constraintTop_toBottomOf="@+id/dtassign" />
 
     <TextView
         android:id="@+id/textView4"
@@ -111,10 +111,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tduedate" />
+        app:layout_constraintTop_toBottomOf="@+id/dtduedate" />
 
     <EditText
-        android:id="@+id/tassign"
+        android:id="@+id/dtassign"
         android:layout_width="364dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"

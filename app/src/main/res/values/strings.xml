@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Employee Attendance</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_view_task">ViewTaskActivity</string>
+    <string name="msg_no_tasks">No tasks found!</string>
+    <string name="lbl_edit_task_title">Edit Task</string>
 </resources>

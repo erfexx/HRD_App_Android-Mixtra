@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     SessionManager session;
 
-    Button btn_in, btn_out, btnCreateTask, btnViewTask;
+    Button btn_in, btn_out, btnCreateTask, btnViewTask, btnListView;
     DatabaseHandler db;
 
     @Override
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         btn_out= findViewById(R.id.btnOut);
         btnCreateTask = findViewById(R.id.btnCreateTask);
         btnViewTask = findViewById(R.id.btnViewTask);
+        btnListView = findViewById(R.id.btnListView);
 
         /**
          * Call this function whenever you want to check user login
@@ -197,18 +198,16 @@ public class MainActivity extends AppCompatActivity {
         btnViewTask.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Log.d("Reading: ", "Reading all contacts..");
-                List <Task> tasks = db.getAllTasks();
+                Intent viewIntent = new Intent(MainActivity.this, ViewTaskActivity.class);
+                startActivity(viewIntent);
+            }
+        });
 
-                for (Task tk : tasks) {
-                    String log = "Id: "+tk.get_id() +
-                            ", Name: " + tk.getTname() +
-                            ", Desc: " + tk.getTdesc() +
-                            ", Due Date: " + tk.getTduedate() +
-                            ", Assigned To: " + tk.getTassign();
-                    // Writing Contacts to log
-                    Log.d("Name: ", log);
-                }
+        btnListView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent listIntent = new Intent(MainActivity.this, ListViewActivity.class);
+                startActivity(listIntent);
             }
         });
 

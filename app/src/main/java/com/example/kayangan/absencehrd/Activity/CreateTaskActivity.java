@@ -18,10 +18,10 @@ public class CreateTaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_task);
-        final EditText tname = (EditText) findViewById(R.id.tname);
-        final EditText tdesc = (EditText) findViewById(R.id.tdesc);
-        final EditText tduedate = (EditText) findViewById(R.id.tduedate);
-        final EditText tassign = (EditText) findViewById(R.id.tassign);
+        final EditText tname = (EditText) findViewById(R.id.dtname);
+        final EditText tdesc = (EditText) findViewById(R.id.dtdesc);
+        final EditText tduedate = (EditText) findViewById(R.id.dtduedate);
+        final EditText tassign = (EditText) findViewById(R.id.dtassign);
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
 
         db = new DatabaseHandler(this);
