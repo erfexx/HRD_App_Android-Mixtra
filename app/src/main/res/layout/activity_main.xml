@@ -59,31 +59,22 @@
 
     <Button
         android:id="@+id/btnCreateTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="22dp"
         android:text="Create Task" />
 
     <Button
-        android:id="@+id/btnViewTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btnCreateTask"
-        android:layout_alignStart="@+id/btnCreateTask"
-        android:layout_below="@+id/btnCreateTask"
-        android:layout_marginTop="23dp"
-        android:text="View Task" />
-
-    <Button
         android:id="@+id/btnListView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:layout_alignBaseline="@+id/btnCreateTask"
+        android:layout_alignBottom="@+id/btnCreateTask"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/btnCreateTask"
-        android:layout_marginEnd="72dp"
-        android:text="ListView" />
+        android:layout_marginEnd="30dp"
+        android:text="View Task" />
 
 
 </RelativeLayout>

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.kayangan.absencehrd.Model.Task;
+import com.example.kayangan.absencehrd.Model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +100,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
+    public List<String> getNames(){
+        List<String> names = new ArrayList<String>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_USERS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                names.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+        // closing connection
+        cursor.close();
+        db.close();
+
+        // returning lables
+        return names;
+    }
+
     // Adding new task
     public void addTask(Task task) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -151,27 +176,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 task.setTdesc(cursor.getString(cursor.getColumnIndex(TASK_TDESC)));
                 task.setTduedate(cursor.getString(cursor.getColumnIndex(TASK_TDUEDATE)));
                 task.setTassign(cursor.getString(cursor.getColumnIndex(TASK_TASSIGN)));
-                // Adding contact to list
-                taskList.add(task);
-            } while (cursor.moveToNext());
-        }
-        // return task list
-        return taskList;
-    }
-    public ArrayList<Task> getAllTasksList(){
-        ArrayList<Task> taskList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT * FROM " + TABLE_TASKS;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Task task = new Task();
-                task.setTname(cursor.getString(cursor.getColumnIndex(TASK_TNAME)));
-                task.setTdesc(cursor.getString(cursor.getColumnIndex(TASK_TDESC)));
                 // Adding contact to list
                 taskList.add(task);
             } while (cursor.moveToNext());

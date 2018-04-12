@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     SessionManager session;
 
-    Button btn_in, btn_out, btnCreateTask, btnViewTask, btnListView;
+    Button btn_in, btn_out, btnCreateTask, btnListView;
     DatabaseHandler db;
 
     @Override
@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         btn_in = findViewById(R.id.btnIn);
         btn_out= findViewById(R.id.btnOut);
         btnCreateTask = findViewById(R.id.btnCreateTask);
-        btnViewTask = findViewById(R.id.btnViewTask);
         btnListView = findViewById(R.id.btnListView);
 
         /**
@@ -192,14 +191,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent createIntent = new Intent(MainActivity.this, CreateTaskActivity.class);
                 startActivity(createIntent);
-            }
-        });
-
-        btnViewTask.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent viewIntent = new Intent(MainActivity.this, ViewTaskActivity.class);
-                startActivity(viewIntent);
             }
         });
 
