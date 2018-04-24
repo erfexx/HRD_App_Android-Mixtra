@@ -1,6 +1,7 @@
-package com.example.kayangan.absencehrd;
+package com.example.kayangan.absencehrd.Helper;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -30,9 +31,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String ATT_DATE = "date";
     public static final String ATT_IN = "clock_in";
     public static final String ATT_OUT = "clock_out";
-    public static final String ATT_USER_ID = "user_id";
+    public static String ATT_USER_ID = "user_id";
     public static final String ATT_FLAG_TAP= "flag";
-
 
     SQLiteDatabase db;
 
@@ -67,5 +67,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Create tables again
         onCreate(db);
+    }
+
+    public Cursor getAllAttendance(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{currentUser.currentUserID});
+        return data;
     }
 }

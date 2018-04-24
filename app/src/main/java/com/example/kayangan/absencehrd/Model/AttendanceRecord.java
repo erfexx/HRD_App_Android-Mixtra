@@ -18,6 +18,7 @@ public class AttendanceRecord {
     public AttendanceRecord() {
     }
 
+
     public AttendanceRecord(String date, String clock_in, String clock_out, String user_id, String flag) {
         this.date = date;
         this.clock_in = clock_in;
@@ -26,14 +27,14 @@ public class AttendanceRecord {
         this.flag = flag;
     }
 
-    public AttendanceRecord(String clock_out, String flag) {
+    public AttendanceRecord(String date, String clock_in, String clock_out) {
+        this.date = date;
+        this.clock_in = clock_in;
         this.clock_out = clock_out;
-        this.flag = flag;
     }
 
-    public AttendanceRecord(String date, String user_id, String flag) {
-        this.date = date;
-        this.user_id = user_id;
+    public AttendanceRecord(String clock_out, String flag) {
+        this.clock_out = clock_out;
         this.flag = flag;
     }
 

@@ -1,66 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.kayangan.absencehrd.Activity.RegistrationActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg_login"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp" >
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:text="REGISTER"
+        android:textSize="42dp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/lusitana"
+        android:textStyle="bold"
+        android:layout_margin="20dp"
+        android:gravity="center"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="NAME"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
+
 
         <EditText
             android:id="@+id/txtName"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:gravity="center"
-            android:text="ADMIN"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="PASSWORD"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:gravity="center"/>
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:hint="Name"
+            android:inputType="textEmailAddress"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="@color/input_register"
+            android:textColorHint="@color/input_register_hint" />
 
         <EditText
             android:id="@+id/txtPassword"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:hint="@string/hint_password"
             android:inputType="textPassword"
-            android:text="ADMIN"/>
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="@color/input_register"
+            android:textColorHint="@color/input_register_hint" />
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        <!-- Login Button -->
 
         <Button
             android:id="@+id/btnDaftar"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="SIGN UP" />
+            android:layout_marginTop="20dip"
+            android:background="#ea4c88"
+            android:text="@string/btn_register"
+            android:textColor="@color/white" />
 
+        <!-- Link to Login Screen -->
+
+        <Button
+            android:id="@+id/btnLinkToLoginScreen"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:background="@null"
+            android:text="@string/btn_link_to_login"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

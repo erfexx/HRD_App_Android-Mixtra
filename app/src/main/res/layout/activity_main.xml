@@ -15,22 +15,30 @@
         android:orientation="horizontal"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:weightSum="1"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2"
+        android:layout_margin="5dp"
         >
 
         <Button
             android:id="@+id/btnIn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="IN"
-            />
+            android:background="#ea4c88"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
 
         <Button
             android:id="@+id/btnOut"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OUT"/>
+            android:text="OUT"
+            android:background="#ea4c88"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_margin="5dp"/>
 
     </LinearLayout>
 
@@ -39,23 +47,25 @@
         android:id="@+id/jam"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginVertical="180dp"
-        android:text="23:59:59"
-        android:textSize="40sp"
-        />
+        android:fontFamily="@font/lusitana"
+        android:gravity="center"
+        android:text="00:00:00"
+        android:textSize="64sp"
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginVertical="80dp"
-        android:textSize="20sp"
+        android:fontFamily="@font/lusitana"
+        android:gravity="center"
         android:text="User"
-        />
+        android:textSize="28sp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"/>
 
 
 </RelativeLayout>

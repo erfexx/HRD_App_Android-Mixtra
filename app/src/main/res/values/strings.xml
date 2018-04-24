@@ -1,4 +1,29 @@
 <resources>
     <string name="app_name">Employee Attendance</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_menu">Menu Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string-array name="nav_item_activity_titles">
+        <item>TASK MANAGER</item>
+        <item>ATTENDANCE</item>
+        <item>LOCATION</item>
+        <item>PROFILE</item>
+    </string-array>
+
+    <string name="hint_email">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Fullname</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="btn_link_to_login">Already registered? Login Here.</string>
+    <string name="welcome">Welcome</string>
+    <string name="btn_logout">LOGOUT</string>
+    <string name="name">Fullname</string>
 </resources>
+
