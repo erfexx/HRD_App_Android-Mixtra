@@ -26,7 +26,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView tname;
-        public TextView dot;
         public TextView tdesc;
         /*public TextView tduedate;
         public TextView tassign;*/
@@ -36,8 +35,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
             super(view);
             tname = view.findViewById(R.id.dtname);
             tdesc = view.findViewById(R.id.dtdesc);
-            /*tduedate = view.findViewById(R.id.dtduedate);
-            tassign = view.findViewById(R.id.dtassign);*/
         }
     }
 
@@ -63,10 +60,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
 
         // Formatting and displaying timestamp
         holder.tdesc.setText(task.getTdesc());
-
-        /*holder.tduedate.setText(task.getTduedate());
-
-        holder.tassign.setText(task.getTassign());*/
     }
 
     @Override
@@ -74,21 +67,4 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder>{
         return taskList.size();
     }
 
-    /**
-     * Formatting timestamp to `MMM d` format
-     * Input: 2018-02-21 00:15:42
-     * Output: Feb 21
-     */
-    private String formatDate(String dateStr) {
-        try {
-            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = fmt.parse(dateStr);
-            SimpleDateFormat fmtOut = new SimpleDateFormat("MMM d");
-            return fmtOut.format(date);
-        } catch (ParseException e) {
-
-        }
-
-        return "";
-    }
 }

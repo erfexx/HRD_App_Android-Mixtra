@@ -5,27 +5,24 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.kayangan.absencehrd.DatabaseHandler;
 import com.example.kayangan.absencehrd.Model.Task;
-import com.example.kayangan.absencehrd.Model.User;
 import com.example.kayangan.absencehrd.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
-public class CreateTaskActivity extends AppCompatActivity implements OnItemSelectedListener{
+public class EditTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     DatabaseHandler db;
     Spinner spinner;
     private DatePickerDialog datepick;
@@ -34,7 +31,11 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_task);
+        setContentView(R.layout.activity_edit_task);
+
+        int position = getIntent().getIntExtra("pos",0);
+
+        db = new DatabaseHandler(this);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -44,6 +45,11 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
         tduedate.setInputType(InputType.TYPE_NULL);
         spinner = (Spinner) findViewById(R.id.dtassign);
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
+
+        final Task task = db.getTask(position);
+        tname.setText(task.getTname(), TextView.BufferType.EDITABLE);
+        tdesc.setText(task.getTdesc(), TextView.BufferType.EDITABLE);
+        tduedate.setText(task.getTduedate(), TextView.BufferType.EDITABLE);
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(this);
@@ -67,24 +73,20 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-
-        db = new DatabaseHandler(this);
         bSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String tassign = spinner.getSelectedItem().toString();
-                db.addTask(new Task(
-                        tname.getText().toString(),
-                        tdesc.getText().toString(),
-                        tduedate.getText().toString(),
-                        tassign));
-                Intent createIntent = new Intent(CreateTaskActivity.this, MainActivity.class);
-                startActivity(createIntent);
-
+                task.setTname(tname.getText().toString());
+                task.setTdesc(tdesc.getText().toString());
+                task.setTduedate(tduedate.getText().toString());
+                task.setTassign(tassign);
+                db.updateTask(task);
+                Intent viewIntent = new Intent(getBaseContext(),ListViewActivity.class);
+                startActivity(viewIntent);
             }
         });
     }
-
     private void loadSpinnerData() {
         // database handler
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
@@ -105,15 +107,13 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position,
-                               long id) {
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // On selecting a spinner item
         String label = parent.getItemAtPosition(position).toString();
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }

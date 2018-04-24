@@ -45,8 +45,10 @@
         <activity
             android:name=".Activity.ViewTaskActivity"
             android:label="@string/title_activity_view_task"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".Activity.ListViewActivity"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Activity.ListViewActivity" />
+        <activity android:name=".Activity.EditTaskActivity" />
+        <activity android:name=".Activity.SalesOrderActivity"></activity>
     </application>
 
 </manifest>

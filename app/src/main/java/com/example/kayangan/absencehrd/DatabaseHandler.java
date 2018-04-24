@@ -142,8 +142,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public Task getTask(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_TASKS, new String[] { KEY_ID,
-                        TASK_TNAME, TASK_TDESC, TASK_TDUEDATE, TASK_TASSIGN }, KEY_ID + "=?",
+        Cursor cursor = db.query(TABLE_TASKS, new String[] { TASK_ID,
+                        TASK_TNAME, TASK_TDESC, TASK_TDUEDATE, TASK_TASSIGN }, TASK_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -194,13 +194,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(TASK_TASSIGN, task.getTassign());
 
         // updating row
-        return db.update(TABLE_TASKS, values, KEY_ID + " = ?",
+        return db.update(TABLE_TASKS, values, TASK_ID + " = ?",
                 new String[] { String.valueOf(task.get_id()) });
     }
     // Deleting single task
     public void deleteTask(Task task) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_TASKS, KEY_ID + " = ?",
+        db.delete(TABLE_TASKS, TASK_ID + " = ?",
                 new String[] { String.valueOf(task.get_id()) });
         db.close();
     }

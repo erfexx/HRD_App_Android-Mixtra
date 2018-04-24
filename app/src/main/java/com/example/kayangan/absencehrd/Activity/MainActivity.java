@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     SessionManager session;
 
-    Button btn_in, btn_out, btnCreateTask, btnListView;
+    Button btn_in, btn_out, btnCreateTask, btnListView, btnSO;
     DatabaseHandler db;
 
     @Override
@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         btn_out= findViewById(R.id.btnOut);
         btnCreateTask = findViewById(R.id.btnCreateTask);
         btnListView = findViewById(R.id.btnListView);
+        btnSO = findViewById(R.id.btnSO);
 
         /**
          * Call this function whenever you want to check user login
@@ -199,6 +200,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent listIntent = new Intent(MainActivity.this, ListViewActivity.class);
                 startActivity(listIntent);
+            }
+        });
+
+        btnSO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent salesIntent = new Intent(MainActivity.this, SalesOrderActivity.class);
+                startActivity(salesIntent);
             }
         });
 
