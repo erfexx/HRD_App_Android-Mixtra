@@ -22,9 +22,9 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_add_circle_black_24dp"
-        app:backgroundTint="@color/white"
+        app:backgroundTint="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@android:color/black" />
+        app:rippleColor="@color/colorPrimary" />
 
 </android.support.constraint.ConstraintLayout>

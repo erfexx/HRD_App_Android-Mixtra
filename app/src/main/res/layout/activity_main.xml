@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="IN"
-            android:background="#ea4c88"
+            android:background="@color/colorAccent"
             android:textColor="@color/white"
             android:layout_weight="1"
             android:layout_margin="5dp"/>
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="OUT"
-            android:background="#ea4c88"
+            android:background="@color/colorAccent"
             android:textColor="@color/white"
             android:layout_weight="1"
             android:layout_margin="5dp"/>
