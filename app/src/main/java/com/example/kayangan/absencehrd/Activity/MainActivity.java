@@ -67,13 +67,15 @@ public class MainActivity extends AppCompatActivity {
         time = new Time();
         helper = new DatabaseHandler(this);
 
+        final TextView textView = findViewById(R.id.jam);
+
+        textView.setText(getTime());
         //buat tampilin jam dinamis
         runnable = new Runnable() {
             @Override
             public void run() {
                 time.setToNow();
 
-                TextView textView = findViewById(R.id.jam);
                 long date = System.currentTimeMillis();
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         //menampilkan nama user yang sedang login
         txtUser = findViewById(R.id.user);
-        txtUser.setText("ACTIVE: " + userName + " -> ID : "+userID);
+        txtUser.setText("Hello, " + userName);
 
 
         btn_in = findViewById(R.id.btnIn);
@@ -125,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v)
                     {
+                        DB = helper.getWritableDatabase();
+
                         AttendanceRecord data = new AttendanceRecord();
                         data.setClock_out(getTime());
                         recordOut(data);
@@ -220,18 +224,15 @@ public class MainActivity extends AppCompatActivity {
             values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
 
             DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
-
-            session.createTapInSession();
-
             Toast.makeText(this, "YOU ARE IN, THANK YOU! :)", Toast.LENGTH_SHORT).show();
         }
         else{
-            Toast.makeText(this, "YOU ALREADY IN :O", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "YOU ARE ALREADY IN :O", Toast.LENGTH_SHORT).show();
         }
     }
 
     //ADA ERROR KETIKA HABIS TAP-IN TERUS LOGOUT, ERRORNYA DB NYA NULL,
-    // TAPI KETIKA DI TAP IN TERUS DI TAP OUT DB NYA TIDAK NULL
+    //TAPI KETIKA DI TAP IN TERUS DI TAP OUT DB NYA TIDAK NULL
     public void recordOut(AttendanceRecord data){
         ContentValues values = new ContentValues();
 
@@ -243,11 +244,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (DB != null)
         {
-            if (validateDate() && session.isTappedIn())
+            if (validateDate())
             {
                 DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?", new String[]{formatDate, currentUser.currentUserID});
                 Toast.makeText(this, "YOU ARE OUT, HAVE A NICE DAY :)", Toast.LENGTH_SHORT).show();
             }
+            else
+                Toast.makeText(this, "YOU ARE ALREADY OUT :D", Toast.LENGTH_SHORT).show();
         }
         else
         {

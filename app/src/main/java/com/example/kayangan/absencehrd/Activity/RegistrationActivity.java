@@ -36,6 +36,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+
         helper = new DatabaseHandler(this);
 
         nama = findViewById(R.id.txtName);
@@ -76,7 +77,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                             @Override
                                             public void run() {
                                                 try {
-                                                    Thread.sleep(10000);
+                                                    Thread.sleep(5000);
                                                 } catch (InterruptedException e) {
                                                     e.printStackTrace();
                                                 }
@@ -84,11 +85,13 @@ public class RegistrationActivity extends AppCompatActivity {
                                         }
                                 ).start();
 
+                                dialog.dismiss();
                                 startActivity(intent);
                                 Toast.makeText(RegistrationActivity.this, "REGISTRATION COMPLETED!", Toast.LENGTH_SHORT).show();
                             }
                             else
                             {
+                                dialog.dismiss();
                                 Toast.makeText(RegistrationActivity.this, "THE NAME IS ALREADY REGISTERED!", Toast.LENGTH_SHORT).show();
                             }
                         }

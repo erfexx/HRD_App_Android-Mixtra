@@ -3,20 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_task"
-            android:icon="@drawable/ic_work_black_24dp"
-            android:title="Task Manager" />
-        <item
-            android:id="@+id/nav_absence"
-            android:icon="@drawable/ic_timer_black_24dp"
-            android:title="Attendance" />
-        <item
-            android:id="@+id/nav_geotag"
-            android:icon="@drawable/ic_location_on_black_24dp"
-            android:title="Location" />
-    </group>
+    <item android:title="Human Resource Management">
+        <menu>
+            <item
+                android:id="@+id/nav_task"
+                android:icon="@drawable/ic_work_black_24dp"
+                android:title="Task Manager" />
+            <item
+                android:id="@+id/nav_absence"
+                android:icon="@drawable/ic_timer_black_24dp"
+                android:title="Attendance" />
+            <item
+                android:id="@+id/nav_geotag"
+                android:icon="@drawable/ic_location_on_black_24dp"
+                android:title="Location" />
+        </menu>
+    </item>
+
+    <item android:title="Inventory Management">
+        <menu>
+            <item
+                android:id="@+id/nav_stock"
+                android:title="Stock"
+                android:icon="@drawable/ic_dvr_black_24dp"/>
+            <item
+                android:id="@+id/nav_sales_order"
+                android:title="Sales Order"
+                android:icon="@drawable/ic_content_paste_black_24dp"/>
+        </menu>
+    </item>
 
     <item android:title="Account">
         <menu>

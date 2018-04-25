@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:text="ADJUST POSITION"
-                android:background="#ea4c88"
+                android:background="@color/colorAccent"
                 android:textColor="@color/white"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/btnReqPos"

@@ -143,8 +143,7 @@ public class MenuActivity extends AppCompatActivity
             intent = new Intent(MenuActivity.this, MapsActivity.class);
             if (checkGPS())
                 startActivity(intent);
-            else
-                Toast.makeText(this, "TURN ON YOUR GPS", Toast.LENGTH_SHORT).show();
+
         }
         else if (id == R.id.nav_profile) {
             intent = new Intent(MenuActivity.this, ProfileActivity.class);
@@ -185,14 +184,30 @@ public class MenuActivity extends AppCompatActivity
 
     private boolean checkGPS(){
         String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
 
         if (!provider.equals("")){
             return true;
         }
         else
         {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
+            alert.setCancelable(false)
+                    .setTitle("GPS Settings")
+                    .setMessage("GPS is not enabled. Do you want to go to setting menu?");
+
+            alert.setPositiveButton("SETTINGS",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    });
+
+            alert.setNegativeButton("CANCEL", null);
+
+            AlertDialog dialog = alert.create();
+            dialog.show();
         }
 
         return false;
