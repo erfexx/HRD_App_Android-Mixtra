@@ -124,8 +124,10 @@ public class MenuActivity extends AppCompatActivity
         Intent intent;
 
 
-        if (id == R.id.nav_task) {
-
+        if (id == R.id.nav_task)
+        {
+            Intent taskIntent = new Intent(MenuActivity.this, TaskManagerActivity.class);
+            startActivity(taskIntent);
         }
         else if (id == R.id.nav_absence) {
             if (tracker.inLocation)

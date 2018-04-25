@@ -21,49 +21,49 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".Activity.WelcomeActivity"
+        <activity
+            android:name=".Activity.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Activity.HomeActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-        <activity android:name=".Activity.RegistrationActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-        <activity android:name=".Activity.LoginActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
+        <activity
+            android:name=".Activity.HomeActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".Activity.RegistrationActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Activity.MenuActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="Dashboard"/>
-
+            android:label="Dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.MapsActivity"
             android:label="Location" />
-
-        <activity android:name=".Activity.MainActivity"
-            android:label="Attendance Machine"/>
-
-
-        <activity android:name=".Activity.ProfileActivity"
+        <activity
+            android:name=".Activity.MainActivity"
+            android:label="Attendance Machine" />
+        <activity
+            android:name=".Activity.ProfileActivity"
             android:label="Profile Menu"
-            android:theme="@style/AppTheme"/>
-
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".Activity.TaskManagerActivity" />
+        <activity android:name=".Activity.CreateTaskActivity" />
+        <activity android:name=".Activity.EditTaskActivity"></activity>
     </application>
 
 </manifest>
