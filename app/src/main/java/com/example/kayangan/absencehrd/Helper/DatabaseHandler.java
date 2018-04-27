@@ -10,68 +10,68 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    // All Static variables
-    // Database Version
-    private static final int DATABASE_VERSION = 1;
+  // All Static variables
+  // Database Version
+  private static final int DATABASE_VERSION = 1;
 
-    // Database Name
-    private static final String DATABASE_NAME = "hrdManager.db";
+  // Database Name
+  private static final String DATABASE_NAME = "hrdManager.db";
 
-    // Table name
-    public static final String TABLE_USERS = "users";
-    public static final String TABLE_ATTENDANCES = "attendances";
+  // Table name
+  public static final String TABLE_USERS = "users";
+  public static final String TABLE_ATTENDANCES = "attendances";
 
-    // Users Table Columns names
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_PASS = "password";
-
-
-    public static final String ATT_ID = "id";
-    public static final String ATT_DATE = "date";
-    public static final String ATT_IN = "clock_in";
-    public static final String ATT_OUT = "clock_out";
-    public static String ATT_USER_ID = "user_id";
-    public static final String ATT_FLAG_TAP= "flag";
-
-    SQLiteDatabase db;
-
-    public DatabaseHandler(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-        db.execSQL(
-                "CREATE TABLE " + TABLE_USERS +
-                        " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, password TEXT)"
-        );
-
-        db.execSQL(
-                "CREATE TABLE " + TABLE_ATTENDANCES +
-                        " (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, clock_in TEXT, clock_out TEXT, user_id TEXT, flag TEXT, " +
-                        "FOREIGN KEY(user_id) REFERENCES users(id))"
-        );
+  // Users Table Columns names
+  public static final String KEY_ID = "id";
+  public static final String KEY_NAME = "name";
+  public static final String KEY_PASS = "password";
 
 
-        this.db = db;
+  public static final String ATT_ID = "id";
+  public static final String ATT_DATE = "date";
+  public static final String ATT_IN = "clock_in";
+  public static final String ATT_OUT = "clock_out";
+  public static String ATT_USER_ID = "user_id";
+  public static final String ATT_FLAG_TAP= "flag";
 
-    }
+  SQLiteDatabase db;
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTENDANCES);
+  public DatabaseHandler(Context context) {
+    super(context, DATABASE_NAME, null, DATABASE_VERSION);
+  }
 
-        // Create tables again
-        onCreate(db);
-    }
+  @Override
+  public void onCreate(SQLiteDatabase db) {
 
-    public Cursor getAllAttendance(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{currentUser.currentUserID});
-        return data;
-    }
+    db.execSQL(
+            "CREATE TABLE " + TABLE_USERS +
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, password TEXT)"
+    );
+
+    db.execSQL(
+            "CREATE TABLE " + TABLE_ATTENDANCES +
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, clock_in TEXT, clock_out TEXT, user_id TEXT, flag TEXT, " +
+                    "FOREIGN KEY(user_id) REFERENCES users(id))"
+    );
+
+
+    this.db = db;
+
+  }
+
+  @Override
+  public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    // Drop older table if existed
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTENDANCES);
+
+    // Create tables again
+    onCreate(db);
+  }
+
+  public Cursor getAllAttendance(){
+    SQLiteDatabase db = this.getReadableDatabase();
+    Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{currentUser.currentUserID});
+    return data;
+  }
 }

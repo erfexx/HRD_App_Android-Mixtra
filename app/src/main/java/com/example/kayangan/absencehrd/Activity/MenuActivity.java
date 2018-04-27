@@ -78,8 +78,7 @@ public class MenuActivity extends AppCompatActivity
         } else {
 
             if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
-                finish();
+                MenuActivity.this.finish();
                 return;
             }
 
@@ -143,6 +142,12 @@ public class MenuActivity extends AppCompatActivity
             intent = new Intent(MenuActivity.this, MapsActivity.class);
             if (checkGPS())
                 startActivity(intent);
+
+        }
+        else if (id == R.id.nav_stock){
+            startActivity(new Intent(MenuActivity.this, StockActivity.class));
+        }
+        else if (id == R.id.nav_sales_order){
 
         }
         else if (id == R.id.nav_profile) {

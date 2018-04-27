@@ -7,5 +7,5 @@ import com.example.kayangan.absencehrd.Model.User;
  */
 
 public class currentUser {
-    public static String currentUserID = "";
+  public static String currentUserID = "";
 }

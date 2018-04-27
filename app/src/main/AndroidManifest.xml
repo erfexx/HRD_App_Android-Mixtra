@@ -54,6 +54,10 @@
             android:label="Profile Menu"
             android:theme="@style/AppTheme" />
 
+        <activity android:name=".Activity.StockActivity"
+            android:label="Stock"
+            android:theme="@style/AppTheme"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -61,7 +65,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Activity.StockActivity"></activity>
+
     </application>
 
 </manifest>

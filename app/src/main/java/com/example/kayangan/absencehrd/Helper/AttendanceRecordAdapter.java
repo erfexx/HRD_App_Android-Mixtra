@@ -16,35 +16,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceRecordAdapter extends ArrayAdapter<AttendanceRecord> {
-    private Context mContext;
-    int mResource;
+  private Context mContext;
+  int mResource;
 
-    public AttendanceRecordAdapter(@NonNull Context context, int resource, @NonNull ArrayList<AttendanceRecord> objects) {
-        super(context, resource, objects);
-        this.mContext = context;
-        this.mResource = resource;
-    }
+  public AttendanceRecordAdapter(@NonNull Context context, int resource, @NonNull ArrayList<AttendanceRecord> objects) {
+    super(context, resource, objects);
+    this.mContext = context;
+    this.mResource = resource;
+  }
 
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String date = getItem(position).getDate();
-        String in = getItem(position).getClock_in();
-        String out = getItem(position).getClock_out();
+  @NonNull
+  @Override
+  public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    String date = getItem(position).getDate();
+    String in = getItem(position).getClock_in();
+    String out = getItem(position).getClock_out();
 
-        AttendanceRecord record = new AttendanceRecord(date, in, out);
+    AttendanceRecord record = new AttendanceRecord(date, in, out);
 
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        convertView = inflater.inflate(mResource, parent, false);
+    LayoutInflater inflater = LayoutInflater.from(mContext);
+    convertView = inflater.inflate(mResource, parent, false);
 
-        TextView tvDate = convertView.findViewById(R.id.textview1);
-        TextView tvIn = convertView.findViewById(R.id.textview2);
-        TextView tvout = convertView.findViewById(R.id.textview3);
+    TextView tvDate = convertView.findViewById(R.id.textview1);
+    TextView tvIn = convertView.findViewById(R.id.textview2);
+    TextView tvout = convertView.findViewById(R.id.textview3);
 
-        tvDate.setText(date);
-        tvIn.setText(in);
-        tvout.setText(out);
+    tvDate.setText(date);
+    tvIn.setText(in);
+    tvout.setText(out);
 
-        return convertView;
-    }
+    return convertView;
+  }
 }

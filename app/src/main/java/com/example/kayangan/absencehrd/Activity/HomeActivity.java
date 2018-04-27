@@ -1,13 +1,17 @@
 package com.example.kayangan.absencehrd.Activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -29,6 +33,29 @@ public class HomeActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        //bg orientation
+        RelativeLayout layout = findViewById(R.id.relativeLayout);
+        Resources resources = getResources();
+        Drawable portrait = resources.getDrawable(R.drawable.bg);
+        Drawable landscape = resources.getDrawable(R.drawable.bglans);
+
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        int num = display.getRotation();
+
+        if (num == 0){
+            layout.setBackgroundDrawable(portrait);
+        }else if (num == 1 || num == 3){
+            layout.setBackgroundDrawable(landscape);
+        }else{
+            layout.setBackgroundDrawable(portrait);
+        }
+
+        if (sessionManager.isLoggedIn())
+            finish();
+
         Button toLogin, toRegist;
 
         toLogin = findViewById(R.id.btnToLogin);
@@ -90,4 +117,11 @@ public class HomeActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+
+    private void redirectToMainMenu(){
+        startActivity(new Intent(HomeActivity.this, MenuActivity.class));
+        finish();
+    }
+
+
 }

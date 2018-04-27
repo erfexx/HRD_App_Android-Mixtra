@@ -7,22 +7,22 @@ import android.content.DialogInterface;
 import com.example.kayangan.absencehrd.R;
 
 public class AlertDialogManager {
-    public void showAlertDialog(Context context, String title, String message, Boolean status){
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+  public void showAlertDialog(Context context, String title, String message, Boolean status){
+    AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
+    alertDialog.setTitle(title);
+    alertDialog.setMessage(message);
 
-        if (status != null)
-            alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
+    if (status != null)
+      alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
 
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
+      }
+    });
 
-        alertDialog.show();
-    }
+    alertDialog.show();
+  }
 }
