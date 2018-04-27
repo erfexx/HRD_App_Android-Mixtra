@@ -21,6 +21,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
+import com.example.kayangan.absencehrd.Helper.SessionManager;
+import com.example.kayangan.absencehrd.Helper.currentUser;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -43,6 +45,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.example.kayangan.absencehrd.R;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class MapsActivity
@@ -81,6 +84,8 @@ public class MapsActivity
 
   Marker mCurrentPos;
 
+  SessionManager sessionManager;
+
 
   @Override
   public boolean onSupportNavigateUp() {
@@ -99,7 +104,7 @@ public class MapsActivity
     mapFragment.getMapAsync(this);
 
 
-    databaseReference = FirebaseDatabase.getInstance().getReference("My Location");
+    databaseReference = FirebaseDatabase.getInstance().getReference("" + currentUser.currentUserID);
     geoFire = new GeoFire(databaseReference);
 
     setUpLocation();
@@ -111,19 +116,12 @@ public class MapsActivity
         setUpLocation();
       }
     });
-
-
   }
 
   @Override
   public void onMapReady(GoogleMap googleMap) {
     mMap = googleMap;
 
-    //Mixtra Location
-    //-6.190361, 106.748589
-
-    //Create dangerous area
-    //LatLng dangerArea = new LatLng(37.422, -122.084);
     LatLng dangerArea = new LatLng(-6.190361, 106.748589);
 
     mMap.addCircle(
@@ -280,6 +278,11 @@ public class MapsActivity
   }
 
   private void displayLocation() {
+    sessionManager = new SessionManager(getApplicationContext());
+
+      HashMap<String, String> user = sessionManager.getUserDetails();
+      String KEY = user.get(SessionManager.KEY_NAME);
+
     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
     {
@@ -294,7 +297,7 @@ public class MapsActivity
       final double longitude = lastLocation.getLongitude();
 
       //update to Firebase
-      geoFire.setLocation("You", new GeoLocation(latitude, longitude),
+      geoFire.setLocation(""+KEY, new GeoLocation(latitude, longitude),
               new GeoFire.CompletionListener() {
                 @Override
                 public void onComplete(String key, DatabaseError error) {
@@ -333,7 +336,7 @@ public class MapsActivity
 
   private void sendNotification(String title, String content) {
     Notification.Builder builder = new Notification.Builder(this)
-            .setSmallIcon(R.mipmap.ic_launcher_logo)
+            .setSmallIcon(R.drawable.logo_round)
             .setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(false);

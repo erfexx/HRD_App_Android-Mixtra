@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/Ll"
-    android:layout_marginTop="55dp"
-    android:background="@color/lightgray">
+    android:layout_marginTop="40dp"
+    android:paddingTop="17dp"
+    android:background="@color/darkgray">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,7 +16,6 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity"
         android:orientation="vertical"
-        android:padding="10dp"
         android:gravity="center">
 
         <LinearLayout
@@ -33,7 +33,7 @@
                 android:layout_height="190dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="20dp"
-                android:elevation="10dp">
+                android:elevation="30dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -54,8 +54,8 @@
                         android:text="Task Manager"/>
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/lightgray"
+                        android:layout_height="2dp"
+                        android:background="@color/colorAccent"
                         android:layout_margin="10dp"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -73,6 +73,7 @@
                 android:layout_width="160dp"
                 android:layout_height="190dp"
                 android:layout_margin="10dp"
+                android:elevation="30dp"
                 android:id="@+id/attendanceID">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -94,8 +95,8 @@
                         android:text="Attendance"/>
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/lightgray"
+                        android:layout_height="2dp"
+                        android:background="@color/colorAccent"
                         android:layout_margin="10dp"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -122,6 +123,7 @@
                 android:layout_width="160dp"
                 android:layout_height="190dp"
                 android:layout_margin="10dp"
+                android:elevation="30dp"
                 android:id="@+id/stockID">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -143,8 +145,8 @@
                         android:text="Stock"/>
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/lightgray"
+                        android:layout_height="2dp"
+                        android:background="@color/colorAccent"
                         android:layout_margin="10dp"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -163,7 +165,7 @@
                 android:layout_height="190dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="20dp"
-                android:elevation="20dp"
+                android:elevation="30dp"
                 android:id="@+id/salesorderID">
 
                 <LinearLayout
@@ -189,9 +191,9 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="2dp"
                         android:layout_margin="10dp"
-                        android:background="@color/lightgray" />
+                        android:background="@color/colorAccent" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -218,6 +220,7 @@
                 android:clickable="true"
                 android:layout_width="340dp"
                 android:layout_height="160dp"
+                android:elevation="30dp"
                 android:id="@+id/profileID">
 
                 <LinearLayout
@@ -242,8 +245,8 @@
                         android:text="Profile"/>
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/lightgray"
+                        android:layout_height="2dp"
+                        android:background="@color/colorAccent"
                         android:layout_margin="10dp"/>
                     <TextView
                         android:layout_width="wrap_content"
