@@ -147,6 +147,10 @@ public class MenuActivity extends AppCompatActivity
                 startActivity(intent);
 
         }
+        else if (id == R.id.nav_sales_order) {
+            intent = new Intent (MenuActivity.this, SalesOrderActivity.class);
+            startActivity(intent);
+        }
         else if (id == R.id.nav_profile) {
             intent = new Intent(MenuActivity.this, ProfileActivity.class);
             startActivity(intent);

@@ -63,7 +63,9 @@
 
         <activity android:name=".Activity.TaskManagerActivity" />
         <activity android:name=".Activity.CreateTaskActivity" />
-        <activity android:name=".Activity.EditTaskActivity"></activity>
+        <activity android:name=".Activity.EditTaskActivity" />
+        <activity android:name=".Activity.SalesOrderActivity" />
+        <activity android:name=".Activity.AddOrderActivity"></activity>
     </application>
 
 </manifest>

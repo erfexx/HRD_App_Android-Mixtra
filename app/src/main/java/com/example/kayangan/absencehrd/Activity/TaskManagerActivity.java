@@ -32,10 +32,8 @@ import java.util.List;
 public class TaskManagerActivity extends AppCompatActivity {
     private ListView simpleListView;
     private ArrayList<Task> taskList = new ArrayList<>();
-    ArrayList<String> newData;
     private DatabaseHandler db;
     private ListAdapter mAdapter;
-    Spinner spinner;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -78,11 +76,14 @@ public class TaskManagerActivity extends AppCompatActivity {
                 TextView tvdesc = alertLayout.findViewById(R.id.tvdesc);
                 TextView tvduedate = alertLayout.findViewById(R.id.tvduedate);
                 TextView tvassign = alertLayout.findViewById(R.id.tvassign);
+                TextView tvprogress = alertLayout.findViewById(R.id.tvprogress);
 
                 tvname.setText(task.getTname());
                 tvdesc.setText(task.getTdesc());
                 tvduedate.setText(task.getTduedate());
                 tvassign.setText(task.getTassign());
+                String progress = String.valueOf(task.getTprogress());
+                tvprogress.setText(progress);
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(TaskManagerActivity.this);
                 alert.setTitle("Details");
@@ -113,5 +114,12 @@ public class TaskManagerActivity extends AppCompatActivity {
                 alert.show();
             }
         });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+       Intent backIntent = new Intent(this, MenuActivity.class);
+       startActivity(backIntent);
     }
 }

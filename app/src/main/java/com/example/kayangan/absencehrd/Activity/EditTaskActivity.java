@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -51,12 +52,36 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         final EditText tduedate = (EditText) findViewById(R.id.dtduedate);
         tduedate.setInputType(InputType.TYPE_NULL);
         spinner = (Spinner) findViewById(R.id.dtassign);
+        final TextView tprogress = (TextView) findViewById(R.id.dtprogress);
+        SeekBar progressBar = (SeekBar) findViewById(R.id.progressBar);
+        progressBar.setMax(100);
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
 
         final Task task = db.getTask(position);
         tname.setText(task.getTname(), TextView.BufferType.EDITABLE);
         tdesc.setText(task.getTdesc(), TextView.BufferType.EDITABLE);
         tduedate.setText(task.getTduedate(), TextView.BufferType.EDITABLE);
+        String sprogress = String.valueOf(task.getTprogress());
+        tprogress.setText(sprogress);
+        progressBar.setProgress(task.getTprogress());
+
+        progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                String value = String.valueOf(progress);
+                tprogress.setText(value);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(this);
@@ -84,10 +109,13 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onClick(View view) {
                 String tassign = spinner.getSelectedItem().toString();
+                String sProgress = tprogress.getText().toString();
+                int progress = Integer.parseInt(sProgress);
                 task.setTname(tname.getText().toString());
                 task.setTdesc(tdesc.getText().toString());
                 task.setTduedate(tduedate.getText().toString());
                 task.setTassign(tassign);
+                task.setTprogress(progress);
                 db.updateTask(task);
                 Intent viewIntent = new Intent(getBaseContext(),TaskManagerActivity.class);
                 startActivity(viewIntent);
@@ -122,5 +150,11 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backIntent = new Intent(this,TaskManagerActivity.class);
+        startActivity(backIntent);
     }
 }

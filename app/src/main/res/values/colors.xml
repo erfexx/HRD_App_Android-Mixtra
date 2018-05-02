@@ -19,4 +19,7 @@
     <color name="lbl_name">#333333</color>
     <color name="btn_logut_bg">#ff6861</color>
 
+    <color name="timestamp">#858585</color>
+    <color name="note_list_text">#232323</color>
+
 </resources>

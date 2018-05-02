@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
+import com.example.kayangan.absencehrd.Model.SalesOrder;
 import com.example.kayangan.absencehrd.Model.Task;
 import com.example.kayangan.absencehrd.Model.User;
 
@@ -28,6 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_USERS = "users";
     public static final String TABLE_ATTENDANCES = "attendances";
     public static final String TABLE_TASKS = "tasks";
+    public static final String TABLE_ORDERS = "orders";
 
     // Users Table Columns names
     public static final String KEY_ID = "id";
@@ -47,6 +48,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TASK_TDESC = "tdesc";
     private static final String TASK_TDUEDATE = "tduedate";
     private static final String TASK_TASSIGN = "tassign";
+    private static final String TASK_TPROGRESS = "tprogress";
+
+    private static final String ORDER_ID = "oid";
+    private static final String ORDER_START = "startdate";
+    private static final String ORDER_END = "enddate";
+    private static final String ORDER_SALESMAN = "salesman";
+    private static final String ORDER_VOUCHER = "voucher";
 
     SQLiteDatabase db;
 
@@ -74,7 +82,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + TASK_TDESC + " TEXT,"
                 + TASK_TDUEDATE + " TEXT,"
                 + TASK_TASSIGN + " TEXT,"
+                + TASK_TPROGRESS + " INTEGER,"
                 + "FOREIGN KEY(tassign) REFERENCES users(id)" + ")");
+
+        db.execSQL("CREATE TABLE " + TABLE_ORDERS + "("
+                + ORDER_ID + " INTEGER PRIMARY KEY,"
+                + ORDER_START + " TEXT,"
+                + ORDER_END + " TEXT,"
+                + ORDER_SALESMAN + " TEXT,"
+                + ORDER_VOUCHER + " INTEGER,"
+                + "FOREIGN KEY(salesman) REFERENCES users(id)" + ")");
 
         this.db = db;
 
@@ -86,6 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTENDANCES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TASKS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
 
         // Create tables again
         onCreate(db);
@@ -124,6 +142,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(TASK_TDESC, task.getTdesc()); // Task Desc
         values.put(TASK_TDUEDATE, task.getTduedate()); // Task Due Date
         values.put(TASK_TASSIGN, task.getTassign()); // Task Assign
+        values.put(TASK_TPROGRESS, task.getTprogress()); // Task Progress
 
         // Inserting Row
         db.insert(TABLE_TASKS, null, values);
@@ -134,7 +153,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_TASKS, new String[] { TASK_ID,
-                        TASK_TNAME, TASK_TDESC, TASK_TDUEDATE, TASK_TASSIGN }, TASK_ID + "=?",
+                        TASK_TNAME, TASK_TDESC, TASK_TDUEDATE, TASK_TASSIGN, TASK_TPROGRESS }, TASK_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -144,7 +163,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 cursor.getString(1),
                 cursor.getString(2),
                 cursor.getString(3),
-                cursor.getString(4));
+                cursor.getString(4),
+                Integer.parseInt(cursor.getString(5)));
         // return task
         cursor.close();
         return task;
@@ -162,12 +182,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Task task = new Task();
-                task.set_id(cursor.getInt(cursor.getColumnIndex(TASK_ID)));
-                task.setTname(cursor.getString(cursor.getColumnIndex(TASK_TNAME)));
-                task.setTdesc(cursor.getString(cursor.getColumnIndex(TASK_TDESC)));
-                task.setTduedate(cursor.getString(cursor.getColumnIndex(TASK_TDUEDATE)));
-                task.setTassign(cursor.getString(cursor.getColumnIndex(TASK_TASSIGN)));
-                // Adding contact to list
+                task.set_id(Integer.parseInt(cursor.getString(0)));
+                task.setTname(cursor.getString(1));
+                task.setTdesc(cursor.getString(2));
+                task.setTduedate(cursor.getString(3));
+                task.setTassign(cursor.getString(4));
+                task.setTprogress(Integer.parseInt(cursor.getString(5)));
+                // Adding task to list
                 taskList.add(task);
             } while (cursor.moveToNext());
         }
@@ -183,6 +204,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(TASK_TDESC, task.getTdesc());
         values.put(TASK_TDUEDATE, task.getTduedate());
         values.put(TASK_TASSIGN, task.getTassign());
+        values.put(TASK_TPROGRESS, task.getTprogress()); // Task Progress
 
         // updating row
         return db.update(TABLE_TASKS, values, TASK_ID + " = ?",
@@ -212,5 +234,86 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{currentUser.currentUserID});
         return data;
+    }
+
+    // Adding new order
+    public void addOrder(SalesOrder order) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ORDER_START, order.getStartdate()); // Order Start Date
+        values.put(ORDER_END, order.getEnddate()); // Order End Date
+        values.put(ORDER_SALESMAN, order.getSalesman()); // Order Salesman
+        values.put(ORDER_VOUCHER, order.getVoucher()); // Order Voucher No.
+
+        // Inserting Row
+        db.insert(TABLE_ORDERS, null, values);
+        db.close(); // Closing database connection
+    }
+    // Getting single order
+    public SalesOrder getOrder(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ORDERS, new String[] { ORDER_ID,
+                        ORDER_START, ORDER_START, ORDER_SALESMAN, ORDER_VOUCHER }, ORDER_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        SalesOrder order = new SalesOrder(
+                Integer.parseInt(cursor.getString(0)),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                Integer.parseInt(cursor.getString(4)));
+        // return task
+        cursor.close();
+        return order;
+    }
+    // Getting All order
+    public ArrayList<SalesOrder> getAllOrders() {
+        ArrayList<SalesOrder> orderList = new ArrayList<SalesOrder>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + TABLE_ORDERS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                SalesOrder order = new SalesOrder();
+                order.set_id(Integer.parseInt(cursor.getString(0)));
+                order.setStartdate(cursor.getString(1));
+                order.setEnddate(cursor.getString(2));
+                order.setSalesman(cursor.getString(3));
+                order.setVoucher(Integer.parseInt(cursor.getString(4)));
+                // Adding order to list
+                orderList.add(order);
+            } while (cursor.moveToNext());
+        }
+        // return order list
+        return orderList;
+    }
+    // Updating single order
+    public int updateOrder(SalesOrder order) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ORDER_START, order.getStartdate());
+        values.put(ORDER_END, order.getEnddate());
+        values.put(ORDER_SALESMAN, order.getSalesman());
+        values.put(ORDER_VOUCHER, order.getVoucher());
+
+        // updating row
+        return db.update(TABLE_ORDERS, values, ORDER_ID + " = ?",
+                new String[] { String.valueOf(order.get_id()) });
+    }
+    // Deleting single order
+    public void deleteOrder(SalesOrder order) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_ORDERS, ORDER_ID + " = ?",
+                new String[] { String.valueOf(order.get_id()) });
+        db.close();
     }
 }

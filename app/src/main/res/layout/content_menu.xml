@@ -19,7 +19,6 @@
     <ImageView
         android:layout_width="350dp"
         android:layout_height="match_parent"
-        android:src="@drawable/dog"
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>
