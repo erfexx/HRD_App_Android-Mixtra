@@ -73,5 +73,4 @@ public class ProfileActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-
 }

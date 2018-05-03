@@ -1,15 +1,20 @@
 package com.example.kayangan.absencehrd.Activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
@@ -42,9 +47,31 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //bg orientation
+        LinearLayout layout = findViewById(R.id.loginlayout);
+        Resources resources = getResources();
+        Drawable portrait = resources.getDrawable(R.drawable.bg_login);
+        Drawable landscape = resources.getDrawable(R.drawable.bg_loginlans);
+
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        int num = display.getRotation();
+
+        if (num == 0){
+            layout.setBackgroundDrawable(portrait);
+        }else if (num == 1 || num == 3){
+            layout.setBackgroundDrawable(landscape);
+        }else{
+            layout.setBackgroundDrawable(portrait);
+        }
+
         time = new Time();
 
         session = new SessionManager(getApplicationContext());
+
+        if (session.isLoggedIn())
+            redirectToMainMenu();
 
         data = new AttendanceRecord();
 
@@ -123,5 +150,10 @@ public class LoginActivity extends AppCompatActivity {
         String dateString = dateFormat.format(date);
 
         return dateString;
+    }
+
+    private void redirectToMainMenu(){
+        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+        finish();
     }
 }

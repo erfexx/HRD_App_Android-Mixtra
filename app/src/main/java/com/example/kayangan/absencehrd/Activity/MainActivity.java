@@ -226,6 +226,9 @@ public class MainActivity extends AppCompatActivity {
             values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
 
             DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
+
+            session.createTapInSession();
+
             Toast.makeText(this, "YOU ARE IN, THANK YOU! :)", Toast.LENGTH_SHORT).show();
         }
         else{
@@ -246,13 +249,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (DB != null)
         {
-            if (validateDate())
+            if (validateDate() && session.isTappedIn())
             {
-                DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?", new String[]{formatDate, currentUser.currentUserID});
+                DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?",
+                        new String[]{formatDate, currentUser.currentUserID});
+
                 Toast.makeText(this, "YOU ARE OUT, HAVE A NICE DAY :)", Toast.LENGTH_SHORT).show();
             }
             else
-                Toast.makeText(this, "YOU ARE ALREADY OUT :D", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "TAP IN BEFORE YOU TAP OUT :D", Toast.LENGTH_SHORT).show();
         }
         else
         {

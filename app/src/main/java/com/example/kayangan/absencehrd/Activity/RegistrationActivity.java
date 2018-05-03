@@ -3,18 +3,25 @@ package com.example.kayangan.absencehrd.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.SessionManager;
 import com.example.kayangan.absencehrd.Model.User;
 import com.example.kayangan.absencehrd.R;
 
@@ -29,12 +36,39 @@ public class RegistrationActivity extends AppCompatActivity {
 
     AlertDialogManager alertDialogManager = new AlertDialogManager();
 
+    SessionManager sessionManager;
+
     ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+        //bg orientation
+        LinearLayout layout = findViewById(R.id.registLayout);
+        Resources resources = getResources();
+        Drawable portrait = resources.getDrawable(R.drawable.bg_login);
+        Drawable landscape = resources.getDrawable(R.drawable.bg_loginlans);
+
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+
+        int num = display.getRotation();
+
+        if (num == 0){
+            layout.setBackgroundDrawable(portrait);
+        }else if (num == 1 || num == 3){
+            layout.setBackgroundDrawable(landscape);
+        }else{
+            layout.setBackgroundDrawable(portrait);
+        }
+
+
+        sessionManager = new SessionManager(this);
+
+        if (sessionManager.isLoggedIn())
+            redirectToMainMenu();
 
         helper = new DatabaseHandler(this);
 
@@ -84,9 +118,11 @@ public class RegistrationActivity extends AppCompatActivity {
                                         }
                                 ).start();
 
-                                dialog.dismiss();
+
                                 startActivity(intent);
+                                dialog.dismiss();
                                 Toast.makeText(RegistrationActivity.this, "REGISTRATION COMPLETED!", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
                             else
                             {
@@ -137,5 +173,9 @@ public class RegistrationActivity extends AppCompatActivity {
         return false;
     }
 
+    private void redirectToMainMenu(){
+        startActivity(new Intent(RegistrationActivity.this, MenuActivity.class));
+        finish();
+    }
 
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -35,6 +36,7 @@ public class MenuActivity extends AppCompatActivity
     SessionManager sessionManager;
 
     NavigationView navigationView;
+    CardView cvTM, cvA, cvS, cvSO, cvP;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -45,6 +47,11 @@ public class MenuActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        cvTM = findViewById(R.id.taskID);
+        cvA = findViewById(R.id.attendanceID);
+        cvS = findViewById(R.id.stockID);
+        cvSO = findViewById(R.id.salesorderID);
+        cvP = findViewById(R.id.profileID);
 
         if (!sessionManager.isLoggedIn())
             redirectToLogin();
@@ -68,6 +75,49 @@ public class MenuActivity extends AppCompatActivity
         String name = user.get(SessionManager.KEY_NAME);
 
         NAMA.setText(name);
+
+        cvA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tracker.inLocation)
+                {
+                    startActivity(new Intent(MenuActivity.this, MainActivity.class));
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "ADJUST YOUR POSITION FIRST!", Toast.LENGTH_SHORT).show();
+                    if (checkGPS())
+                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                }
+            }
+        });
+
+        cvS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, StockActivity.class));
+            }
+        });
+
+        cvP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
+            }
+        });
+
+        cvTM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, TaskManagerActivity.class));
+            }
+        });
+
+        cvSO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
+            }
+        });
     }
 
     @Override
@@ -78,8 +128,7 @@ public class MenuActivity extends AppCompatActivity
         } else {
 
             if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
-                finish();
+                MenuActivity.this.finish();
                 return;
             }
 
@@ -146,6 +195,9 @@ public class MenuActivity extends AppCompatActivity
             if (checkGPS())
                 startActivity(intent);
 
+        }
+        else if (id == R.id.nav_stock){
+            startActivity(new Intent(MenuActivity.this, StockActivity.class));
         }
         else if (id == R.id.nav_sales_order) {
             intent = new Intent (MenuActivity.this, SalesOrderActivity.class);

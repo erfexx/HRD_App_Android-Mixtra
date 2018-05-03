@@ -127,7 +127,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent(this, MenuActivity.class);
+        Intent backIntent = new Intent(this, TaskManagerActivity.class);
         startActivity(backIntent);
     }
 }
