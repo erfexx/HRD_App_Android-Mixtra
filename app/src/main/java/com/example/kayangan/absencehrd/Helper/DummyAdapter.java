@@ -27,9 +27,9 @@ public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull DummyAdapter.MyViewHolder holder, int position) {
         DummyModel dummyModel = mList.get(position);
-        holder.title.setText(dummyModel.getTitle());
-        holder.genre.setText(dummyModel.getGenre());
-        holder.year.setText(dummyModel.getYear());
+        holder.item.setText(dummyModel.getItem());
+        holder.category.setText(dummyModel.getCategory());
+        holder.price.setText(dummyModel.getPrice());
     }
 
     @Override
@@ -38,13 +38,13 @@ public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView title, genre, year;
+        public TextView item, category, branch, department, price;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title);
-            genre = itemView.findViewById(R.id.genre);
-            year = itemView.findViewById(R.id.year);
+            item = itemView.findViewById(R.id.item);
+            category = itemView.findViewById(R.id.category);
+            price = itemView.findViewById(R.id.price);
         }
     }
 

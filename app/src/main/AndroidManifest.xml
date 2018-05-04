@@ -65,6 +65,10 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <service
+            android:name=".Helper.GPSTracker"
+            android:enabled="true"
+            android:exported="true"></service>
 
     </application>
 

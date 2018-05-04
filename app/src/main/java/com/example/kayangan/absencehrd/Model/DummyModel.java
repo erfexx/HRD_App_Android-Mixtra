@@ -1,38 +1,56 @@
 package com.example.kayangan.absencehrd.Model;
 
 public class DummyModel {
-    private String title, genre, year;
+    private String item, category, branch, department, price;
 
     public DummyModel() {
     }
 
-    public DummyModel(String title, String genre, String year) {
-        this.title = title;
-        this.genre = genre;
-        this.year = year;
+    public DummyModel(String item, String category, String branch, String department, String price) {
+        this.item = item;
+        this.category = category;
+        this.branch = branch;
+        this.department = department;
+        this.price = price;
     }
 
-    public String getTitle() {
-        return title;
+    public String getItem() {
+        return item;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setItem(String item) {
+        this.item = item;
     }
 
-    public String getGenre() {
-        return genre;
+    public String getCategory() {
+        return category;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getYear() {
-        return year;
+    public String getBranch() {
+        return branch;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

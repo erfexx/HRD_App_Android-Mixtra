@@ -67,13 +67,13 @@ public class StockActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position) {
                 DummyModel movieModel = modelList.get(position);
-                Toast.makeText(getApplicationContext(), movieModel.getTitle() + " is selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), movieModel.getItem() + " is selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onLongClick(View view, int position) {
                 DummyModel model = modelList.get(position);
-                showDesc(model.getTitle(), model.getGenre(), model.getYear());
+                showDesc(model.getItem(), model.getCategory(), model.getPrice());
             }
         }));
         
@@ -81,7 +81,7 @@ public class StockActivity extends AppCompatActivity {
         prepareListData();
     }
 
-    private void showDesc(String title, String genre, String year) {
+    private void showDesc(String item, String category, String price) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.stock_desc, null);
 
@@ -92,9 +92,9 @@ public class StockActivity extends AppCompatActivity {
         TextView txtGenre = view.findViewById(R.id.txtMovieGenre);
         TextView txtYear = view.findViewById(R.id.txtMovieYear);
 
-        txtTitle.setText(title);
-        txtGenre.setText(genre);
-        txtYear.setText(year);
+        txtTitle.setText(item);
+        txtGenre.setText(category);
+        txtYear.setText(price);
 
         builder
                 .setCancelable(false)
@@ -112,53 +112,11 @@ public class StockActivity extends AppCompatActivity {
     }
 
     private void prepareListData() {
-        DummyModel movie = new DummyModel("Mad Max: Fury Road", "Action & Adventure", "2015");
-        modelList.add(movie);
+        DummyModel model = new DummyModel("Buku", "ATK", "Alfa", "Echo", "5000");
+        modelList.add(model);
 
-        movie = new DummyModel("Inside Out", "Animation, Kids & Family", "2015");
-        modelList.add(movie);
-
-        movie = new DummyModel("Star Wars: Episode VII - The Force Awakens", "Action", "2015");
-        modelList.add(movie);
-
-        movie = new DummyModel("Shaun the Sheep", "Animation", "2015");
-        modelList.add(movie);
-
-        movie = new DummyModel("The Martian", "Science Fiction & Fantasy", "2015");
-        modelList.add(movie);
-
-        movie = new DummyModel("Mission: Impossible Rogue Nation", "Action", "2015");
-        modelList.add(movie);
-
-        movie = new DummyModel("Up", "Animation", "2009");
-        modelList.add(movie);
-
-        movie = new DummyModel("Star Trek", "Science Fiction", "2009");
-        modelList.add(movie);
-
-        movie = new DummyModel("The LEGO Movie", "Animation", "2014");
-        modelList.add(movie);
-
-        movie = new DummyModel("Iron Man", "Action & Adventure", "2008");
-        modelList.add(movie);
-
-        movie = new DummyModel("Aliens", "Science Fiction", "1986");
-        modelList.add(movie);
-
-        movie = new DummyModel("Chicken Run", "Animation", "2000");
-        modelList.add(movie);
-
-        movie = new DummyModel("Back to the Future", "Science Fiction", "1985");
-        modelList.add(movie);
-
-        movie = new DummyModel("Raiders of the Lost Ark", "Action & Adventure", "1981");
-        modelList.add(movie);
-
-        movie = new DummyModel("Goldfinger", "Action & Adventure", "1965");
-        modelList.add(movie);
-
-        movie = new DummyModel("Guardians of the Galaxy", "Science Fiction & Fantasy", "2014");
-        modelList.add(movie);
+        DummyModel model1 = new DummyModel("Cetak", "Print", "Alfa", "Echo", "5000");
+        modelList.add(model1);
 
         adapter.notifyDataSetChanged();
     }

@@ -20,6 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   // Table name
   public static final String TABLE_USERS = "users";
   public static final String TABLE_ATTENDANCES = "attendances";
+  public static final String TABLE_STOCKS = "stocks";
 
   // Users Table Columns names
   public static final String KEY_ID = "id";
@@ -27,12 +28,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String KEY_PASS = "password";
 
 
+  // Attendances Table Columns names
   public static final String ATT_ID = "id";
   public static final String ATT_DATE = "date";
   public static final String ATT_IN = "clock_in";
   public static final String ATT_OUT = "clock_out";
-  public static String ATT_USER_ID = "user_id";
+  public static final String ATT_USER_ID = "user_id";
   public static final String ATT_FLAG_TAP= "flag";
+
+  // Locations Table Columns names
+  public static final String STOCK_ID = "id";
+  public static final String STOCK_ITEM = "item";
+  public static final String STOCK_CATEGORY = "category";
+  public static final String STOCK_BRANCH = "branch";
+  public static final String STOCK_DEPARTMENT = "department";
+  public static final String STOCK_PRICE = "price";
 
   SQLiteDatabase db;
 
@@ -54,6 +64,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     "FOREIGN KEY(user_id) REFERENCES users(id))"
     );
 
+    db.execSQL("CREATE TABLE " + TABLE_STOCKS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, category TEXT, " +
+            "branch TEXT, department TEXT, price INTEGER)");
+
 
     this.db = db;
 
@@ -64,6 +77,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Drop older table if existed
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTENDANCES);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOCKS);
 
     // Create tables again
     onCreate(db);
