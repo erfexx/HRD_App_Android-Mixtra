@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.ListAdapter;
+import com.example.kayangan.absencehrd.Helper.SwipeDismissListViewTouchListener;
 import com.example.kayangan.absencehrd.Model.Task;
 import com.example.kayangan.absencehrd.R;
 
@@ -63,13 +64,15 @@ public class TaskManagerActivity extends AppCompatActivity {
             }
         });
 
-
-
         simpleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int position, long rowId) {
                 final Task task = taskList.get(position);
-                LayoutInflater inflater = getLayoutInflater();
+
+                Intent editIntent = new Intent(getBaseContext(),EditTaskActivity.class);
+                editIntent.putExtra("pos",task.get_id());
+                startActivity(editIntent);
+                /*LayoutInflater inflater = getLayoutInflater();
                 View alertLayout = inflater.inflate(R.layout.view_task_details, null);
 
                 TextView tvname = alertLayout.findViewById(R.id.tvname);
@@ -91,7 +94,7 @@ public class TaskManagerActivity extends AppCompatActivity {
                 alert.setView(alertLayout);
                 // disallow cancel of AlertDialog on click of back button and outside touch
                 //alert.setCancelable(false);
-                alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                *//*alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         db.deleteTask(taskList.get(position));
@@ -100,20 +103,37 @@ public class TaskManagerActivity extends AppCompatActivity {
                         mAdapter.notifyDataSetChanged();
                         Toast.makeText(getBaseContext(), "Task Deleted", Toast.LENGTH_SHORT).show();
                     }
-                });
+                });*//*
                 alert.setNegativeButton("Edit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent editIntent = new Intent(getBaseContext(),EditTaskActivity.class);
                         editIntent.putExtra("pos",task.get_id());
-                        taskList.set(position,task);
-                        mAdapter.notifyDataSetChanged();
                         startActivity(editIntent);
                     }
                 });
-                alert.show();
+                alert.show();*/
             }
         });
+
+        SwipeDismissListViewTouchListener touchListener =
+                new SwipeDismissListViewTouchListener(simpleListView, new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                    @Override
+                    public boolean canDismiss(int position) {
+                        return true;
+                    }
+
+                    @Override
+                    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+                            db.deleteTask(taskList.get(position));
+                            taskList.remove(position);
+                            mAdapter.notifyDataSetChanged();
+                            Toast.makeText(getBaseContext(), "Task Deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+        simpleListView.setOnTouchListener(touchListener);
 
     }
 

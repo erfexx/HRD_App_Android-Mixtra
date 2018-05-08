@@ -51,6 +51,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
         tduedate.setInputType(InputType.TYPE_NULL);
         spinner = (Spinner) findViewById(R.id.dtassign);
         final TextView tprogress = (TextView) findViewById(R.id.dtprogress);
+        tprogress.setText("0");
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
 
         // Spinner click listener

@@ -66,8 +66,8 @@ public class ListAdapter extends ArrayAdapter<Task>{
 
         lastPosition = position;
 
-        viewHolder.dtname.setText(task.getTname());
-        viewHolder.dtdesc.setText(task.getTdesc());
+        viewHolder.dtname.setText("Task \t\t: " + task.getTname());
+        viewHolder.dtdesc.setText("Desc \t: " + task.getTdesc());
         // Return the completed view to render on screen
         return convertView;
     }
