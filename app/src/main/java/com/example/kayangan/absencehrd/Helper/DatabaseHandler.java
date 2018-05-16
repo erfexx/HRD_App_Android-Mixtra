@@ -21,14 +21,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String TABLE_USERS = "users";
   public static final String TABLE_ATTENDANCES = "attendances";
   public static final String TABLE_STOCKS = "stocks";
+  public static final String TABLE_LOCATIONS = "locations";
 
-  // Users Table Columns names
+  // Users Table Column names
   public static final String KEY_ID = "id";
   public static final String KEY_NAME = "name";
   public static final String KEY_PASS = "password";
 
 
-  // Attendances Table Columns names
+  // Attendances Table Column names
   public static final String ATT_ID = "id";
   public static final String ATT_DATE = "date";
   public static final String ATT_IN = "clock_in";
@@ -36,13 +37,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String ATT_USER_ID = "user_id";
   public static final String ATT_FLAG_TAP= "flag";
 
-  // Locations Table Columns names
+  // Stocks Table Column names
   public static final String STOCK_ID = "id";
   public static final String STOCK_ITEM = "item";
   public static final String STOCK_CATEGORY = "category";
   public static final String STOCK_BRANCH = "branch";
   public static final String STOCK_DEPARTMENT = "department";
   public static final String STOCK_PRICE = "price";
+
+  //Locations Table Column names
+  public static final String LOC_ID = "id";
+  public static final String LOC_LAT = "latitude";
+  public static final String LOC_LONG = "longitude";
+  public static final String LOC_ZONE_TYPE = "zone";
+  public static final String LOC_NAME = "place_name";
 
   SQLiteDatabase db;
 
@@ -67,9 +75,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.execSQL("CREATE TABLE " + TABLE_STOCKS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, category TEXT, " +
             "branch TEXT, department TEXT, price INTEGER)");
 
+    db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOCATIONS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude TEXT, longitude TEXT, zone TEXT, place TEXT)");
 
     this.db = db;
-
   }
 
   @Override
@@ -78,6 +86,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTENDANCES);
     db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOCKS);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATIONS);
 
     // Create tables again
     onCreate(db);
@@ -87,5 +96,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     SQLiteDatabase db = this.getReadableDatabase();
     Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{currentUser.currentUserID});
     return data;
+  }
+
+  public Cursor getAllCoordinates(){
+      SQLiteDatabase database = this.getReadableDatabase();
+      Cursor datass = database.rawQuery("SELECT * FROM " + TABLE_LOCATIONS, new String[]{});
+      return datass;
   }
 }

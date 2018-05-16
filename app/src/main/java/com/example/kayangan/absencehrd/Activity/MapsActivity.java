@@ -4,11 +4,14 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
 
 import com.example.kayangan.absencehrd.Helper.Constants;
+import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
+import com.example.kayangan.absencehrd.Model.Coordinates;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationListener;
 import android.support.annotation.NonNull;
@@ -44,6 +47,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.example.kayangan.absencehrd.R;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class MapsActivity
@@ -68,8 +72,33 @@ public class MapsActivity
 
     Button btnSetLocation;
 
+    ArrayList<Coordinates> coordinatesList;
+    DatabaseHandler handler;
+
+    Coordinates coordinates;
+
     double latitude = 0;
     double longitude = 0;
+
+    private void getCoordinate(){
+        handler = new DatabaseHandler(this);
+
+        Cursor record = handler.getAllCoordinates();
+        coordinatesList = new ArrayList<>();
+
+        if (record.getCount() > 0)
+        {
+            while (record.moveToNext())
+            {
+                coordinates = new Coordinates(Constants.GEOFENCE_ID_COMP_LOC, record.getString(4), record.getString(3),
+                        new LatLng(Double.parseDouble(record.getString(1)), Double.parseDouble(record.getString(2)) ));
+
+                coordinatesList.add(coordinates);
+            }
+        }
+        else
+            Log.d("AAA", "Table Location Kosong");
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -84,6 +113,8 @@ public class MapsActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getCoordinate();
+
         GPSTracker.inLocation= false;
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -96,9 +127,8 @@ public class MapsActivity
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
 
-        ActivityCompat.requestPermissions(MapsActivity.this, new String[]{
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-        }, 100);
+        if (!checkPermission())
+            checkPermission();
 
         btnSetLocation = findViewById(R.id.btnReqPos);
 
@@ -106,7 +136,7 @@ public class MapsActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startLocationMonitor();
+                       startGeofencing();
 
                         if (GPSTracker.inLocation)
                             Toast.makeText(MapsActivity.this, "In Location", Toast.LENGTH_SHORT).show();
@@ -197,18 +227,23 @@ public class MapsActivity
         }
 
         this.googleMap = googleMap;
-        LatLng latLng = Constants.AREA_LANDMARKS.get(Constants.GEOFENCE_ID_COMP_LOC);
-        googleMap.addMarker(new MarkerOptions().position(latLng).title("Mixtra Inti Tekindo"));
+
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18f));
 
         googleMap.setMyLocationEnabled(true);
 
-        Circle circle = googleMap.addCircle(new CircleOptions()
-                .center(new LatLng(latLng.latitude, latLng.longitude))
-                .radius(Constants.GEOFENCE_RADIUS_IN_METERS)
-                .strokeColor(Color.BLUE)
-                .strokeWidth(7f))
-                ;
+        for (int i=0; i<coordinatesList.size(); i++){
+            googleMap.addMarker(new MarkerOptions().position(coordinatesList.get(i).getLatLng()).title(coordinatesList.get(i).getName()));
+
+            Circle circle = googleMap.addCircle(new CircleOptions()
+                    .center(new LatLng(coordinatesList.get(i).getLatLng().latitude, coordinatesList.get(i).getLatLng().longitude))
+                    .radius(Constants.GEOFENCE_RADIUS_IN_METERS)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(7f))
+                    ;
+        }
+
+
     }
 
     @Override
@@ -269,24 +304,43 @@ public class MapsActivity
     }
 
     private Geofence getGeofence(){
-        LatLng latLng = Constants.AREA_LANDMARKS.get(
-                Constants.GEOFENCE_ID_COMP_LOC
-        );
+        stopGeoFencing();
+        for (int i=0; i<coordinatesList.size(); i++){
 
-        return new Geofence.Builder()
-                .setRequestId(Constants.GEOFENCE_ID_COMP_LOC)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setCircularRegion(latLng.latitude, latLng.longitude, Constants.GEOFENCE_RADIUS_IN_METERS)
-                .setNotificationResponsiveness(1000)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build();
+            return new Geofence.Builder()
+                    .setRequestId(Constants.GEOFENCE_ID_COMP_LOC)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setCircularRegion(coordinatesList.get(i).getLatLng().latitude, coordinatesList.get(i).getLatLng().longitude, Constants.GEOFENCE_RADIUS_IN_METERS)
+                    .setNotificationResponsiveness(1000)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build();
+        }
+        startGeofencing();
+        return getGeofence();
     }
 
     private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(Collections.singletonList(getGeofence()));
-        return builder.build();
+        stopGeoFencing();
+        for (int i=0; i<coordinatesList.size(); i++){
+            GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+            builder.setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
+            builder.addGeofence(
+                    new Geofence.Builder()
+                            .setRequestId(Constants.GEOFENCE_ID_COMP_LOC)
+                            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                            .setCircularRegion(coordinatesList.get(i).getLatLng().latitude, coordinatesList.get(i).getLatLng().longitude, Constants.GEOFENCE_RADIUS_IN_METERS)
+                            .setNotificationResponsiveness(1000)
+                            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                            .build()
+            );
+
+            startGeofencing();
+            return builder.build();
+        }
+
+
+
+        return null;
     }
 
     private PendingIntent getGeofencePendingIntent(){
@@ -341,6 +395,24 @@ public class MapsActivity
 
         isMonitoring = false;
         invalidateOptionsMenu();
+    }
+
+    private boolean checkPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            //Request Runtime Permission
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    100
+            );
+            return true;
+        }
+        return false;
     }
 
 }
