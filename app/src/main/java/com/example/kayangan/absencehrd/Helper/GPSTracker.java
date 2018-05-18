@@ -51,8 +51,8 @@ public class GPSTracker extends IntentService{
 
   private void sendNotification(String title, String content) {
     Notification.Builder builder = new Notification.Builder(this)
-            .setSmallIcon(R.drawable.ic_near_me_black_24dp)
-            .setColor(Color.rgb(33, 150, 243))
+            .setSmallIcon(R.drawable.ic_near_me_orange_24dp)
+            .setColor(Color.rgb(255, 110, 64))
             .setContentTitle(title)
             .setContentText(content)
             .setAutoCancel(false);

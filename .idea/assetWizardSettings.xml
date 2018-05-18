@@ -78,7 +78,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_near_me_black_24dp" />
+                            <entry key="color" value="ff6e40" />
+                            <entry key="outputName" value="ic_near_me_orange_24dp" />
                             <entry key="sourceFile" value="C:\Users\Efraim Riski" />
                           </map>
                         </option>

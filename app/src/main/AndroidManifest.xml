@@ -21,6 +21,7 @@
         android:roundIcon="@drawable/logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Activity.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -30,6 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.HomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
@@ -68,7 +70,7 @@
         <service
             android:name=".Helper.GPSTracker"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
 
     </application>
 
