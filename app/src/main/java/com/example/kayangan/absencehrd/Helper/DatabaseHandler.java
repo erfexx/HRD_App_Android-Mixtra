@@ -27,6 +27,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String KEY_ID = "id";
   public static final String KEY_NAME = "name";
   public static final String KEY_PASS = "password";
+  public static final String KEY_ZONE = "zone";
 
 
   // Attendances Table Column names
@@ -50,7 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String LOC_LAT = "latitude";
   public static final String LOC_LONG = "longitude";
   public static final String LOC_ZONE_TYPE = "zone";
-  public static final String LOC_NAME = "place_name";
+  public static final String LOC_NAME = "place";
 
   SQLiteDatabase db;
 
@@ -63,7 +64,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     db.execSQL(
             "CREATE TABLE " + TABLE_USERS +
-                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, password TEXT)"
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, password TEXT, zone TEXT)"
     );
 
     db.execSQL(
@@ -72,10 +73,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     "FOREIGN KEY(user_id) REFERENCES users(id))"
     );
 
-    db.execSQL("CREATE TABLE " + TABLE_STOCKS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, category TEXT, " +
-            "branch TEXT, department TEXT, price INTEGER)");
+    db.execSQL(
+            "CREATE TABLE IF NOT EXISTS " + TABLE_STOCKS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, category TEXT, " +
+            "branch TEXT, department TEXT, price INTEGER)"
+    );
 
-    db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOCATIONS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude TEXT, longitude TEXT, zone TEXT, place TEXT)");
+    db.execSQL(
+            "CREATE TABLE IF NOT EXISTS " + TABLE_LOCATIONS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, latitude TEXT, longitude TEXT, zone TEXT, place TEXT)"
+    );
 
     this.db = db;
   }
@@ -98,9 +103,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     return data;
   }
 
-  public Cursor getAllCoordinates(){
+  public Cursor getAllCoordinates(String zone){
       SQLiteDatabase database = this.getReadableDatabase();
-      Cursor datass = database.rawQuery("SELECT * FROM " + TABLE_LOCATIONS, new String[]{});
+      Cursor datass = database.rawQuery("SELECT * FROM " + TABLE_LOCATIONS + " WHERE " + LOC_ZONE_TYPE + " =?", new String[]{zone});
       return datass;
   }
+
+  public Cursor getAllStocks(){
+    SQLiteDatabase db = this.getReadableDatabase();
+    Cursor data = db.rawQuery("SELECT * FROM " + TABLE_STOCKS, null);
+    return data;
+  }
+
+  public Cursor getSpecStocksAll(String branch, String departments){
+    SQLiteDatabase database = this.getReadableDatabase();
+    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_BRANCH + " =? AND " + STOCK_DEPARTMENT + " =?", new String[]{branch, departments});
+    return data;
+  }
+
+  public Cursor getSpecStockBranch(String branch){
+    SQLiteDatabase database = this.getReadableDatabase();
+    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_BRANCH + " =?", new String[]{branch});
+    return data;
+  }
+
+  public Cursor getSpecStockDepartment(String department){
+    SQLiteDatabase database = this.getReadableDatabase();
+    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_DEPARTMENT + " =?", new String[]{department});
+    return data;
+  }
+
+
+
 }

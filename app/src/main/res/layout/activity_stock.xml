@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:weightSum="2"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:weightSum="2"
-        android:layout_marginTop="35dp">
+        android:layout_marginTop="40dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -58,10 +58,34 @@
             android:layout_weight="1"
             android:paddingTop="8dp">
         </Spinner>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:weightSum="1"
+        android:layout_marginTop="75dp">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="APPLY FILTER"
+            android:textSize="12sp"
+            android:background="@color/colorAccent"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="15dp"
+            android:id="@+id/btnFilter"
+            />
+
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="115dp"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

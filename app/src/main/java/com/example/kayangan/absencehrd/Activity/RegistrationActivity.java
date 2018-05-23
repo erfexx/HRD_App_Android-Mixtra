@@ -99,6 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
                             User user = new User();
                             user.setName(name);
                             user.setPassword(password);
+                            user.setZone("A");
 
                             if (checkData())
                             {
@@ -154,6 +155,7 @@ public class RegistrationActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.KEY_NAME, user.getName());
         values.put(DatabaseHandler.KEY_PASS, user.getPassword());
+        values.put(DatabaseHandler.KEY_ZONE, user.getZone());
 
         long id = database.insert(DatabaseHandler.TABLE_USERS, null, values);
     }

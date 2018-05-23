@@ -110,10 +110,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                     String currentUserName = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_NAME));
                                     String currentID = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ID));
+                                    String currentZONE = cursor.getString(cursor.getColumnIndex(DatabaseHandler.KEY_ZONE));
 
                                     currentUser.currentUserID = currentID;
 
-                                    session.createLoginSession(currentUserName, currentID);
+                                    session.createLoginSession(currentUserName, currentID, currentZONE);
 
                                     startActivity(intent);
                                     Toast.makeText(LoginActivity.this, "LOGIN SUKSES", Toast.LENGTH_SHORT).show();

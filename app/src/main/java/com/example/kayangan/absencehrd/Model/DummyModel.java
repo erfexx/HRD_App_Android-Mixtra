@@ -1,12 +1,13 @@
 package com.example.kayangan.absencehrd.Model;
 
 public class DummyModel {
-    private String item, category, branch, department, price;
+    private String item, category, branch, department;
+    int price;
 
     public DummyModel() {
     }
 
-    public DummyModel(String item, String category, String branch, String department, String price) {
+    public DummyModel(String item, String category, String branch, String department, int price) {
         this.item = item;
         this.category = category;
         this.branch = branch;
@@ -46,11 +47,11 @@ public class DummyModel {
         this.department = department;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 }

@@ -13,7 +13,7 @@ import com.example.kayangan.absencehrd.R;
 import java.util.List;
 
 public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.MyViewHolder> {
-    private List<DummyModel> mList;
+    List<DummyModel> mList;
 
     @NonNull
     @Override
@@ -29,7 +29,7 @@ public class DummyAdapter extends RecyclerView.Adapter<DummyAdapter.MyViewHolder
         DummyModel dummyModel = mList.get(position);
         holder.item.setText(dummyModel.getItem());
         holder.category.setText(dummyModel.getCategory());
-        holder.price.setText(dummyModel.getPrice());
+        holder.price.setText("Rp. "+String.valueOf(dummyModel.getPrice()));
     }
 
     @Override

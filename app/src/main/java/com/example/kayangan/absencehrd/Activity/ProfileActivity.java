@@ -23,8 +23,6 @@ public class ProfileActivity extends AppCompatActivity {
 
   SessionManager sessionManager;
 
-  SQLiteOpenHelper helper;
-  SQLiteDatabase DB;
   DatabaseHandler handler;
 
   ListView listView;
@@ -50,9 +48,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     String namaUser = data.get(SessionManager.KEY_NAME);
     String idUser = data.get(SessionManager.KEY_ID);
+    String zoneUser = data.get(SessionManager.KEY_ZONE);
 
     txtName = findViewById(R.id.txtName);
-    txtName.setText(namaUser+" (" + idUser +")");
+    txtName.setText(namaUser+" (" + zoneUser +")");
 
     listView = findViewById(R.id.listView);
     handler = new DatabaseHandler(this);

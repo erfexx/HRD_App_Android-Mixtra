@@ -27,10 +27,13 @@ public class SessionManager {
 
     private static final String IS_LOGIN = "IsLoggedIn";
     private static final String IS_TAP_IN = "IsTappedIn";
+
+    //Buat welcome screen
     private static final boolean FIRST_TIME_IN = false;
 
     public static final String KEY_NAME = "name";
     public static final String KEY_ID = "id";
+    public static final String KEY_ZONE = "zone";
 
 
 
@@ -41,10 +44,11 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String NAMA, String id){
+    public void createLoginSession(String NAMA, String id, String zone){
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, NAMA);
         editor.putString(KEY_ID, id);
+        editor.putString(KEY_ZONE, zone);
 
         editor.commit();
     }
@@ -75,6 +79,7 @@ public class SessionManager {
         // user name
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_ID, pref.getString(KEY_ID, null));
+        user.put(KEY_ZONE, pref.getString(KEY_ZONE, null));
 
         // return user
         return user;

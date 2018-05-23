@@ -8,17 +8,15 @@ package com.example.kayangan.absencehrd.Model;
 public class User {
   private String Name;
   private String Password;
+  private String Zone;
 
   public User() {
   }
 
-  public User(String name, String password) {
+  public User(String name, String password, String zone) {
     Name = name;
     Password = password;
-        /*Clock_In = clock_In;
-        Clock_Out = clock_Out;
-        Date = date;
-        this.isTap = isTap;*/
+    Zone = zone;
   }
 
   public String getName() {
@@ -37,36 +35,11 @@ public class User {
     Password = password;
   }
 
-    /*public String getClock_In() {
-        return Clock_In;
-    }
+  public String getZone() {
+    return Zone;
+  }
 
-    public void setClock_In(String clock_In) {
-        Clock_In = clock_In;
-    }
-
-    public String getClock_Out() {
-        return Clock_Out;
-    }
-
-    public void setClock_Out(String clock_Out) {
-        Clock_Out = clock_Out;
-    }
-
-    public String getDate() {
-        return Date;
-    }
-
-    public void setDate(String date) {
-        Date = date;
-    }
-
-    public String getIsTap() {
-        return isTap;
-    }
-
-    public void setIsTap(String isTap) {
-        this.isTap = isTap;
-    }*/
-
+  public void setZone(String zone) {
+    Zone = zone;
+  }
 }

@@ -11,6 +11,8 @@ import android.location.Location;
 import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
+import com.example.kayangan.absencehrd.Helper.SessionManager;
+import com.example.kayangan.absencehrd.Helper.currentUser;
 import com.example.kayangan.absencehrd.Model.Coordinates;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationListener;
@@ -51,6 +53,7 @@ import com.example.kayangan.absencehrd.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class MapsActivity
         extends
@@ -66,6 +69,7 @@ public class MapsActivity
 {
     private GoogleApiClient apiClient;
 
+    SessionManager sessionManager;
 
     private GoogleMap googleMap;
 
@@ -82,10 +86,12 @@ public class MapsActivity
     double latitude = 0;
     double longitude = 0;
 
-    private void getCoordinate(){
+    private void getCoordinate(String userZone){
         handler = new DatabaseHandler(this);
 
-        Cursor record = handler.getAllCoordinates();
+
+
+        Cursor record = handler.getAllCoordinates(userZone);
         coordinatesList = new ArrayList<>();
 
         if (record.getCount() > 0) {
@@ -111,9 +117,14 @@ public class MapsActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        sessionManager = new SessionManager(this);
+
+        HashMap<String, String> data = sessionManager.getUserDetails();
+        String userZone = data.get(SessionManager.KEY_ZONE);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getCoordinate();
+        getCoordinate(userZone);
 
         GPSTracker.inLocation= false;
 
@@ -235,15 +246,12 @@ public class MapsActivity
         for (int i=0; i<coordinatesList.size(); i++){
             googleMap.addMarker(new MarkerOptions().position(coordinatesList.get(i).getLatLng()).title(coordinatesList.get(i).getName()));
 
-            Circle circle = googleMap.addCircle(new CircleOptions()
+            Circle circle = googleMap.addCircle( new CircleOptions()
                     .center(new LatLng(coordinatesList.get(i).getLatLng().latitude, coordinatesList.get(i).getLatLng().longitude))
                     .radius(Constants.GEOFENCE_RADIUS_IN_METERS)
                     .strokeColor(Color.BLUE)
-                    .strokeWidth(7f))
-                    ;
+                    .strokeWidth(7f));
         }
-
-
     }
 
     @Override
@@ -304,6 +312,7 @@ public class MapsActivity
     }
 
     private Geofence getGeofence(){
+
         for (int i=0; i<coordinatesList.size(); i++){
 
             return new Geofence.Builder()
@@ -314,21 +323,15 @@ public class MapsActivity
                     .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                     .build();
         }
+
         return null;
     }
 
     private GeofencingRequest getGeofencingRequest() {
-
-        for (int i=0; i<coordinatesList.size(); i++){
             GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
             builder.setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
             builder.addGeofence(getGeofence());
             return builder.build();
-        }
-
-
-
-        return null;
     }
 
     private PendingIntent getGeofencePendingIntent(){
