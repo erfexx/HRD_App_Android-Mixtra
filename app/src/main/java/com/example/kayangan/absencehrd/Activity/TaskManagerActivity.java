@@ -22,12 +22,14 @@ import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.ListAdapter;
+import com.example.kayangan.absencehrd.Helper.SessionManager;
 import com.example.kayangan.absencehrd.Helper.SwipeDismissListViewTouchListener;
 import com.example.kayangan.absencehrd.Model.Task;
 import com.example.kayangan.absencehrd.R;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TaskManagerActivity extends AppCompatActivity {
@@ -35,6 +37,7 @@ public class TaskManagerActivity extends AppCompatActivity {
     private ArrayList<Task> taskList = new ArrayList<>();
     private DatabaseHandler db;
     private ListAdapter mAdapter;
+    SessionManager sessionManager;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -44,13 +47,16 @@ public class TaskManagerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sessionManager = new SessionManager(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_manager);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        HashMap<String, String> user = sessionManager.getUserDetails();
+        String name = user.get(SessionManager.KEY_NAME);
 
         simpleListView = (ListView)findViewById(R.id.simpleListView);
         db = new DatabaseHandler(this);
-        taskList.addAll(db.getAllTasks());
+        taskList.addAll(db.getAllTasks(name));
 
         mAdapter = new ListAdapter(taskList,getApplicationContext());
         simpleListView.setAdapter(mAdapter);
@@ -61,6 +67,7 @@ public class TaskManagerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent createIntent = new Intent(getBaseContext(), CreateTaskActivity.class);
                 startActivity(createIntent);
+                finish();
             }
         });
 
@@ -134,12 +141,12 @@ public class TaskManagerActivity extends AppCompatActivity {
                     }
                 });
         simpleListView.setOnTouchListener(touchListener);
-
     }
 
     @Override
     public void onBackPressed() {
        Intent backIntent = new Intent(this, MenuActivity.class);
        startActivity(backIntent);
+       finish();
     }
 }

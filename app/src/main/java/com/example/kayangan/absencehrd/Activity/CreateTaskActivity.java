@@ -91,7 +91,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
                         tassign, progress));
                 Intent createIntent = new Intent(CreateTaskActivity.this, TaskManagerActivity.class);
                 startActivity(createIntent);
-
+                finish();
             }
         });
     }
@@ -130,5 +130,6 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
     public void onBackPressed() {
         Intent backIntent = new Intent(this, TaskManagerActivity.class);
         startActivity(backIntent);
+        finish();
     }
 }

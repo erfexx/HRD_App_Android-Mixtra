@@ -54,6 +54,30 @@
             android:label="Profile Menu"
             android:theme="@style/AppTheme" />
 
+        <activity android:name=".Activity.StockActivity"
+            android:label="Stock"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".Activity.SalesOrderActivity"
+            android:label="Sales Order"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".Activity.TaskManagerActivity"
+            android:label="Task Manager"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".Activity.AddOrderActivity"
+            android:label="Add New Order"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".Activity.CreateTaskActivity"
+            android:label="Create New Task"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".Activity.EditTaskActivity"
+            android:label="Edit Task"
+            android:theme="@style/AppTheme"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -61,12 +85,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Activity.TaskManagerActivity" />
-        <activity android:name=".Activity.CreateTaskActivity" />
-        <activity android:name=".Activity.EditTaskActivity" />
-        <activity android:name=".Activity.SalesOrderActivity" />
-        <activity android:name=".Activity.AddOrderActivity" />
-        <activity android:name=".Activity.StockActivity"></activity>
+
     </application>
 
 </manifest>

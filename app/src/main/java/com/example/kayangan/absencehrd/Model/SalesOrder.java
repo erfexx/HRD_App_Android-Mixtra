@@ -6,8 +6,7 @@ package com.example.kayangan.absencehrd.Model;
 
 public class SalesOrder {
     int _id;
-    String startdate;
-    String enddate;
+    String transdate;
     String salesman;
     int voucher;
 
@@ -17,18 +16,16 @@ public class SalesOrder {
     }
 
     //constructor
-    public SalesOrder (int id, String startdate, String enddate, String salesman, int voucher){
+    public SalesOrder (int id, String transdate, String salesman, int voucher){
         this._id = id;
-        this.startdate = startdate;
-        this.enddate = enddate;
+        this.transdate = transdate;
         this.salesman = salesman;
         this.voucher = voucher;
     }
 
     //constructor
-    public SalesOrder (String startdate, String enddate, String salesman, int voucher){
-        this.startdate = startdate;
-        this.enddate = enddate;
+    public SalesOrder (String transdate, String salesman, int voucher){
+        this.transdate = transdate;
         this.salesman = salesman;
         this.voucher = voucher;
     }
@@ -41,20 +38,12 @@ public class SalesOrder {
         this._id = _id;
     }
 
-    public String getStartdate() {
-        return startdate;
+    public String getTransdate() {
+        return transdate;
     }
 
-    public void setStartdate(String startdate) {
-        this.startdate = startdate;
-    }
-
-    public String getEnddate() {
-        return enddate;
-    }
-
-    public void setEnddate(String enddate) {
-        this.enddate = enddate;
+    public void setTransdate(String transdate) {
+        this.transdate = transdate;
     }
 
     public String getSalesman() {

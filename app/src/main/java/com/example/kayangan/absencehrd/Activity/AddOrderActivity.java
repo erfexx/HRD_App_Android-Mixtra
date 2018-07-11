@@ -24,7 +24,7 @@ import java.util.List;
 public class AddOrderActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     DatabaseHandler db;
     Spinner spSalesman;
-    private DatePickerDialog startdate, enddate;
+    private DatePickerDialog transdate;
     private SimpleDateFormat dateFormatter;
 
     @Override
@@ -41,10 +41,8 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
-        final EditText etStartDate = (EditText) findViewById(R.id.etStartDate);
-        final EditText etEndDate = (EditText) findViewById(R.id.etEndDate);
-        etStartDate.setInputType(InputType.TYPE_NULL);
-        etEndDate.setInputType(InputType.TYPE_NULL);
+        final EditText etTransDate = (EditText) findViewById(R.id.etTransDate);
+        etTransDate.setInputType(InputType.TYPE_NULL);
         spSalesman = (Spinner) findViewById(R.id.spSalesman);
         final EditText etVoucher = (EditText) findViewById(R.id.etVoucher);
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
@@ -55,35 +53,21 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
         // Loading spinner data from database
         loadSpinnerData();
 
-        etStartDate.setOnClickListener(new View.OnClickListener() {
+        etTransDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startdate.show();
-            }
-        });
-        etEndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enddate.show();
+                transdate.show();
             }
         });
 
         Calendar newCalendar = Calendar.getInstance();
 
-        startdate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        transdate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
-                etStartDate.setText(dateFormatter.format(newDate.getTime()));
-            }
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-        enddate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                etEndDate.setText(dateFormatter.format(newDate.getTime()));
+                etTransDate.setText(dateFormatter.format(newDate.getTime()));
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
@@ -96,11 +80,11 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
                 String voucher = etVoucher.getText().toString();
                 int voucherNo = Integer.parseInt(voucher);
                 db.addOrder(new SalesOrder(
-                        etStartDate.getText().toString(),
-                        etEndDate.getText().toString(),
+                        etTransDate.getText().toString(),
                         sales, voucherNo));
                 Intent orderIntent = new Intent(getBaseContext(), SalesOrderActivity.class);
                 startActivity(orderIntent);
+                finish();
             }
         });
     }
@@ -139,5 +123,6 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
     public void onBackPressed() {
         Intent backIntent = new Intent(this, SalesOrderActivity.class);
         startActivity(backIntent);
+        finish();
     }
 }

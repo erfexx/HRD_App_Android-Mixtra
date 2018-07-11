@@ -51,8 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TASK_TPROGRESS = "tprogress";
 
     private static final String ORDER_ID = "oid";
-    private static final String ORDER_START = "startdate";
-    private static final String ORDER_END = "enddate";
+    private static final String ORDER_TRANS = "transdate";
     private static final String ORDER_SALESMAN = "salesman";
     private static final String ORDER_VOUCHER = "voucher";
 
@@ -87,8 +86,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + TABLE_ORDERS + "("
                 + ORDER_ID + " INTEGER PRIMARY KEY,"
-                + ORDER_START + " TEXT,"
-                + ORDER_END + " TEXT,"
+                + ORDER_TRANS + " TEXT,"
                 + ORDER_SALESMAN + " TEXT,"
                 + ORDER_VOUCHER + " INTEGER,"
                 + "FOREIGN KEY(salesman) REFERENCES users(id)" + ")");
@@ -170,10 +168,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return task;
     }
     // Getting All task
-    public ArrayList<Task> getAllTasks() {
+    public ArrayList<Task> getAllTasks(String name) {
         ArrayList<Task> taskList = new ArrayList<Task>();
         // Select All Query
-        String selectQuery = "SELECT * FROM " + TABLE_TASKS;
+        String selectQuery = "SELECT * FROM " + TABLE_TASKS + " WHERE " + TASK_TASSIGN + " = " + "'" + name + "'";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -241,8 +239,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(ORDER_START, order.getStartdate()); // Order Start Date
-        values.put(ORDER_END, order.getEnddate()); // Order End Date
+        values.put(ORDER_TRANS, order.getTransdate()); // Order Start Date
         values.put(ORDER_SALESMAN, order.getSalesman()); // Order Salesman
         values.put(ORDER_VOUCHER, order.getVoucher()); // Order Voucher No.
 
@@ -255,7 +252,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ORDERS, new String[] { ORDER_ID,
-                        ORDER_START, ORDER_START, ORDER_SALESMAN, ORDER_VOUCHER }, ORDER_ID + "=?",
+                        ORDER_TRANS, ORDER_SALESMAN, ORDER_VOUCHER }, ORDER_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -264,8 +261,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Integer.parseInt(cursor.getString(0)),
                 cursor.getString(1),
                 cursor.getString(2),
-                cursor.getString(3),
-                Integer.parseInt(cursor.getString(4)));
+                Integer.parseInt(cursor.getString(3)));
         // return task
         cursor.close();
         return order;
@@ -284,10 +280,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do {
                 SalesOrder order = new SalesOrder();
                 order.set_id(Integer.parseInt(cursor.getString(0)));
-                order.setStartdate(cursor.getString(1));
-                order.setEnddate(cursor.getString(2));
-                order.setSalesman(cursor.getString(3));
-                order.setVoucher(Integer.parseInt(cursor.getString(4)));
+                order.setTransdate(cursor.getString(1));
+                order.setSalesman(cursor.getString(2));
+                order.setVoucher(Integer.parseInt(cursor.getString(3)));
                 // Adding order to list
                 orderList.add(order);
             } while (cursor.moveToNext());
@@ -300,8 +295,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(ORDER_START, order.getStartdate());
-        values.put(ORDER_END, order.getEnddate());
+        values.put(ORDER_TRANS, order.getTransdate());
         values.put(ORDER_SALESMAN, order.getSalesman());
         values.put(ORDER_VOUCHER, order.getVoucher());
 

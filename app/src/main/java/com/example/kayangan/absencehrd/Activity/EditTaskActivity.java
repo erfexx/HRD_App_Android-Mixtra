@@ -47,9 +47,9 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
-        final EditText tname = (EditText) findViewById(R.id.dtname);
-        final EditText tdesc = (EditText) findViewById(R.id.dtdesc);
-        final EditText tduedate = (EditText) findViewById(R.id.dtduedate);
+        final TextView tname = (TextView) findViewById(R.id.dtname);
+        final TextView tdesc = (TextView) findViewById(R.id.dtdesc);
+        final TextView tduedate = (TextView) findViewById(R.id.dtduedate);
         tduedate.setInputType(InputType.TYPE_NULL);
         spinner = (Spinner) findViewById(R.id.dtassign);
         final TextView tprogress = (TextView) findViewById(R.id.dtprogress);
@@ -58,9 +58,9 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
 
         final Task task = db.getTask(position);
-        tname.setText(task.getTname(), TextView.BufferType.EDITABLE);
-        tdesc.setText(task.getTdesc(), TextView.BufferType.EDITABLE);
-        tduedate.setText(task.getTduedate(), TextView.BufferType.EDITABLE);
+        tname.setText(task.getTname());
+        tdesc.setText(task.getTdesc());
+        tduedate.setText(task.getTduedate());
         String sprogress = String.valueOf(task.getTprogress());
         tprogress.setText(sprogress);
         progressBar.setProgress(task.getTprogress());
@@ -119,6 +119,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 db.updateTask(task);
                 Intent viewIntent = new Intent(getBaseContext(),TaskManagerActivity.class);
                 startActivity(viewIntent);
+                finish();
             }
         });
     }
@@ -156,5 +157,6 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
     public void onBackPressed() {
         Intent backIntent = new Intent(this,TaskManagerActivity.class);
         startActivity(backIntent);
+        finish();
     }
 }

@@ -1,13 +1,20 @@
 package com.example.kayangan.absencehrd.Activity;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,13 +23,17 @@ import com.example.kayangan.absencehrd.Helper.OrderAdapter;
 import com.example.kayangan.absencehrd.Model.SalesOrder;
 import com.example.kayangan.absencehrd.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class SalesOrderActivity extends AppCompatActivity {
     private ListView listView1;
     private ArrayList<SalesOrder> orderList = new ArrayList<>();
     private DatabaseHandler db;
     private OrderAdapter mAdapter;
+    private DatePickerDialog startdate, enddate;
+    private SimpleDateFormat dateFormatter;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -36,7 +47,45 @@ public class SalesOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sales_order);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Button btnAdd = (Button) findViewById(R.id.btnAdd);
+        dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        final EditText etStartDate = (EditText) findViewById(R.id.etStartDate);
+        final EditText etEndDate = (EditText) findViewById(R.id.etEndDate);
+        etStartDate.setInputType(InputType.TYPE_NULL);
+        etEndDate.setInputType(InputType.TYPE_NULL);
+        final ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
+
+        etStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startdate.show();
+            }
+        });
+        etEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                enddate.show();
+            }
+        });
+        Calendar newCalendar = Calendar.getInstance();
+        startdate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                etStartDate.setText(dateFormatter.format(newDate.getTime()));
+            }
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        enddate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                etEndDate.setText(dateFormatter.format(newDate.getTime()));
+            }
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+
         listView1 = (ListView) findViewById(R.id.listView1);
         db = new DatabaseHandler(this);
         orderList.addAll(db.getAllOrders());
@@ -44,11 +93,13 @@ public class SalesOrderActivity extends AppCompatActivity {
         mAdapter = new OrderAdapter(orderList,getApplicationContext());
         listView1.setAdapter(mAdapter);
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = findViewById(R.id.fabAdd);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent addOrderIntent = new Intent(getBaseContext(), AddOrderActivity.class);
-                startActivity(addOrderIntent);
+            public void onClick(View view) {
+                Intent createIntent = new Intent(getBaseContext(), AddOrderActivity.class);
+                startActivity(createIntent);
+                finish();
             }
         });
 
@@ -78,5 +129,6 @@ public class SalesOrderActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent backIntent = new Intent(this, MenuActivity.class);
         startActivity(backIntent);
+        finish();
     }
 }
