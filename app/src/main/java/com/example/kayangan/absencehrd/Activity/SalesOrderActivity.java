@@ -30,8 +30,9 @@ import java.util.Calendar;
 public class SalesOrderActivity extends AppCompatActivity {
     private ListView listView1;
     private ArrayList<SalesOrder> orderList = new ArrayList<>();
+    private ArrayList<SalesOrder> orderSearch = new ArrayList<>();
     private DatabaseHandler db;
-    private OrderAdapter mAdapter;
+    private OrderAdapter mAdapter, sAdapter;
     private DatePickerDialog startdate, enddate;
     private SimpleDateFormat dateFormatter;
 
@@ -92,6 +93,15 @@ public class SalesOrderActivity extends AppCompatActivity {
 
         mAdapter = new OrderAdapter(orderList,getApplicationContext());
         listView1.setAdapter(mAdapter);
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                orderSearch.addAll(db.getSearchOrders(etStartDate.getText().toString(), etEndDate.getText().toString()));
+                sAdapter = new OrderAdapter(orderSearch,getApplicationContext());
+                listView1.setAdapter(sAdapter);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fabAdd);
         fab.setOnClickListener(new View.OnClickListener() {

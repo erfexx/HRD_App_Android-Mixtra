@@ -290,6 +290,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return order list
         return orderList;
     }
+    // Getting order based on search
+    public ArrayList<SalesOrder> getSearchOrders(String startdate, String enddate) {
+        ArrayList<SalesOrder> orderList = new ArrayList<SalesOrder>();
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + TABLE_ORDERS + " WHERE strftime('%d-%m-%Y', "+ ORDER_TRANS + ") BETWEEN '" + startdate + "' AND '" + enddate + "'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                SalesOrder order = new SalesOrder();
+                order.set_id(Integer.parseInt(cursor.getString(0)));
+                order.setTransdate(cursor.getString(1));
+                order.setSalesman(cursor.getString(2));
+                order.setVoucher(Integer.parseInt(cursor.getString(3)));
+                // Adding order to list
+                orderList.add(order);
+            } while (cursor.moveToNext());
+        }
+        // return order list
+        return orderList;
+    }
     // Updating single order
     public int updateOrder(SalesOrder order) {
         SQLiteDatabase db = this.getWritableDatabase();

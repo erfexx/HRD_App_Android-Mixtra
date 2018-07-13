@@ -45,7 +45,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
         db = new DatabaseHandler(this);
 
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+        //dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
         final TextView tname = (TextView) findViewById(R.id.dtname);
         final TextView tdesc = (TextView) findViewById(R.id.dtdesc);
@@ -89,7 +89,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         // Loading spinner data from database
         loadSpinnerData();
 
-        tduedate.setOnClickListener(new View.OnClickListener() {
+        /*tduedate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 datepick.show();
@@ -103,7 +103,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 newDate.set(year, monthOfYear, dayOfMonth);
                 tduedate.setText(dateFormatter.format(newDate.getTime()));
             }
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));*/
 
         bSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
