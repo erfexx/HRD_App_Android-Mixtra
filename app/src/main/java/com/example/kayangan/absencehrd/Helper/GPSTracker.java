@@ -40,9 +40,11 @@ public class GPSTracker extends IntentService{
         Log.d("AAA", "You are inside Mixtra Inti Tekindo");
         sendNotification("Location Acquired", "You are inside Mixtra Inti Tekindo");
         inLocation = true;
-      } else {
+      }
+      else if(transaction == Geofence.GEOFENCE_TRANSITION_EXIT && geofence.getRequestId().equals(Constants.GEOFENCE_ID_COMP_LOC))
+      {
         Log.d("AAA", "You are outside Mixtra Inti Tekindo");
-        sendNotification("Location Acquired", "You are outside Mixtra Inti Tekindo");
+        sendNotification("Location Not Acquired", "You are outside Mixtra Inti Tekindo");
         inLocation = false;
       }
     }
@@ -69,6 +71,9 @@ public class GPSTracker extends IntentService{
     notification.flags |= Notification.FLAG_AUTO_CANCEL;
     notification.defaults |= Notification.DEFAULT_SOUND;
 
+    //////////////////////
+    assert manager != null;
+    //////////////////////
     manager.notify(new Random().nextInt(), notification);
   }
 }

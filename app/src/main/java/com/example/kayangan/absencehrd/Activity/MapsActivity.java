@@ -12,13 +12,11 @@ import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
-import com.example.kayangan.absencehrd.Helper.currentUser;
 import com.example.kayangan.absencehrd.Model.Coordinates;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.LocationListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,7 +37,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
@@ -52,7 +48,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.kayangan.absencehrd.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class MapsActivity
@@ -78,10 +73,12 @@ public class MapsActivity
 
     Button btnSetLocation;
 
-    ArrayList<Coordinates> coordinatesList;
+    public ArrayList<Coordinates> coordinatesList;
     DatabaseHandler handler;
 
     Coordinates coordinates;
+
+    String userZone;
 
     double latitude = 0;
     double longitude = 0;
@@ -89,15 +86,20 @@ public class MapsActivity
     private void getCoordinate(String userZone){
         handler = new DatabaseHandler(this);
 
-
-
         Cursor record = handler.getAllCoordinates(userZone);
         coordinatesList = new ArrayList<>();
 
         if (record.getCount() > 0) {
             while (record.moveToNext()) {
-                coordinates = new Coordinates(Constants.GEOFENCE_ID_COMP_LOC, record.getString(4), record.getString(3),
-                        new LatLng(Double.parseDouble(record.getString(1)), Double.parseDouble(record.getString(2))));
+                coordinates = new Coordinates(
+                        Constants.GEOFENCE_ID_COMP_LOC,
+                        record.getString(4),
+                        record.getString(3),
+                            new LatLng(
+                                    Double.parseDouble(record.getString(1)),
+                                    Double.parseDouble(record.getString(2))
+                            )
+                );
 
                 coordinatesList.add(coordinates);
             }
@@ -120,7 +122,7 @@ public class MapsActivity
         sessionManager = new SessionManager(this);
 
         HashMap<String, String> data = sessionManager.getUserDetails();
-        String userZone = data.get(SessionManager.KEY_ZONE);
+        userZone = data.get(SessionManager.KEY_ZONE);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -312,7 +314,6 @@ public class MapsActivity
     }
 
     private Geofence getGeofence(){
-
         for (int i=0; i<coordinatesList.size(); i++){
 
             return new Geofence.Builder()

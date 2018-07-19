@@ -1,7 +1,5 @@
 package com.example.kayangan.absencehrd.Model;
 
-import java.time.Clock;
-import java.util.Date;
 
 /**
  * Created by KAYANGAN on 3/1/2018.
@@ -13,11 +11,11 @@ public class AttendanceRecord {
   private String clock_in;
   private String clock_out;
   private String user_id;
+  private int id;
   private String flag = "0";
 
   public AttendanceRecord() {
   }
-
 
   public AttendanceRecord(String date, String clock_in, String clock_out, String user_id, String flag) {
     this.date = date;
@@ -25,6 +23,13 @@ public class AttendanceRecord {
     this.clock_out = clock_out;
     this.user_id = user_id;
     this.flag = flag;
+  }
+
+  public AttendanceRecord(String date, String clock_in, String clock_out, String user_id) {
+    this.date = date;
+    this.clock_in = clock_in;
+    this.clock_out = clock_out;
+    this.user_id = user_id;
   }
 
   public AttendanceRecord(String date, String clock_in, String clock_out) {
@@ -36,6 +41,14 @@ public class AttendanceRecord {
   public AttendanceRecord(String clock_out, String flag) {
     this.clock_out = clock_out;
     this.flag = flag;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public AttendanceRecord(String flag) {

@@ -1,5 +1,6 @@
 package com.example.kayangan.absencehrd.Activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
 
@@ -39,6 +42,8 @@ public class MenuActivity extends AppCompatActivity
     CardView cvTM, cvA, cvS, cvSO, cvP;
 
     boolean doubleBackToExitPressedOnce = false;
+
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class MenuActivity extends AppCompatActivity
 
         HashMap<String, String> user = sessionManager.getUserDetails();
         String name = user.get(SessionManager.KEY_NAME);
+        Constants.currentUserID = user.get(SessionManager.KEY_ID);
 
         NAMA.setText(name);
 
@@ -145,7 +151,10 @@ public class MenuActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sync) {
+
+            SynchronizeData.getInstance(MenuActivity.this).SyncAll();
+
             return true;
         }
 

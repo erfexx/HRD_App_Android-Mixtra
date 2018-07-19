@@ -99,7 +99,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   public Cursor getAllAttendance(){
     SQLiteDatabase db = this.getReadableDatabase();
-    Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{currentUser.currentUserID});
+    Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{Constants.currentUserID});
     return data;
   }
 
@@ -117,19 +117,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
   public Cursor getSpecStocksAll(String branch, String departments){
     SQLiteDatabase database = this.getReadableDatabase();
-    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_BRANCH + " =? AND " + STOCK_DEPARTMENT + " =?", new String[]{branch, departments});
+    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_BRANCH + " =? AND " + STOCK_DEPARTMENT + " =? ORDER BY " + STOCK_BRANCH + " ASC", new String[]{branch, departments});
     return data;
   }
 
   public Cursor getSpecStockBranch(String branch){
     SQLiteDatabase database = this.getReadableDatabase();
-    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_BRANCH + " =?", new String[]{branch});
+    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_BRANCH + " =? ORDER BY " + STOCK_BRANCH +" ASC", new String[]{branch});
     return data;
   }
 
   public Cursor getSpecStockDepartment(String department){
     SQLiteDatabase database = this.getReadableDatabase();
-    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_DEPARTMENT + " =?", new String[]{department});
+    Cursor data = database.rawQuery("SELECT * FROM " + TABLE_STOCKS + " WHERE " + STOCK_DEPARTMENT + " =? ORDER BY " + STOCK_DEPARTMENT + " ASC", new String[]{department});
     return data;
   }
 

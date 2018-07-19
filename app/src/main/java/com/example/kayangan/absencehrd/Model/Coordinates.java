@@ -5,8 +5,16 @@ import com.google.android.gms.maps.model.LatLng;
 public class Coordinates {
     private String key, name, zone;
     private LatLng latLng;
+    private int id;
 
     public Coordinates() {
+    }
+
+    public Coordinates(String name, String zone, LatLng latLng, int id) {
+        this.name = name;
+        this.zone = zone;
+        this.latLng = latLng;
+        this.id = id;
     }
 
     public Coordinates(String key, String name, String zone, LatLng latLng) {
@@ -14,6 +22,14 @@ public class Coordinates {
         this.name = name;
         this.zone = zone;
         this.latLng = latLng;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

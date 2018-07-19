@@ -51,7 +51,7 @@
                         android:textStyle="bold"
                         android:layout_marginTop="10dp"
                         android:textColor="#000"
-                        android:text="Task Manager"/>
+                        android:text="My Task"/>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Management Your Tasks"
+                        android:text="@string/slide_1_desc"
                         android:padding="5dp"
                         android:textColor="@android:color/darker_gray"/>
 

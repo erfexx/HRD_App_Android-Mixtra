@@ -26,7 +26,6 @@ import com.example.kayangan.absencehrd.Model.DummyModel;
 import com.example.kayangan.absencehrd.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class StockActivity extends AppCompatActivity {
@@ -103,7 +102,7 @@ public class StockActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //filter branch
+                        //show all data
                         if (spinner.getSelectedItem().toString().equals("--") && spinner1.getSelectedItem().toString().equals("--")) {
                             Toast.makeText(StockActivity.this, "Select Branch", Toast.LENGTH_SHORT).show();
                             modelList.clear();
@@ -132,8 +131,6 @@ public class StockActivity extends AppCompatActivity {
                     }
                 }
         );
-
-
     }
 
 

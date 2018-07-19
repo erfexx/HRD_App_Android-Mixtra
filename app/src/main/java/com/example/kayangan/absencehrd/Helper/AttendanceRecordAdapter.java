@@ -13,7 +13,6 @@ import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AttendanceRecordAdapter extends ArrayAdapter<AttendanceRecord> {
   private Context mContext;

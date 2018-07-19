@@ -2,7 +2,7 @@ package com.example.kayangan.absencehrd.Model;
 
 public class DummyModel {
     private String item, category, branch, department;
-    int price;
+    int price, id;
 
     public DummyModel() {
     }
@@ -13,6 +13,14 @@ public class DummyModel {
         this.branch = branch;
         this.department = department;
         this.price = price;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getItem() {

@@ -27,9 +27,10 @@ public class SessionManager {
 
     private static final String IS_LOGIN = "IsLoggedIn";
     private static final String IS_TAP_IN = "IsTappedIn";
+    private static final String IS_TAP_OUT = "IsTappedOut";
 
     //Buat welcome screen
-    private static final boolean FIRST_TIME_IN = false;
+    private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
 
     public static final String KEY_NAME = "name";
     public static final String KEY_ID = "id";
@@ -102,7 +103,7 @@ public class SessionManager {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         //clear current user id
-        currentUser.currentUserID = "";
+        Constants.currentUserID = "";
 
         // Staring Login Activity
         _context.startActivity(i);
@@ -122,6 +123,11 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void createTapOutSession(){
+        editor.putBoolean(IS_TAP_IN, false);
+        editor.commit();
+    }
+
     public boolean isTappedIn(){
         return pref.getBoolean(IS_TAP_IN, false);
     }
@@ -135,6 +141,15 @@ public class SessionManager {
             return true;
         }
         return false;
+    }
+
+    public void setFirstTimeLaunch(boolean isFirstTime) {
+        editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
+        editor.commit();
+    }
+
+    public boolean isFirstTimeLaunch() {
+        return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
 
 

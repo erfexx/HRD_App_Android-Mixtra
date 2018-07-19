@@ -9,8 +9,8 @@
     tools:context="com.example.kayangan.absencehrd.Activity.HomeActivity">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="230dp"
+        android:layout_height="280dp"
         android:src="@drawable/logo_round"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"/>
