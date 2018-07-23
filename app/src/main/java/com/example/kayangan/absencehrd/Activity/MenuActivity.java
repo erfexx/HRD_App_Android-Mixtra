@@ -85,14 +85,14 @@ public class MenuActivity extends AppCompatActivity
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tracker.inLocation)
+                if (tracker.inLocation)
                 {
                     startActivity(new Intent(MenuActivity.this, MainActivity.class));
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "ADJUST YOUR POSITION FIRST!", Toast.LENGTH_SHORT).show();
-                    if (checkGPS())
-                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                    /*if (checkGPS())
+                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));*/
                 }
             }
         });
@@ -110,7 +110,6 @@ public class MenuActivity extends AppCompatActivity
                 startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
             }
         });
-
 
 
     }
