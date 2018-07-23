@@ -47,15 +47,9 @@ public class SynchronizeData {
     private String linkAttendance = Constants.url+"attendances";
     private String linkStock = Constants.url+"stocks";
 
-    ProgressDialog dialog;
-
     private Coordinates coordinates;
     private AttendanceRecord attRecord;
     private DummyModel stockRecord;
-
-    ArrayList<AttendanceRecord> list;
-
-
 
     private SynchronizeData(Context context)
     {
@@ -128,7 +122,7 @@ public class SynchronizeData {
         AppController.getInstance(mCtx).addToRequestque(arrayReq);
     }
 
-    private void SyncLocation(){
+    public void SyncLocation(){
 
         helper = new DatabaseHandler(mCtx);
         database = helper.getWritableDatabase();
@@ -162,6 +156,7 @@ public class SynchronizeData {
                                 );
 
                                 insertToDatabaseLocations(coordinates);
+                                Toast.makeText(mCtx, "LOCATION UPDATED!", Toast.LENGTH_SHORT).show();
                             }
                         }
                         catch (JSONException e)
@@ -184,6 +179,7 @@ public class SynchronizeData {
         AppController.getInstance(mCtx).addToRequestque(arrayReq);
     }
 
+    //GET ALL ATTENDANCE RECORD FROM DB SERVER
     private void SyncAttendance(){
         helper = new DatabaseHandler(mCtx);
         database = helper.getWritableDatabase();
@@ -241,7 +237,8 @@ public class SynchronizeData {
 
     }
 
-    private void ExportAttendanceOut(final AttendanceRecord rec){
+    //POST DATA TO DB SERVER
+    public void ExportAttendanceOut(final AttendanceRecord rec){
         String link = Constants.url+"attendances";
 
         StringRequest request = new StringRequest(
@@ -278,6 +275,7 @@ public class SynchronizeData {
         AppController.getInstance(mCtx).addToRequestque(request);
     }
 
+    //GET ALL ATTENDANCE RECORD FROM SQLITE
     public void AttOut() {
         handler = new DatabaseHandler(mCtx);
 
@@ -299,7 +297,8 @@ public class SynchronizeData {
         }
     }
 
-    public void AttUpd(final String clock_out){
+    //UPDATE ATTENDANCE RECORD ON DB SERVER
+    public void AttUpd(final String clock_out, final String date){
         String link = Constants.url+"attendances/"+Constants.currentUserID;
 
         StringRequest request = new StringRequest(
@@ -323,6 +322,7 @@ public class SynchronizeData {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("clock_out", clock_out);
+                params.put("date", date);
 
                 return params;
             }
@@ -333,6 +333,7 @@ public class SynchronizeData {
 
 
 
+    //INSERT TO SQLITE FROM DB SERVER
     private void insertToDatabaseAttendances(AttendanceRecord attRecord) {
         ContentValues cv = new ContentValues();
         cv.put(DatabaseHandler.ATT_DATE, attRecord.getDate());
@@ -368,6 +369,8 @@ public class SynchronizeData {
         database.insert(DatabaseHandler.TABLE_STOCKS, null, cv);
     }
 
+
+
     private String formatDate(String date){
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
@@ -395,6 +398,4 @@ public class SynchronizeData {
 
         return "";
     }
-
-
 }

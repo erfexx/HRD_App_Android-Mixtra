@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                             data.setUser_id(userID);
                             data.setDate(getDate());
                             data.setClock_out("00:00:00");
-
+                            data.setCreated_at(getDate());
 
                             recordIN(data);
                         }
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
                             AttendanceRecord data = new AttendanceRecord();
                             data.setClock_out(Constants.currentTIME);
+
                             recordOut(data);
                         }
                     }
@@ -136,20 +137,22 @@ public class MainActivity extends AppCompatActivity {
 
         if (!validateDate())
         {
-            values.put(DatabaseHandler.ATT_FLAG_TAP, "");
             values.put(DatabaseHandler.ATT_IN, data.getClock_in());
             values.put(DatabaseHandler.ATT_DATE, data.getDate());
             values.put(DatabaseHandler.ATT_USER_ID, data.getUser_id());
             values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
+            values.put(DatabaseHandler.ATT_CREATED_AT, data.getCreated_at());
 
-            DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
+            long id = DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
+
+            Log.i("DBCEK", "Status: "+id+" "+data.getClock_in()+" "+data.getDate()+" "+data.getUser_id()+" "+data.getClock_out()+" "+data.getCreated_at());
 
             //upload data attendance record ke db server
-            SynchronizeData.getInstance(MainActivity.this).AttOut();
+            SynchronizeData.getInstance(MainActivity.this).ExportAttendanceOut(data);
 
             session.createTapInSession();
 
-            Toast.makeText(this, "YOU ARE IN, THANK YOU! :)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "YOU ARE IN, THANK YOU! :)"+data.getUser_id(), Toast.LENGTH_SHORT).show();
         }
         else{
             Toast.makeText(this, "YOU ARE ALREADY IN :O", Toast.LENGTH_SHORT).show();
@@ -162,20 +165,25 @@ public class MainActivity extends AppCompatActivity {
         values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
 
         Date c = Calendar.getInstance().getTime();
+
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
+
         String formatDate = df.format(c);
+        String formatDate2 = df2.format(c);
 
         if (DB != null)
         {
             //ubah kondisi disini
-            //ketika check-out lebih dari sekali dalam sehari di DB Server data jadi MultiPost
             if (validateDate())
             {
-                DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?",
+                long id = DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?",
                         new String[]{formatDate, Constants.currentUserID});
 
+                Log.i("CEKOUT", "Status: "+id+" user id = "+Constants.currentUserID);
+
                 //att update service
-                SynchronizeData.getInstance(MainActivity.this).AttUpd(data.getClock_out());
+                SynchronizeData.getInstance(MainActivity.this).AttUpd(data.getClock_out(), formatDate2);
 
                 Toast.makeText(this, "YOU ARE OUT, HAVE A NICE DAY", Toast.LENGTH_SHORT).show();
             }

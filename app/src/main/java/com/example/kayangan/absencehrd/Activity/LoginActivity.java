@@ -27,6 +27,7 @@ import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
 import com.example.kayangan.absencehrd.Helper.AppController;
 import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
@@ -176,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
                                 dialog.dismiss();
 
                                 startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+                                SynchronizeData.getInstance(LoginActivity.this).SyncLocation();
                                 finish();
                             }
                             else

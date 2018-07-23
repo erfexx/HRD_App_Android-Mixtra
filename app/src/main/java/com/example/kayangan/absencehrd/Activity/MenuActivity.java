@@ -85,7 +85,7 @@ public class MenuActivity extends AppCompatActivity
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tracker.inLocation)
+                if (!tracker.inLocation)
                 {
                     startActivity(new Intent(MenuActivity.this, MainActivity.class));
                 }

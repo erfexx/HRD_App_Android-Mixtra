@@ -8,6 +8,8 @@ package com.example.kayangan.absencehrd.Model;
 public class AttendanceRecord {
 
   private String date;
+  private String created_at;
+  private String updated_at;
   private String clock_in;
   private String clock_out;
   private String user_id;
@@ -17,14 +19,6 @@ public class AttendanceRecord {
   public AttendanceRecord() {
   }
 
-  public AttendanceRecord(String date, String clock_in, String clock_out, String user_id, String flag) {
-    this.date = date;
-    this.clock_in = clock_in;
-    this.clock_out = clock_out;
-    this.user_id = user_id;
-    this.flag = flag;
-  }
-
   public AttendanceRecord(String date, String clock_in, String clock_out, String user_id) {
     this.date = date;
     this.clock_in = clock_in;
@@ -32,15 +26,35 @@ public class AttendanceRecord {
     this.user_id = user_id;
   }
 
-  public AttendanceRecord(String date, String clock_in, String clock_out) {
+    public AttendanceRecord(String date, String created_at, String updated_at, String clock_in, String clock_out, String user_id) {
+        this.date = date;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.clock_in = clock_in;
+        this.clock_out = clock_out;
+        this.user_id = user_id;
+    }
+
+    public AttendanceRecord(String date, String clock_in, String clock_out) {
     this.date = date;
     this.clock_in = clock_in;
     this.clock_out = clock_out;
   }
 
-  public AttendanceRecord(String clock_out, String flag) {
-    this.clock_out = clock_out;
-    this.flag = flag;
+  public String getCreated_at() {
+    return created_at;
+  }
+
+  public void setCreated_at(String created_at) {
+    this.created_at = created_at;
+  }
+
+  public String getUpdated_at() {
+    return updated_at;
+  }
+
+  public void setUpdated_at(String updated_at) {
+    this.updated_at = updated_at;
   }
 
   public int getId() {
