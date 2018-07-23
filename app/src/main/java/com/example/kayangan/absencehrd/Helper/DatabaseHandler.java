@@ -39,6 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
   public static final String ATT_FLAG_TAP= "flag";
   public static final String ATT_CREATED_AT= "created_at";
   public static final String ATT_UPDATED_AT= "updated_at";
+  public static final String ATT_STATUS= "status";
 
   // Stocks Table Column names
   public static final String STOCK_ID = "id";
@@ -71,7 +72,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     db.execSQL(
             "CREATE TABLE " + TABLE_ATTENDANCES +
-                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, clock_in TEXT, clock_out TEXT, user_id TEXT, created_at TEXT, updated_at TEXT, " +
+                    " (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, clock_in TEXT, clock_out TEXT, user_id TEXT, created_at TEXT, updated_at TEXT, status TEXT, " +
                     "FOREIGN KEY(user_id) REFERENCES users(id))"
     );
 

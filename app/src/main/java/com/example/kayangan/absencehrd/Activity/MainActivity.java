@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 new StickySwitch.OnSelectedChangeListener() {
                     @Override
                     public void onSelectedChange(StickySwitch.Direction direction, String s) {
-
                         //buat absen masuk
                         if (s.equals("IN"))
                         {
@@ -106,12 +105,21 @@ public class MainActivity extends AppCompatActivity {
 
                             AttendanceRecord data = new AttendanceRecord();
 
+
                             data.setFlag("1");
                             data.setClock_in(Constants.currentTIME);
                             data.setUser_id(userID);
                             data.setDate(getDate());
                             data.setClock_out("00:00:00");
                             data.setCreated_at(getDate());
+
+                            if (Constants.currentTIME.compareTo("15:00:00") >= 0)
+                            {
+                                data.setStatus("LATE");
+                            }
+                            else
+                                data.setStatus("PRESENT");
+
 
                             recordIN(data);
                         }
@@ -128,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-        );
+                );
     }
 
     public void recordIN(AttendanceRecord data){
@@ -142,10 +150,11 @@ public class MainActivity extends AppCompatActivity {
             values.put(DatabaseHandler.ATT_USER_ID, data.getUser_id());
             values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
             values.put(DatabaseHandler.ATT_CREATED_AT, data.getCreated_at());
+            values.put(DatabaseHandler.ATT_STATUS, data.getStatus());
 
             long id = DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
 
-            Log.i("DBCEK", "Status: "+id+" "+data.getClock_in()+" "+data.getDate()+" "+data.getUser_id()+" "+data.getClock_out()+" "+data.getCreated_at());
+            Log.i("DBCEK", "Status: "+data.getStatus());
 
             //upload data attendance record ke db server
             SynchronizeData.getInstance(MainActivity.this).ExportAttendanceOut(data);

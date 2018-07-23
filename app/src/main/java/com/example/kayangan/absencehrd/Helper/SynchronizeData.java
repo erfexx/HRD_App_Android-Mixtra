@@ -267,6 +267,7 @@ public class SynchronizeData {
                 parameter.put("clock_in", rec.getClock_in());
                 parameter.put("clock_out", rec.getClock_out());
                 parameter.put("user_id", rec.getUser_id());
+                parameter.put("status", rec.getStatus());
 
                 return parameter;
             }

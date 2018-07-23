@@ -13,6 +13,7 @@ public class AttendanceRecord {
   private String clock_in;
   private String clock_out;
   private String user_id;
+  private String status;
   private int id;
   private String flag = "0";
 
@@ -26,19 +27,29 @@ public class AttendanceRecord {
     this.user_id = user_id;
   }
 
-    public AttendanceRecord(String date, String created_at, String updated_at, String clock_in, String clock_out, String user_id) {
-        this.date = date;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.clock_in = clock_in;
-        this.clock_out = clock_out;
-        this.user_id = user_id;
-    }
+  public AttendanceRecord(String date, String created_at, String updated_at, String clock_in, String clock_out, String user_id, String status) {
+      this.date = date;
+      this.created_at = created_at;
+      this.updated_at = updated_at;
+      this.clock_in = clock_in;
+      this.clock_out = clock_out;
+      this.user_id = user_id;
+      this.status = status;
+
+  }
 
     public AttendanceRecord(String date, String clock_in, String clock_out) {
     this.date = date;
     this.clock_in = clock_in;
     this.clock_out = clock_out;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
   }
 
   public String getCreated_at() {
