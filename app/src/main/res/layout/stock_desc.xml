@@ -9,10 +9,10 @@
     android:padding="15dp" >
 
     <TextView
-        android:id="@+id/txtMovieTitle"
+        android:id="@+id/txtItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Movie Title"
+        android:text="ITEM"
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
         android:paddingBottom="15dp"
@@ -20,18 +20,34 @@
         android:paddingLeft="10dp"/>
 
     <TextView
-        android:id="@+id/txtMovieGenre"
+        android:id="@+id/txtCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Genre"
+        android:text="CATEGORY"
         android:paddingLeft="10dp"/>
 
     <TextView
-        android:id="@+id/txtMovieYear"
+        android:id="@+id/txtPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Year"
+        android:text="PRICE"
+        android:paddingLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/txtBranch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="BRANCH"
+        android:paddingLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/txtDepartment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="DEPARTMENT"
         android:paddingLeft="10dp"/>
 </LinearLayout>

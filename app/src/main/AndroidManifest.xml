@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.kayangan.absencehrd">
 
     <uses-sdk
@@ -11,6 +12,9 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -21,6 +25,11 @@
         android:roundIcon="@drawable/logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".Activity.IntroActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        </activity>
         <activity
             android:name=".Activity.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -53,30 +62,30 @@
             android:name=".Activity.ProfileActivity"
             android:label="Profile Menu"
             android:theme="@style/AppTheme" />
-
-        <activity android:name=".Activity.StockActivity"
+        <activity
+            android:name=".Activity.StockActivity"
             android:label="Stock"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".Activity.SalesOrderActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.SalesOrderActivity"
             android:label="Sales Order"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".Activity.TaskManagerActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.TaskManagerActivity"
             android:label="Task Manager"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".Activity.AddOrderActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.AddOrderActivity"
             android:label="Add New Order"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".Activity.CreateTaskActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.CreateTaskActivity"
             android:label="Create New Task"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".Activity.EditTaskActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".Activity.EditTaskActivity"
             android:label="Edit Task"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -85,7 +94,10 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-
+        <service
+            android:name=".Helper.GPSTracker"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

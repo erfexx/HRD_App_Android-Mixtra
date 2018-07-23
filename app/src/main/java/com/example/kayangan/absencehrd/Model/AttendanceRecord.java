@@ -1,7 +1,5 @@
 package com.example.kayangan.absencehrd.Model;
 
-import java.time.Clock;
-import java.util.Date;
 
 /**
  * Created by KAYANGAN on 3/1/2018.
@@ -10,21 +8,34 @@ import java.util.Date;
 public class AttendanceRecord {
 
     private String date;
+    private String created_at;
+    private String updated_at;
     private String clock_in;
     private String clock_out;
     private String user_id;
+    private String status;
+    private int id;
     private String flag = "0";
 
     public AttendanceRecord() {
     }
 
-
-    public AttendanceRecord(String date, String clock_in, String clock_out, String user_id, String flag) {
+    public AttendanceRecord(String date, String clock_in, String clock_out, String user_id) {
         this.date = date;
         this.clock_in = clock_in;
         this.clock_out = clock_out;
         this.user_id = user_id;
-        this.flag = flag;
+    }
+
+    public AttendanceRecord(String date, String created_at, String updated_at, String clock_in, String clock_out, String user_id, String status) {
+        this.date = date;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.clock_in = clock_in;
+        this.clock_out = clock_out;
+        this.user_id = user_id;
+        this.status = status;
+
     }
 
     public AttendanceRecord(String date, String clock_in, String clock_out) {
@@ -33,9 +44,36 @@ public class AttendanceRecord {
         this.clock_out = clock_out;
     }
 
-    public AttendanceRecord(String clock_out, String flag) {
-        this.clock_out = clock_out;
-        this.flag = flag;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public AttendanceRecord(String flag) {

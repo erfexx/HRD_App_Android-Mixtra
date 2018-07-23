@@ -1,14 +1,13 @@
 package com.example.kayangan.absencehrd.Activity;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.kayangan.absencehrd.Helper.AttendanceRecordAdapter;
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
@@ -23,8 +22,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     SessionManager sessionManager;
 
-    SQLiteOpenHelper helper;
-    SQLiteDatabase DB;
     DatabaseHandler handler;
 
     ListView listView;
@@ -50,13 +47,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         String namaUser = data.get(SessionManager.KEY_NAME);
         String idUser = data.get(SessionManager.KEY_ID);
+        Constants.currentUserID = idUser;
+        String zoneUser = data.get(SessionManager.KEY_ZONE);
 
         txtName = findViewById(R.id.txtName);
-        txtName.setText(namaUser+" (" + idUser +")");
+        txtName.setText(namaUser+" (" + Constants.currentUserID +")");
 
         listView = findViewById(R.id.listView);
         handler = new DatabaseHandler(this);
-
 
         Cursor record = handler.getAllAttendance();
         recordList = new ArrayList<>();
@@ -72,5 +70,6 @@ public class ProfileActivity extends AppCompatActivity {
         AttendanceRecordAdapter adapter = new AttendanceRecordAdapter(this, R.layout.adapter_view_layout, recordList);
         listView.setAdapter(adapter);
     }
+
 
 }

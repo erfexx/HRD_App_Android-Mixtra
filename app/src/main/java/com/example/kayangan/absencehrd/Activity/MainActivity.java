@@ -1,6 +1,5 @@
 package com.example.kayangan.absencehrd.Activity;
 
-import android.app.Notification;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,22 +9,22 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
-import com.example.kayangan.absencehrd.Helper.currentUser;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+
+import io.ghyeok.stickyswitch.widget.StickySwitch;
 
 public class MainActivity extends AppCompatActivity {
     Time time;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     SessionManager session;
 
-    Button btn_in, btn_out;
+    StickySwitch stickySwitch;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onSupportNavigateUp() {
@@ -57,34 +56,29 @@ public class MainActivity extends AppCompatActivity {
         // Session class instance
         session = new SessionManager(getApplicationContext());
 
+        Constants.getInstance(MainActivity.this).getServerTime();
+
+        stickySwitch = findViewById(R.id.switchs);
+
         //Get Session data
         HashMap<String, String> data = session.getUserDetails();
         String userName = data.get(SessionManager.KEY_NAME);
         final String userID = data.get(SessionManager.KEY_ID);
 
-        currentUser.currentUserID = userID;
+        Constants.currentUserID = userID;
 
         time = new Time();
         helper = new DatabaseHandler(this);
 
         final TextView textView = findViewById(R.id.jam);
 
-        textView.setText(getTime());
-
+        textView.setText(Constants.currentTIME);
         //buat tampilin jam dinamis
         runnable = new Runnable() {
             @Override
             public void run() {
-                time.setToNow();
-
-                TextView textView = findViewById(R.id.jam);
-                long date = System.currentTimeMillis();
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                String dateString = dateFormat.format(date);
-
-                textView.setText(dateString);
-
+                Constants.getInstance(MainActivity.this).getServerTime();
+                textView.setText(Constants.currentTIME);
                 handler.postDelayed(runnable, 1000);
             }
         };
@@ -94,74 +88,137 @@ public class MainActivity extends AppCompatActivity {
 
         //menampilkan nama user yang sedang login
         txtUser = findViewById(R.id.user);
-        txtUser.setText("Hello, " + userName);
+        String currentUSER = "Hello, " + userName;
+        txtUser.setText(currentUSER);
 
-
-        btn_in = findViewById(R.id.btnIn);
-        btn_out= findViewById(R.id.btnOut);
-
-        //button buat tap in
-        btn_in.setOnClickListener(
-                new View.OnClickListener() {
+        cekSwitch();
+        stickySwitch.setOnSelectedChangeListener(
+                new StickySwitch.OnSelectedChangeListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onSelectedChange(StickySwitch.Direction direction, String s) {
+                        //buat absen masuk
+                        if (s.equals("IN"))
+                        {
+                            session.createTapInSession();
 
-                        DB = helper.getWritableDatabase();
+                            DB = helper.getWritableDatabase();
 
-                        AttendanceRecord data = new AttendanceRecord();
-
-                        data.setFlag("1");
-                        data.setClock_in(getTime().toString());
-                        data.setUser_id(userID);
-                        data.setDate(getDate().toString());
-                        data.setClock_out("00:00:00");
-
-                        recordIN(data);
-                    }
-                }
-        );
+                            AttendanceRecord data = new AttendanceRecord();
 
 
-        //button buat tap out
-        btn_out.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        DB = helper.getWritableDatabase();
+                            data.setFlag("1");
+                            data.setClock_in(Constants.currentTIME);
+                            data.setUser_id(userID);
+                            data.setDate(getDate());
+                            data.setClock_out("00:00:00");
+                            data.setCreated_at(getDate());
 
-                        AttendanceRecord data = new AttendanceRecord();
-                        data.setClock_out(getTime());
-                        recordOut(data);
+                            if (Constants.currentTIME.compareTo("15:00:00") >= 0)
+                            {
+                                data.setStatus("LATE");
+                            }
+                            else
+                                data.setStatus("PRESENT");
+
+
+                            recordIN(data);
+                        }
+                        //buat absen pulang
+                        else if (s.equals("OUT")){
+                            session.createTapOutSession();
+
+                            DB = helper.getWritableDatabase();
+
+                            AttendanceRecord data = new AttendanceRecord();
+                            data.setClock_out(Constants.currentTIME);
+
+                            recordOut(data);
+                        }
                     }
                 }
         );
     }
 
-    //fungsi buat cek waktu, apakah sesua dengan waktu pulang
-    public boolean cekTime(){
-        time.setToNow();
+    public void recordIN(AttendanceRecord data){
 
-        long date = System.currentTimeMillis();
+        ContentValues values = new ContentValues();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-        String timeString = dateFormat.format(date);
+        if (!validateDate())
+        {
+            values.put(DatabaseHandler.ATT_IN, data.getClock_in());
+            values.put(DatabaseHandler.ATT_DATE, data.getDate());
+            values.put(DatabaseHandler.ATT_USER_ID, data.getUser_id());
+            values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
+            values.put(DatabaseHandler.ATT_CREATED_AT, data.getCreated_at());
+            values.put(DatabaseHandler.ATT_STATUS, data.getStatus());
 
-        try {
-            String masuk = "09:00:00";
-            Date inFormat = new SimpleDateFormat("hh:mm:ss").parse(masuk);
+            long id = DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
 
-            String pulang = "17:00:00";
-            Date outFormat = new SimpleDateFormat("hh:mm:ss").parse(pulang);
+            Log.i("DBCEK", "Status: "+data.getStatus());
 
-            return outFormat.after(dateFormat.parse(dateFormat.format(date)));
+            //upload data attendance record ke db server
+            SynchronizeData.getInstance(MainActivity.this).ExportAttendanceOut(data);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            session.createTapInSession();
+
+            Toast.makeText(this, "YOU ARE IN, THANK YOU! :)"+data.getUser_id(), Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(this, "YOU ARE ALREADY IN :O", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void recordOut(AttendanceRecord data){
+        ContentValues values = new ContentValues();
+
+        values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
+
+        Date c = Calendar.getInstance().getTime();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
+
+        String formatDate = df.format(c);
+        String formatDate2 = df2.format(c);
+
+        if (DB != null)
+        {
+            //ubah kondisi disini
+            if (validateDate())
+            {
+                long id = DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?",
+                        new String[]{formatDate, Constants.currentUserID});
+
+                Log.i("CEKOUT", "Status: "+id+" user id = "+Constants.currentUserID);
+
+                //att update service
+                SynchronizeData.getInstance(MainActivity.this).AttUpd(data.getClock_out(), formatDate2);
+
+                Toast.makeText(this, "YOU ARE OUT, HAVE A NICE DAY", Toast.LENGTH_SHORT).show();
+            }
+            else
+                Toast.makeText(this, "YOU ARE ALREADY OUT, HAVE A NICE DAY", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            Log.d("AAA", "DB NULL");
         }
 
-        return true;
+    }
+
+
+
+
+
+
+    ///////////////////////////////////////////////////
+    public void cekSwitch(){
+        if (!session.isTappedIn())
+        {
+            stickySwitch.setDirection(StickySwitch.Direction.LEFT);
+        }
+        else
+            stickySwitch.setDirection(StickySwitch.Direction.RIGHT);
     }
 
     //fungsi untuk get waktu terkini
@@ -194,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         String tanggal = getDate();
 
         Cursor cursor = DB.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_ATTENDANCES +
-                " WHERE " + DatabaseHandler.ATT_USER_ID + " = ? AND " + DatabaseHandler.ATT_DATE + " = ? ", new String[]{currentUser.currentUserID, tanggal});
+                " WHERE " + DatabaseHandler.ATT_USER_ID + " = ? AND " + DatabaseHandler.ATT_DATE + " = ? ", new String[]{Constants.currentUserID, tanggal});
 
         if (cursor != null){
             if (cursor.getCount() > 0)
@@ -209,61 +266,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
-    }
-
-    public void recordIN(AttendanceRecord data){
-
-        ContentValues values = new ContentValues();
-
-        String tanggal = getDate();
-
-        if (!validateDate())
-        {
-            values.put(DatabaseHandler.ATT_FLAG_TAP, "");
-            values.put(DatabaseHandler.ATT_IN, data.getClock_in());
-            values.put(DatabaseHandler.ATT_DATE, data.getDate());
-            values.put(DatabaseHandler.ATT_USER_ID, data.getUser_id());
-            values.put(DatabaseHandler.ATT_OUT, data.getClock_out());
-
-            DB.insert(DatabaseHandler.TABLE_ATTENDANCES, null, values);
-
-            session.createTapInSession();
-
-            Toast.makeText(this, "YOU ARE IN, THANK YOU! :)", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(this, "YOU ARE ALREADY IN :O", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    //ADA ERROR KETIKA HABIS TAP-IN TERUS LOGOUT, ERRORNYA DB NYA NULL,
-    //TAPI KETIKA DI TAP IN TERUS DI TAP OUT DB NYA TIDAK NULL
-    public void recordOut(AttendanceRecord data){
-        ContentValues values = new ContentValues();
-
-        values.put(DatabaseHandler.ATT_OUT, getTime());
-
-        Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        String formatDate = df.format(c);
-
-        if (DB != null)
-        {
-            if (validateDate() && session.isTappedIn())
-            {
-                DB.update(DatabaseHandler.TABLE_ATTENDANCES, values, "date = ? AND user_id = ?",
-                        new String[]{formatDate, currentUser.currentUserID});
-
-                Toast.makeText(this, "YOU ARE OUT, HAVE A NICE DAY :)", Toast.LENGTH_SHORT).show();
-            }
-            else
-                Toast.makeText(this, "TAP IN BEFORE YOU TAP OUT :D", Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            Log.d("AAA", "DB NULL, DUNNO WHY :(");
-            Toast.makeText(this, "SORRY, PRESS IN AGAIN BEFORE PRESS OUT :(", Toast.LENGTH_LONG).show();
-        }
-
     }
 }

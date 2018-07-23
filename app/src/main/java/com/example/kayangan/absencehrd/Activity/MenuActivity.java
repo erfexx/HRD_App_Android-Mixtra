@@ -1,5 +1,6 @@
 package com.example.kayangan.absencehrd.Activity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
+import com.example.kayangan.absencehrd.Model.SalesOrder;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
 
@@ -39,6 +43,8 @@ public class MenuActivity extends AppCompatActivity
     CardView cvTM, cvA, cvS, cvSO, cvP;
 
     boolean doubleBackToExitPressedOnce = false;
+
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,7 @@ public class MenuActivity extends AppCompatActivity
 
         HashMap<String, String> user = sessionManager.getUserDetails();
         String name = user.get(SessionManager.KEY_NAME);
+        Constants.currentUserID = user.get(SessionManager.KEY_ID);
 
         NAMA.setText(name);
 
@@ -85,8 +92,8 @@ public class MenuActivity extends AppCompatActivity
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "ADJUST YOUR POSITION FIRST!", Toast.LENGTH_SHORT).show();
-                    if (checkGPS())
-                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                    /*if (checkGPS())
+                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));*/
                 }
             }
         });
@@ -105,19 +112,8 @@ public class MenuActivity extends AppCompatActivity
             }
         });
 
-        cvTM.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MenuActivity.this, TaskManagerActivity.class));
-            }
-        });
 
-        cvSO.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
-            }
-        });
+
     }
 
     @Override
@@ -156,7 +152,10 @@ public class MenuActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sync) {
+
+            SynchronizeData.getInstance(MenuActivity.this).SyncAll();
+
             return true;
         }
 
@@ -173,10 +172,10 @@ public class MenuActivity extends AppCompatActivity
         Intent intent;
 
 
-        if (id == R.id.nav_task)
-        {
-            Intent taskIntent = new Intent(MenuActivity.this, TaskManagerActivity.class);
-            startActivity(taskIntent);
+        if (id == R.id.nav_task) {
+            intent = new Intent(MenuActivity.this, TaskManagerActivity.class);
+            startActivity(intent);
+
         }
         else if (id == R.id.nav_absence) {
             if (tracker.inLocation)
@@ -199,9 +198,9 @@ public class MenuActivity extends AppCompatActivity
         else if (id == R.id.nav_stock){
             startActivity(new Intent(MenuActivity.this, StockActivity.class));
         }
-        else if (id == R.id.nav_sales_order) {
-            intent = new Intent (MenuActivity.this, SalesOrderActivity.class);
-            startActivity(intent);
+        else if (id == R.id.nav_sales_order){
+            startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
+
         }
         else if (id == R.id.nav_profile) {
             intent = new Intent(MenuActivity.this, ProfileActivity.class);
@@ -243,6 +242,7 @@ public class MenuActivity extends AppCompatActivity
     private boolean checkGPS(){
         String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
 
         if (!provider.equals("")){
             return true;

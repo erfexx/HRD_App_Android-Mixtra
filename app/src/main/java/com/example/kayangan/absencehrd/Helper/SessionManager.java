@@ -27,10 +27,14 @@ public class SessionManager {
 
     private static final String IS_LOGIN = "IsLoggedIn";
     private static final String IS_TAP_IN = "IsTappedIn";
-    private static final boolean FIRST_TIME_IN = false;
+    private static final String IS_TAP_OUT = "IsTappedOut";
+
+    //Buat welcome screen
+    private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
 
     public static final String KEY_NAME = "name";
     public static final String KEY_ID = "id";
+    public static final String KEY_ZONE = "zone";
 
 
 
@@ -41,10 +45,11 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String NAMA, String id){
+    public void createLoginSession(String NAMA, String id, String zone){
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, NAMA);
         editor.putString(KEY_ID, id);
+        editor.putString(KEY_ZONE, zone);
 
         editor.commit();
     }
@@ -75,6 +80,7 @@ public class SessionManager {
         // user name
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_ID, pref.getString(KEY_ID, null));
+        user.put(KEY_ZONE, pref.getString(KEY_ZONE, null));
 
         // return user
         return user;
@@ -97,7 +103,7 @@ public class SessionManager {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         //clear current user id
-        currentUser.currentUserID = "";
+        Constants.currentUserID = "";
 
         // Staring Login Activity
         _context.startActivity(i);
@@ -117,6 +123,11 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void createTapOutSession(){
+        editor.putBoolean(IS_TAP_IN, false);
+        editor.commit();
+    }
+
     public boolean isTappedIn(){
         return pref.getBoolean(IS_TAP_IN, false);
     }
@@ -131,5 +142,16 @@ public class SessionManager {
         }
         return false;
     }
+
+    public void setFirstTimeLaunch(boolean isFirstTime) {
+        editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
+        editor.commit();
+    }
+
+    public boolean isFirstTimeLaunch() {
+        return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
+    }
+
+
 
 }

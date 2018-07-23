@@ -10,27 +10,42 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
+import com.example.kayangan.absencehrd.Helper.AppController;
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
 import com.example.kayangan.absencehrd.Model.User;
 import com.example.kayangan.absencehrd.R;
+
+
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.kayangan.absencehrd.Helper.Constants.encryptPassword;
 
 public class RegistrationActivity extends AppCompatActivity {
     SQLiteOpenHelper helper;
     SQLiteDatabase database;
 
     Button regis, link;
-    EditText nama, pass;
+    EditText nama, pass, ID;
 
     Cursor cursor;
 
@@ -41,9 +56,10 @@ public class RegistrationActivity extends AppCompatActivity {
     ProgressDialog dialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
 
         //bg orientation
         LinearLayout layout = findViewById(R.id.registLayout);
@@ -70,10 +86,12 @@ public class RegistrationActivity extends AppCompatActivity {
         if (sessionManager.isLoggedIn())
             redirectToMainMenu();
 
+
         helper = new DatabaseHandler(this);
 
         nama = findViewById(R.id.txtName);
         pass = findViewById(R.id.txtPassword);
+        //ID = findViewById(R.id.txtID);
 
         link = findViewById(R.id.btnLinkToLoginScreen);
         regis = findViewById(R.id.btnDaftar);
@@ -82,56 +100,30 @@ public class RegistrationActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                        database = helper.getWritableDatabase();
-
                         dialog = new ProgressDialog(RegistrationActivity.this);
                         dialog.setMessage("Loading Registration Process ...");
                         dialog.setTitle("REGISTRATION PROCESS");
                         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
                         String name = nama.getText().toString();
-                        String password = pass.getText().toString();
+                        byte[] salt = new byte[0];
+                        try {
+                            salt = Constants.getSalt();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchProviderException e) {
+                            e.printStackTrace();
+                        }
+                        String password = encryptPassword(pass.getText().toString(), salt);
 
                         if (name.trim().length() > 0 && password.trim().length() > 0){
-                            User user = new User();
-                            user.setName(name);
-                            user.setPassword(password);
+                            dialog.setCancelable(false);
+                            dialog.show();
 
-                            if (checkData())
-                            {
-                                insertData(user);
-
-                                dialog.setCancelable(false);
-                                dialog.show();
-
-                                new Thread(
-                                        new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    Thread.sleep(5000);
-                                                } catch (InterruptedException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }
-                                ).start();
-
-
-                                startActivity(intent);
-                                dialog.dismiss();
-                                Toast.makeText(RegistrationActivity.this, "REGISTRATION COMPLETED!", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                            else
-                            {
-                                dialog.dismiss();
-                                Toast.makeText(RegistrationActivity.this, "THE NAME IS ALREADY REGISTERED!", Toast.LENGTH_SHORT).show();
-                            }
+                            RegistrationService(name, password);
                         }
-                        else
-                            alertDialogManager.showAlertDialog(RegistrationActivity.this, "REGISTRATION FAILED", "Please Enter Name or Password", false);
+
+
                     }
                 }
         );
@@ -148,10 +140,13 @@ public class RegistrationActivity extends AppCompatActivity {
         );
     }
 
+
+
     private void insertData(User user){
         ContentValues values = new ContentValues();
         values.put(DatabaseHandler.KEY_NAME, user.getName());
         values.put(DatabaseHandler.KEY_PASS, user.getPassword());
+        values.put(DatabaseHandler.KEY_ZONE, user.getZone());
 
         long id = database.insert(DatabaseHandler.TABLE_USERS, null, values);
     }
@@ -163,7 +158,7 @@ public class RegistrationActivity extends AppCompatActivity {
         String name = nama.getText().toString();
 
         cursor = database.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_USERS + " WHERE " + DatabaseHandler.KEY_NAME + " = ?"
-                                    , new String[]{name});
+                , new String[]{name});
         if (cursor != null)
             if (cursor.getCount() <= 0)
             {
@@ -178,4 +173,46 @@ public class RegistrationActivity extends AppCompatActivity {
         finish();
     }
 
+    private void RegistrationService(final String name, final String password){
+        String url = Constants.url+"users";
+
+        StringRequest objectRequest = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        dialog.dismiss();
+                        startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                        Toast.makeText(RegistrationActivity.this, "REGISTRATION COMPLETE", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dialog.dismiss();
+                        Log.e("AAA", error.toString());
+                        Toast.makeText(RegistrationActivity.this, "ERROR", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        )
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("id",""+ID);
+                params.put("name",""+name);
+                params.put("password",""+password);
+                params.put("zone","A");
+                params.put("created_at","");
+                params.put("updated_at","");
+                params.put("attendance","");
+
+                return params;
+            }
+        };
+
+        AppController.getInstance(RegistrationActivity.this).addToRequestque(objectRequest);
+    }
 }

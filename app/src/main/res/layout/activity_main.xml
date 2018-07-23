@@ -16,29 +16,45 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_alignParentBottom="true"
-        android:weightSum="2"
-        android:layout_margin="5dp"
+        android:weightSum="3"
         >
 
-        <Button
-            android:id="@+id/btnIn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="IN"
-            android:background="@color/colorAccent"
-            android:textColor="@color/white"
-            android:layout_weight="1"
-            android:layout_margin="5dp"/>
-
-        <Button
-            android:id="@+id/btnOut"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="OUT"
-            android:background="@color/colorAccent"
-            android:textColor="@color/white"
+            android:gravity="end"
             android:layout_weight="1"
-            android:layout_margin="5dp"/>
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:textColor="@color/input_login"
+            />
+
+        <io.ghyeok.stickyswitch.widget.StickySwitch
+            android:id="@+id/switchs"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            app:iconPadding="10dp"
+            app:iconSize="30dp"
+            app:leftText="OUT"
+            app:rightText="IN"
+            app:selectedTextSize="14sp"
+            app:sliderBackgroundColor="@color/darkgray"
+            app:switchColor="@color/colorAccent"
+            app:textColor="@android:color/white"
+            app:textSize="12sp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="IN"
+            android:gravity="start"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:padding="10dp"
+            android:textColor="@color/input_login"
+            />
 
     </LinearLayout>
 
@@ -65,7 +81,7 @@
         android:textSize="28sp"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp"/>
+        android:layout_marginVertical="25dp"/>
 
 
 </RelativeLayout>

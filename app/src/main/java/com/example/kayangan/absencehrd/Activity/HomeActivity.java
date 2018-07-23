@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,17 +15,14 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
 import com.example.kayangan.absencehrd.R;
-import com.example.kayangan.absencehrd.Helper.currentUser;
 
 public class HomeActivity extends AppCompatActivity {
     SessionManager sessionManager;
-
     RelativeLayout relativeLayout;
-
     boolean doubleBackToExitPressedOnce = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +57,14 @@ public class HomeActivity extends AppCompatActivity {
         toLogin = findViewById(R.id.btnToLogin);
         toRegist = findViewById(R.id.btnToRegis);
 
-        Log.e("AAA", ""+ currentUser.currentUserID);
+        Log.e("AAA", ""+ Constants.currentUserID);
 
         relativeLayout = findViewById(R.id.relativeLayout);
 
         if (!sessionManager.isConnectedToNetwork())
         {
+            toLogin.setEnabled(false);
+            toRegist.setEnabled(false);
             Snackbar snackbar = Snackbar.make(relativeLayout, "Network Is Not Available!", Snackbar.LENGTH_INDEFINITE)
                     .setAction("RETRY", new View.OnClickListener() {
                         @Override
@@ -76,6 +74,11 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
             snackbar.show();
+        }
+        if (sessionManager.isConnectedToNetwork())
+        {
+            toLogin.setEnabled(true);
+            toRegist.setEnabled(true);
         }
 
         toLogin.setOnClickListener(
@@ -118,8 +121,4 @@ public class HomeActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    private void redirectToMainMenu(){
-        startActivity(new Intent(HomeActivity.this, MenuActivity.class));
-        finish();
-    }
 }

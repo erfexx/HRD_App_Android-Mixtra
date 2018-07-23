@@ -6,7 +6,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Synchronize Data</string>
 
     <string-array name="nav_item_activity_titles">
         <item>TASK MANAGER</item>
@@ -29,14 +29,26 @@
 
     <string-array name="planets_array">
         <item>--</item>
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
     </string-array>
+
+    <!--WELCOME SCREEN-->
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">My Task!</string>
+    <string name="slide_1_desc">Management Your Tasks</string>
+
+    <string name="slide_2_title">Attendance Machine</string>
+    <string name="slide_2_desc">Attendance Machine from your phone</string>
+
+    <string name="slide_3_title">Stock</string>
+    <string name="slide_3_desc">Management your Stock</string>
+
+    <string name="slide_4_title">Sales Order</string>
+    <string name="slide_4_desc">Management your Sales Order</string>
 </resources>
 

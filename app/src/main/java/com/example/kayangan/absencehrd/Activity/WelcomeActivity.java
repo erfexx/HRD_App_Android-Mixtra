@@ -12,10 +12,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.R;
 
 public class WelcomeActivity extends AppCompatActivity {
     private static int SPLASH_TIME_OUT = 4000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(WelcomeActivity.this, MenuActivity.class);
+                        Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
+                        Constants.getInstance(WelcomeActivity.this).getServerTime();
                         startActivity(intent);
                         finish();
                     }

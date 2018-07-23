@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Manage Your Tasks"
+                        android:text="@string/slide_1_desc"
                         android:padding="5dp"
                         android:textColor="@android:color/darker_gray"/>
 
@@ -232,7 +232,7 @@
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:background="@drawable/cerclebackgroundpurple"
+                        android:background="@drawable/circlebackgorange"
                         android:src="@drawable/ic_assignment_ind_white_24dp"
                         android:padding="14dp"
                         android:layout_marginTop="10dp"/>

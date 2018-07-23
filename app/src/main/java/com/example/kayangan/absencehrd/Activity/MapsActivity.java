@@ -1,54 +1,54 @@
 package com.example.kayangan.absencehrd.Activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
+
+import com.example.kayangan.absencehrd.Helper.Constants;
+import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.GPSTracker;
+import com.example.kayangan.absencehrd.Helper.SessionManager;
+import com.example.kayangan.absencehrd.Model.Coordinates;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.LocationListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.kayangan.absencehrd.Helper.GPSTracker;
-import com.example.kayangan.absencehrd.Helper.SessionManager;
-import com.example.kayangan.absencehrd.Helper.currentUser;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 import com.example.kayangan.absencehrd.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
-
-import static android.provider.Contacts.SettingsColumns.KEY;
 
 public class MapsActivity
         extends
@@ -57,37 +57,56 @@ public class MapsActivity
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener
+        GoogleMap.OnMapClickListener,
+        GoogleMap.OnMarkerClickListener,
+        LocationListener,
+        ResultCallback<Status>
 {
-    private Button btnReqPos;
-
-    GPSTracker gpsTracker;
-    private GoogleMap mMap;
-
-    //Play Services Location
-    private static final int MY_PERMISSION_REQUEST_CODE = 1706;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 170697;
-
-    private LocationRequest locationRequest;
     private GoogleApiClient apiClient;
-    private Location lastLocation;
-
-
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-    private static int UPDATE_INTERVAL = 5000;
-    private static int FATEST_INTERVAL = 3000;
-    private static int DISPLACEMENT = 10;
-
-
-    DatabaseReference databaseReference;
-    GeoFire geoFire;
-
-    Marker mCurrentPos;
 
     SessionManager sessionManager;
 
+    private GoogleMap googleMap;
+
+    private boolean isMonitoring = false;
+    private PendingIntent pendingIntent;
+
+    Button btnSetLocation;
+
+    public ArrayList<Coordinates> coordinatesList;
+    DatabaseHandler handler;
+
+    Coordinates coordinates;
+
+    String userZone;
+
+    double latitude = 0;
+    double longitude = 0;
+
+    private void getCoordinate(String userZone){
+        handler = new DatabaseHandler(this);
+
+        Cursor record = handler.getAllCoordinates(userZone);
+        coordinatesList = new ArrayList<>();
+
+        if (record.getCount() > 0) {
+            while (record.moveToNext()) {
+                coordinates = new Coordinates(
+                        Constants.GEOFENCE_ID_COMP_LOC,
+                        record.getString(4),
+                        record.getString(3),
+                        new LatLng(
+                                Double.parseDouble(record.getString(1)),
+                                Double.parseDouble(record.getString(2))
+                        )
+                );
+
+                coordinatesList.add(coordinates);
+            }
+        }
+        else
+            Log.d("AAA", "Table Location Kosong");
+    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -96,179 +115,281 @@ public class MapsActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        sessionManager = new SessionManager(this);
+
+        HashMap<String, String> data = sessionManager.getUserDetails();
+        userZone = data.get(SessionManager.KEY_ZONE);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        getCoordinate(userZone);
+
+        GPSTracker.inLocation= false;
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
 
+        apiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).build();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("" + currentUser.currentUserID);
-        geoFire = new GeoFire(databaseReference);
+        if (!checkPermission())
+            checkPermission();
 
-        setUpLocation();
+        btnSetLocation = findViewById(R.id.btnReqPos);
 
-        btnReqPos = findViewById(R.id.btnReqPos);
-        btnReqPos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setUpLocation();
-            }
-        });
-
-        btnReqPos = findViewById(R.id.btnReqPos);
-        btnReqPos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setUpLocation();
-            }
-        });
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        LatLng dangerArea = new LatLng(-6.190361, 106.748589);
-
-        mMap.addCircle(
-                new CircleOptions()
-                        .center(dangerArea)
-                        .radius(100)
-                        .strokeColor(Color.BLUE)
-                        .fillColor(0x220000FF)
-                        .strokeWidth(7.0f)
-        );
-
-
-        //GeoQuery
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(dangerArea.latitude, dangerArea.longitude), 0.1f);
-        geoQuery.addGeoQueryEventListener(
-                new GeoQueryEventListener() {
+        btnSetLocation.setOnClickListener(
+                new View.OnClickListener() {
                     @Override
-                    public void onKeyEntered(String key, GeoLocation location) {
-                        sendNotification("Employee Attendance", String.format("%s are in office area", key));
-                        gpsTracker.inLocation = true;
-                    }
+                    public void onClick(View v) {
+                        startGeofencing();
 
-                    @Override
-                    public void onKeyExited(String key) {
-                        sendNotification("Employee Attendance", String.format("%s is no longer in the office area", key));
-                        gpsTracker.inLocation = false;
-                    }
-
-                    @Override
-                    public void onKeyMoved(String key, GeoLocation location) {
-                        Log.d("MOVE", String.format("%s moved within the office area [%f/%f]", key, location.latitude, location.longitude));
-                    }
-
-                    @Override
-                    public void onGeoQueryReady() {
-
-                    }
-
-                    @Override
-                    public void onGeoQueryError(DatabaseError error) {
-                        Log.e("ERROR", ""+error);
+                        if (GPSTracker.inLocation)
+                            Toast.makeText(MapsActivity.this, "In Location", Toast.LENGTH_SHORT).show();
+                        else if (!GPSTracker.inLocation)
+                            Toast.makeText(MapsActivity.this, "Not In Location", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode)
-        {
-            case MY_PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    if (checkPlayServices()){
-                        buildGoogleApiClient();
-                        createLocationRequest();
-                        displayLocation();
-                    }
-                }
-                break;
-        }
-    }
-
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    @Override
-    public void onLocationChanged(Location location) {
-        lastLocation = location;
-        displayLocation();
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        displayLocation();
-        startLocationUpdates();
+        Log.d("AAA", "Google Api Connected");
+        isMonitoring = true;
+        startGeofencing();
+        startLocationMonitor();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        apiClient.connect();
+        Log.d("AAA", "Google Api Suspended");
     }
 
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    @SuppressLint("RestrictedApi")
-    private void createLocationRequest() {
-        locationRequest = new LocationRequest();
-
-        locationRequest.setInterval(UPDATE_INTERVAL);
-        locationRequest.setFastestInterval(FATEST_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setSmallestDisplacement(DISPLACEMENT);
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        isMonitoring = false;
+        Log.d("AAA", "Connection Failed: " + connectionResult.getErrorMessage());
     }
 
-    private void buildGoogleApiClient() {
-        apiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        apiClient.connect();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        apiClient.reconnect();
     }
 
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        apiClient.disconnect();
+    }
 
-        if (resultCode != ConnectionResult.SUCCESS)
-        {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode))
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            else
-            {
-                Toast.makeText(this, "This Device is not supported", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
-            return false;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
+        if (response != ConnectionResult.SUCCESS) {
+            Log.d("AAA", "Google Play Service Not Available");
+            GoogleApiAvailability.getInstance().getErrorDialog(MapsActivity.this, response, 1).show();
+        } else {
+            Log.d("AAA", "Google play service available");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        this.googleMap = googleMap;
+
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18f));
+
+        googleMap.setMyLocationEnabled(true);
+
+        for (int i=0; i<coordinatesList.size(); i++){
+            googleMap.addMarker(new MarkerOptions().position(coordinatesList.get(i).getLatLng()).title(coordinatesList.get(i).getName()));
+
+            Circle circle = googleMap.addCircle( new CircleOptions()
+                    .center(new LatLng(coordinatesList.get(i).getLatLng().latitude, coordinatesList.get(i).getLatLng().longitude))
+                    .radius(Constants.GEOFENCE_RADIUS_IN_METERS)
+                    .strokeColor(Color.BLUE)
+                    .strokeWidth(7f));
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        if (isMonitoring) {
+            menu.findItem(R.id.action_start_monitor).setVisible(false);
+            menu.findItem(R.id.action_stop_monitor).setVisible(false);
+        } else {
+            menu.findItem(R.id.action_start_monitor).setVisible(false);
+            menu.findItem(R.id.action_stop_monitor).setVisible(false);
         }
         return true;
     }
 
-    private void setUpLocation() {
-        sessionManager = new SessionManager(getApplicationContext());
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_start_monitor:
+                startGeofencing();
+                break;
+            case R.id.action_stop_monitor:
+                stopGeoFencing();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        HashMap<String, String> user = sessionManager.getUserDetails();
-        String KEY = user.get(SessionManager.KEY_NAME);
+    private void startLocationMonitor(){
+        Log.d("AAA", "Start Location Monitor");
+        LocationRequest locationRequest = LocationRequest.create()
+                .setInterval(2000)
+                .setFastestInterval(1000)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, locationRequest,
+                    new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            Log.d("AAA", "Location Change, Lat: "+location.getLatitude()+" Lng: "+ location.getLongitude());
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+
+                            if (location == null)
+                            {
+                                latitude = 37.4275;
+                                longitude = -122.17;
+                            }
+
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18f));
+                        }
+                    });
+        }
+        catch (SecurityException e){
+            Log.d("AAA", e.getMessage());
+        }
+    }
+
+    private Geofence getGeofence(){
+        for (int i=0; i<coordinatesList.size(); i++){
+
+            return new Geofence.Builder()
+                    .setRequestId(Constants.GEOFENCE_ID_COMP_LOC)
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setCircularRegion(coordinatesList.get(i).getLatLng().latitude, coordinatesList.get(i).getLatLng().longitude, Constants.GEOFENCE_RADIUS_IN_METERS)
+                    .setNotificationResponsiveness(1000)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build();
+        }
+
+        return null;
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
+        builder.addGeofence(getGeofence());
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent(){
+        if (pendingIntent != null)
+            return pendingIntent;
+        Intent intent = new Intent(this, GPSTracker.class);
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void startGeofencing(){
+        Log.d("AAA", "Start geofencing monitoring call");
+
+        pendingIntent = getGeofencePendingIntent();
+
+        if (!apiClient.isConnected()) {
+            Log.d("AAA", "Google API client not connected");
+        } else {
+            try {
+                LocationServices.GeofencingApi.addGeofences(
+                        apiClient, getGeofencingRequest(),
+                        pendingIntent).setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if (status.isSuccess()) {
+                            Log.d("AAA", "Successfully Geofencing Connected");
+                        } else {
+                            Log.d("AAA", "Failed to add Geofencing " + status.getStatus());
+                        }
+                    }
+                });
+            } catch (SecurityException e) {
+                Log.d("AAA", e.getMessage());
+            }
+        }
+        isMonitoring = true;
+        invalidateOptionsMenu();
+    }
+
+    private void stopGeoFencing() {
+        pendingIntent = getGeofencePendingIntent();
+        LocationServices.GeofencingApi.removeGeofences
+                (apiClient, pendingIntent)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        if (status.isSuccess())
+                            Log.d("AAA", "Stop geofencing");
+                        else
+                            Log.d("AAA", "Not stop geofencing");
+                    }
+                });
+
+        isMonitoring = false;
+        invalidateOptionsMenu();
+    }
+
+    private boolean checkPermission(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
@@ -279,100 +400,11 @@ public class MapsActivity
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION
                     },
-                    MY_PERMISSION_REQUEST_CODE
+                    100
             );
+            return true;
         }
-        else
-        {
-            if (checkPlayServices()){
-                buildGoogleApiClient();
-                createLocationRequest();
-                displayLocation();
-            }
-        }
+        return false;
     }
 
-    private void displayLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            return;
-        }
-
-        lastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
-
-        if (lastLocation != null)
-        {
-            final double latitude = lastLocation.getLatitude();
-            final double longitude = lastLocation.getLongitude();
-
-            //update to Firebase
-            geoFire.setLocation(""+KEY, new GeoLocation(latitude, longitude),
-                    new GeoFire.CompletionListener() {
-                        @Override
-                        public void onComplete(String key, DatabaseError error) {
-                            //Add Marker
-                            if (mCurrentPos != null)
-                            {
-                                //remove old marker
-                                mCurrentPos.remove();
-                            }
-
-                            //make new marker
-                            mCurrentPos = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("You"));
-
-                            //move camera to current position
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 16.0f));
-                        }
-                    });
-
-            Log.d("AAA", "Lokasi diubah: " + latitude + "  " + longitude);
-        }
-        else
-        {
-            Log.d("AAA", "Lokasi tidak ditemukan ha 1");
-        }
-    }
-
-    private void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            return;
-        }
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, locationRequest, (com.google.android.gms.location.LocationListener) this);
-    }
-
-    private void sendNotification(String title, String content) {
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.logo_round)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setAutoCancel(false);
-
-        NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Intent intent = new Intent(this, MapsActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this,0, intent, PendingIntent.FLAG_IMMUTABLE);
-
-        builder.setContentIntent(contentIntent);
-
-        Notification notification = builder.build();
-
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notification.defaults |= Notification.DEFAULT_SOUND;
-
-        manager.notify(new Random().nextInt(), notification);
-    }
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 }
