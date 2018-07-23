@@ -39,7 +39,7 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
         setContentView(R.layout.activity_add_order);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         final EditText etTransDate = (EditText) findViewById(R.id.etTransDate);
         etTransDate.setInputType(InputType.TYPE_NULL);

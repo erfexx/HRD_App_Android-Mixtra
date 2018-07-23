@@ -294,7 +294,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public ArrayList<SalesOrder> getSearchOrders(String startdate, String enddate) {
         ArrayList<SalesOrder> orderList = new ArrayList<SalesOrder>();
         // Select All Query
-        String selectQuery = "SELECT * FROM " + TABLE_ORDERS + " WHERE strftime('%d-%m-%Y', "+ ORDER_TRANS + ") BETWEEN '" + startdate + "' AND '" + enddate + "'";
+        String selectQuery = "SELECT * FROM " + TABLE_ORDERS + " WHERE DATE(" + ORDER_TRANS + ") BETWEEN '" + startdate + "' AND '" + enddate + "'";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

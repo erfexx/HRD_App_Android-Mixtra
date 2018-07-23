@@ -48,7 +48,7 @@ public class SalesOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sales_order);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         final EditText etStartDate = (EditText) findViewById(R.id.etStartDate);
         final EditText etEndDate = (EditText) findViewById(R.id.etEndDate);
@@ -97,9 +97,20 @@ public class SalesOrderActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                orderSearch.addAll(db.getSearchOrders(etStartDate.getText().toString(), etEndDate.getText().toString()));
-                sAdapter = new OrderAdapter(orderSearch,getApplicationContext());
-                listView1.setAdapter(sAdapter);
+                if(etStartDate.getText().toString() == null && etEndDate.getText().toString() == null)
+                {
+                    Toast.makeText(getBaseContext(), "Please enter the date", Toast.LENGTH_SHORT).show();
+                }
+                else if(etStartDate.getText().toString() != null && etEndDate.getText().toString() != null)
+                {
+                    sAdapter = new OrderAdapter(orderSearch,getApplicationContext());
+                    sAdapter.clear();
+                    sAdapter.notifyDataSetChanged();
+                    orderSearch.addAll(db.getSearchOrders(etStartDate.getText().toString(), etEndDate.getText().toString()));
+                    listView1.setAdapter(sAdapter);
+                    Toast.makeText(getBaseContext(), "Start Date:" + etStartDate.getText().toString(), Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 

@@ -9,9 +9,9 @@
         android:id="@+id/voucher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="11dp"
+        android:layout_marginStart="13dp"
+        android:layout_toEndOf="@+id/textView17"
         android:text="Voucher No"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black" />
@@ -24,5 +24,13 @@
         android:layout_below="@+id/voucher"
         android:text="Salesman"
         android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:drawableStart="@drawable/bullet" />
 
 </RelativeLayout>
