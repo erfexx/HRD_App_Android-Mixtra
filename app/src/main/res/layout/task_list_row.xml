@@ -5,21 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:padding="10dp"
+    android:background="@android:color/white"
+    >
 
     <TextView
         android:id="@+id/dtname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView17"
-        android:layout_alignBottom="@+id/textView17"
-        android:layout_marginStart="15dp"
-        android:layout_toEndOf="@+id/textView17"
+        android:layout_marginStart="22dp"
         android:text="Task Name"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0" />
+        android:textColor="@color/input_login"
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/dtdesc"
@@ -28,10 +27,9 @@
         android:layout_alignStart="@+id/dtname"
         android:layout_below="@+id/dtname"
         android:text="Task Desc"
-        android:textColor="@android:color/black" />
+        android:textColor="@color/darkgray" />
 
     <TextView
-        android:id="@+id/textView17"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"

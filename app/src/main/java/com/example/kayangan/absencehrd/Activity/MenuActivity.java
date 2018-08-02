@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.AlertDialogManager;
 import com.example.kayangan.absencehrd.Helper.Constants;
+import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.GPSTracker;
 import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.SalesOrder;
@@ -44,6 +45,8 @@ public class MenuActivity extends AppCompatActivity
 
     boolean doubleBackToExitPressedOnce = false;
 
+    DatabaseHandler handler;
+
     ProgressDialog dialog;
 
     @Override
@@ -52,6 +55,11 @@ public class MenuActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        handler = new DatabaseHandler(this);
+
+        if (handler.isTableTaskExists())
+            SynchronizeData.getInstance(MenuActivity.this).syncTasks();
 
         cvTM = findViewById(R.id.taskID);
         cvA = findViewById(R.id.attendanceID);
@@ -83,10 +91,28 @@ public class MenuActivity extends AppCompatActivity
 
         NAMA.setText(name);
 
+        cvTM.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MenuActivity.this, TaskManagerActivity.class));
+                    }
+                }
+        );
+
+        cvSO.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
+                    }
+                }
+        );
+
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tracker.inLocation)
+                if (!tracker.inLocation)
                 {
                     startActivity(new Intent(MenuActivity.this, MainActivity.class));
                 }

@@ -14,10 +14,14 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.Task;
 import com.example.kayangan.absencehrd.R;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,34 +46,49 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         int position = getIntent().getIntExtra("pos",0);
+        final int[] f = {0};
 
         db = new DatabaseHandler(this);
 
         //dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
-        final TextView tname = (TextView) findViewById(R.id.dtname);
-        final TextView tdesc = (TextView) findViewById(R.id.dtdesc);
-        final TextView tduedate = (TextView) findViewById(R.id.dtduedate);
+        final TextView tvSeek = findViewById(R.id.txtSeekbar);
+        final EditText tname = findViewById(R.id.dtname);
+        final EditText tdesc = findViewById(R.id.dtdesc);
+        final EditText tduedate = findViewById(R.id.dtduedate);
         tduedate.setInputType(InputType.TYPE_NULL);
+
+        tname.setEnabled(false);
+        tname.setClickable(false);
+
+        tdesc.setEnabled(false);
+        tdesc.setClickable(false);
+
+        tduedate.setEnabled(false);
+        tduedate.setClickable(false);
+
         spinner = (Spinner) findViewById(R.id.dtassign);
-        final TextView tprogress = (TextView) findViewById(R.id.dtprogress);
-        SeekBar progressBar = (SeekBar) findViewById(R.id.progressBar);
+
+        SeekBar progressBar = findViewById(R.id.progressBar);
         progressBar.setMax(100);
+        progressBar.setProgress(0);
+
         final Button bSubmit = (Button) findViewById(R.id.bSubmit);
 
         final Task task = db.getTask(position);
-        tname.setText(task.getTname());
-        tdesc.setText(task.getTdesc());
-        tduedate.setText(task.getTduedate());
-        String sprogress = String.valueOf(task.getTprogress());
-        tprogress.setText(sprogress);
+        tname.setText("  "+task.getTname());
+        tdesc.setText("  "+task.getTdesc());
+        tduedate.setText("  "+task.getTduedate());
+        tvSeek.setText("Progress Percentage ("+task.getTprogress()+"%)");
+
         progressBar.setProgress(task.getTprogress());
 
         progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progresschangedvalue = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                String value = String.valueOf(progress);
-                tprogress.setText(value);
+                progresschangedvalue = progress;
+                tvSeek.setText("Progress Percentage ("+progresschangedvalue+"%)");
             }
 
             @Override
@@ -79,7 +98,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                tvSeek.setText("Progress Percentage ("+progresschangedvalue+"%)");
+                f[0] = progresschangedvalue;
             }
         });
 
@@ -89,39 +109,19 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
         // Loading spinner data from database
         loadSpinnerData();
 
-        /*tduedate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datepick.show();
-            }
-        });
-        Calendar newCalendar = Calendar.getInstance();
-        datepick = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                tduedate.setText(dateFormatter.format(newDate.getTime()));
-            }
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));*/
 
-        bSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String tassign = spinner.getSelectedItem().toString();
-                String sProgress = tprogress.getText().toString();
-                int progress = Integer.parseInt(sProgress);
-                task.setTname(tname.getText().toString());
-                task.setTdesc(tdesc.getText().toString());
-                task.setTduedate(tduedate.getText().toString());
-                task.setTassign(tassign);
-                task.setTprogress(progress);
-                db.updateTask(task);
-                Intent viewIntent = new Intent(getBaseContext(),TaskManagerActivity.class);
-                startActivity(viewIntent);
-                finish();
-            }
-        });
+        bSubmit.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        task.setTprogress(f[0]);
+                        db.updateTask(task);
+                        SynchronizeData.getInstance(EditTaskActivity.this).TaskEdit(task, task.get_id());
+                        startActivity(new Intent(EditTaskActivity.this, TaskManagerActivity.class));
+                        finish();
+                    }
+                });
+
     }
     private void loadSpinnerData() {
         // database handler
@@ -139,6 +139,8 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
+        spinner.setEnabled(false);
+        spinner.setClickable(false);
         spinner.setAdapter(dataAdapter);
     }
 

@@ -17,11 +17,13 @@ import android.widget.TextView;
 
 
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.Task;
 import com.example.kayangan.absencehrd.Model.User;
 import com.example.kayangan.absencehrd.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -30,6 +32,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
     Spinner spinner;
     private DatePickerDialog datepick;
     private SimpleDateFormat dateFormatter;
+    Task task;
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -44,6 +47,8 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+
+        final int user_id = getIntent().getIntExtra("user", 0);
 
         final EditText tname = (EditText) findViewById(R.id.dtname);
         final EditText tdesc = (EditText) findViewById(R.id.dtdesc);
@@ -78,22 +83,40 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
 
 
         db = new DatabaseHandler(this);
+
         bSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String tassign = spinner.getSelectedItem().toString();
-                String sprogress = tprogress.getText().toString();
-                int progress = Integer.parseInt(sprogress);
-                db.addTask(new Task(
-                        tname.getText().toString(),
-                        tdesc.getText().toString(),
-                        tduedate.getText().toString(),
-                        tassign, progress));
-                Intent createIntent = new Intent(CreateTaskActivity.this, TaskManagerActivity.class);
-                startActivity(createIntent);
+
+                String tassign = getBeforeSpace(spinner.getSelectedItem().toString());
+                int progress = Integer.parseInt(tprogress.getText().toString());
+
+                task = new Task();
+                task.setTname(tname.getText().toString());
+                task.setTdesc(tdesc.getText().toString());
+                task.setTduedate(tduedate.getText().toString());
+                task.setTassign(Integer.parseInt(tassign));
+                task.setTassign_by(user_id);
+                task.setTprogress(progress);
+
+                db.addTask(task);
+
+                SynchronizeData.getInstance(CreateTaskActivity.this).uploadTask(task);
+
+                startActivity(new Intent(CreateTaskActivity.this, TaskManagerActivity.class));
                 finish();
+                spinner.setAdapter(null);
             }
         });
+    }
+
+    private String getBeforeSpace(String kata){
+        if (kata.contains(" "))
+        {
+            kata = kata.substring(0, kata.indexOf(" "));
+        }
+
+        return kata;
     }
 
     private void loadSpinnerData() {

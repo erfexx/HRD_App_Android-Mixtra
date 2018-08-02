@@ -1,6 +1,7 @@
 package com.example.kayangan.absencehrd.Helper;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,14 +19,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
+import com.example.kayangan.absencehrd.Model.Comment;
 import com.example.kayangan.absencehrd.Model.Coordinates;
 import com.example.kayangan.absencehrd.Model.DummyModel;
+import com.example.kayangan.absencehrd.Model.Task;
+import com.example.kayangan.absencehrd.Model.User;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,15 +46,21 @@ public class SynchronizeData {
     SQLiteOpenHelper helper;
     private SQLiteDatabase database;
 
-    DatabaseHandler handler;
+    private DatabaseHandler handler;
 
     private String linkLocation  = Constants.url+"locations";
     private String linkAttendance = Constants.url+"attendances";
     private String linkStock = Constants.url+"stocks";
+    private String linkTask = Constants.url+"taskmanagers";
+    private String linkUser = Constants.url+"users";
+    private String linkComm = Constants.url+"comments";
 
     private Coordinates coordinates;
     private AttendanceRecord attRecord;
     private DummyModel stockRecord;
+    private Task taskRecord;
+    private User userRecord;
+    private Comment comRecord;
 
     private SynchronizeData(Context context)
     {
@@ -64,13 +75,124 @@ public class SynchronizeData {
     }
 
     public void SyncAll(){
+        handler = new DatabaseHandler(mCtx);
+
         SyncAttendance();
         SyncLocation();
         SyncStock();
 
+        if (handler.isTableExists())
+            syncUsers();
+
+        syncTasks();
+
         Toast.makeText(mCtx, "SYNC COMPLETE", Toast.LENGTH_SHORT).show();
     }
 
+    //upload comment
+    public void syncCommentOut(final Comment comment) {
+        String link = Constants.url+"comments";
+
+        final String a = comment.getTitle();
+        final String b = String.valueOf(comment.getCommenter());
+        final String c = String.valueOf(comment.getComment());
+        final String d = String.valueOf(comment.getTask_id());
+        final String e = String.valueOf(comment.getCreated_at());
+
+        StringRequest req = new StringRequest(
+                Request.Method.POST,
+                link,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("COMMENTSs", response);
+                        Toast.makeText(mCtx, ""+response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("COMMENTSsss", error.toString());
+                        error.printStackTrace();
+                        Toast.makeText(mCtx, "ERROR "+error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        )
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> parameter = new HashMap<>();
+
+                parameter.put("comment1", ""+c);
+                parameter.put("title", ""+a);
+                parameter.put("task_id", ""+d);
+                parameter.put("commenter", ""+b);
+                parameter.put("created_at", ""+e);
+                parameter.put("updated_at", ""+e);
+
+                return parameter;
+            }
+        };
+
+        AppController.getInstance(mCtx).addToRequestque(req);
+    }
+
+    //download comment
+    public void SyncComment(int id){
+        String linkComments = Constants.url+"comments/"+id;
+        helper = new DatabaseHandler(mCtx);
+        database = helper.getWritableDatabase();
+
+        JsonArrayRequest req = new JsonArrayRequest(
+                linkComments,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for (int i = 0; i<response.length(); i++)
+                            {
+                                comRecord = new Comment();
+
+                                JSONObject obj = response.getJSONObject(i);
+
+                                String a = obj.getString("id");
+                                String b = obj.getString("comment1");
+                                String c = obj.getString("title");
+                                String d = obj.getString("task_id");
+                                String e = obj.getString("commenter");
+                                String f = obj.getString("created_at");
+                                String g = obj.getString("updated_at");
+
+                                comRecord.setId(Integer.parseInt(a));
+                                comRecord.setComment(b);
+                                comRecord.setTitle(c);
+                                comRecord.setTask_id(Integer.parseInt(d));
+                                comRecord.setCommenter(e);
+                                comRecord.setCreated_at(f);
+                                comRecord.setUpdated_at(g);
+
+                                insertToDatabaseComments(comRecord);
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            Log.e("SYNC DATA", e.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
+        AppController.getInstance(mCtx).addToRequestque(req);
+
+    }
+
+    //download stock
     private void SyncStock(){
         helper = new DatabaseHandler(mCtx);
         database = helper.getWritableDatabase();
@@ -122,6 +244,7 @@ public class SynchronizeData {
         AppController.getInstance(mCtx).addToRequestque(arrayReq);
     }
 
+    //download location
     public void SyncLocation(){
 
         helper = new DatabaseHandler(mCtx);
@@ -179,7 +302,61 @@ public class SynchronizeData {
         AppController.getInstance(mCtx).addToRequestque(arrayReq);
     }
 
-    //GET ALL ATTENDANCE RECORD FROM DB SERVER
+    //download user
+    public void syncUsers(){
+        helper = new DatabaseHandler(mCtx);
+        database = helper.getWritableDatabase();
+
+        Log.i("USERSYNC", "TEST JADI");
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                linkUser,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for (int i=0; i<response.length(); i++)
+                            {
+                                userRecord = new User();
+
+                                JSONObject object = response.getJSONObject(i);
+
+                                String name = object.getString("name");
+                                String pass = object.getString("password");
+                                String zone = object.getString("zone");
+                                String created_at = object.getString("created_at");
+                                String updated_at = object.getString("updated_at");
+
+                                userRecord.setName(name);
+                                userRecord.setPassword(pass);
+                                userRecord.setZone(zone);
+                                userRecord.setCreated_at(created_at);
+                                userRecord.setUpdated_at(updated_at);
+
+                                insertToDatabaseUsers(userRecord);
+
+                                Log.i("USERSYNC", "USER DATA UPDATED");
+                            }
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("USERSYNC", error.toString());
+                    }
+                }
+        );
+
+        AppController.getInstance(mCtx).addToRequestque(request);
+    }
+
+
+
+    //download attendance
     private void SyncAttendance(){
         helper = new DatabaseHandler(mCtx);
         database = helper.getWritableDatabase();
@@ -237,7 +414,9 @@ public class SynchronizeData {
 
     }
 
-    //POST DATA TO DB SERVER
+
+
+    //upload attendance
     public void ExportAttendanceOut(final AttendanceRecord rec){
         String link = Constants.url+"attendances";
 
@@ -298,7 +477,7 @@ public class SynchronizeData {
         }
     }
 
-    //UPDATE ATTENDANCE RECORD ON DB SERVER
+    //upload update attendance
     public void AttUpd(final String clock_out, final String date){
         String link = Constants.url+"attendances/"+Constants.currentUserID;
 
@@ -331,6 +510,165 @@ public class SynchronizeData {
 
         AppController.getInstance(mCtx).addToRequestque(request);
     }
+
+
+
+    //download task
+    public void syncTasks(){
+        handler = new DatabaseHandler(mCtx);
+        database = handler.getWritableDatabase();
+        Log.i("SINKRONTASK", "TEST MASUK");
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(
+                linkTask,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        try {
+                            for (int i=0; i<response.length(); i++)
+                            {
+                                taskRecord = new Task();
+
+                                JSONObject object = response.getJSONObject(i);
+
+                                String taskId = object.getString("id");
+                                String taskName = object.getString("tname");
+                                String taskDesc = object.getString("tdesc");
+                                String taskDueDate = object.getString("tduedate").substring(0,10);
+                                String taskAssign = object.getString("tassign");
+                                String taskProgress = object.getString("tprogress");
+                                String taskAssign_by = object.getString("tassign_by");
+
+                                taskRecord.set_id(Integer.parseInt(taskId));
+                                taskRecord.setTname(taskName);
+                                taskRecord.setTdesc(taskDesc);
+                                taskRecord.setTduedate(taskDueDate);
+                                taskRecord.setTassign(Integer.parseInt(taskAssign));
+                                taskRecord.setTprogress(Integer.parseInt(taskProgress));
+                                taskRecord.setTassign_by(Integer.parseInt(taskAssign_by));
+
+                                insertToDatabaseTasks(taskRecord);
+
+                                Log.i("TASKMANAGERSsync", taskRecord.toString());
+                            }
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("AAA", error.toString());
+                    }
+                }
+        );
+
+        AppController.getInstance(mCtx).addToRequestque(arrayRequest);
+    }
+    //upload task
+    public void uploadTask(final Task task) {
+        String link = Constants.url+"taskmanagers";
+
+        StringRequest req = new StringRequest(
+                Request.Method.POST,
+                link,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("TASKMANAGERS", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TASKMANAGERS", error.toString());
+                    }
+                }
+        )
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> parameter = new HashMap<>();
+
+                parameter.put("id","");
+                parameter.put("tname", task.getTname());
+                parameter.put("tdesc", task.getTdesc());
+                parameter.put("tduedate", task.getTduedate());
+                parameter.put("tassign", String.valueOf(task.getTassign()));
+                parameter.put("tassign_by", String.valueOf(task.getTassign_by()));
+                parameter.put("tprogress", String.valueOf(task.getTprogress()));
+                parameter.put("created_at", "");
+                parameter.put("updated_at", "");
+
+                return parameter;
+            }
+        };
+
+        AppController.getInstance(mCtx).addToRequestque(req);
+    }
+    //delete task
+    public void TaskDel(int pos) {
+        String link = linkTask+"/"+pos;
+
+        StringRequest req = new StringRequest(
+                Request.Method.DELETE,
+                link,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("DELETETASK", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("DELETETASK", error.toString());
+                        error.printStackTrace();
+                    }
+                }
+        );
+
+        Log.i("TASKPARAMS", link);
+        AppController.getInstance(mCtx).addToRequestque(req);
+    }
+    //edit task
+    public void TaskEdit(final Task task, int id) {
+        String link = linkTask+"/"+id;
+
+        StringRequest req = new StringRequest(
+                Request.Method.PUT,
+                link,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("EDITTASK", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("EDITTASK", error.toString());
+                        error.printStackTrace();
+                    }
+                }
+        )
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("tname", task.getTname());
+                params.put("tprogress", String.valueOf(task.getTprogress()));
+
+                return params;
+            }
+        };
+
+        AppController.getInstance(mCtx).addToRequestque(req);
+    }
+
 
 
 
@@ -370,8 +708,53 @@ public class SynchronizeData {
         database.insert(DatabaseHandler.TABLE_STOCKS, null, cv);
     }
 
+    private void insertToDatabaseTasks(Task taskRecord) {
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseHandler.TASK_ID, taskRecord.get_id());
+        cv.put(DatabaseHandler.TASK_TNAME, taskRecord.getTname());
+        cv.put(DatabaseHandler.TASK_TDESC, taskRecord.getTdesc());
+        cv.put(DatabaseHandler.TASK_TASSIGN, taskRecord.getTassign());
+        cv.put(DatabaseHandler.TASK_TDUEDATE, taskRecord.getTduedate());
+        cv.put(DatabaseHandler.TASK_TPROGRESS, taskRecord.getTprogress());
+        cv.put(DatabaseHandler.TASK_TASSIGN_BY, taskRecord.getTassign_by());
+
+        long id = database.insert(DatabaseHandler.TABLE_TASKS, null, cv);
+
+        Log.i("TASKMANAGERSSSS", taskRecord.getTduedate() + " " + id);
+    }
+
+    private void insertToDatabaseUsers(User userRecord) {
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseHandler.KEY_NAME, userRecord.getName());
+        cv.put(DatabaseHandler.KEY_PASS, userRecord.getPassword());
+        cv.put(DatabaseHandler.KEY_ZONE, userRecord.getZone());
+        cv.put(DatabaseHandler.KEY_CREATED_AT, userRecord.getCreated_at());
+        cv.put(DatabaseHandler.KEY_UPDATED_AT, userRecord.getUpdated_at());
+
+        database.insert(DatabaseHandler.TABLE_USERS, null, cv);
+    }
+
+    public void insertToDatabaseComments(Comment comRecord) {
+        ContentValues cv = new ContentValues();
+
+        cv.put(DatabaseHandler.COM_ID, comRecord.getId());
+        cv.put(DatabaseHandler.COM_COMMENT, comRecord.getComment());
+        cv.put(DatabaseHandler.COM_COMMENTER, comRecord.getCommenter());
+        cv.put(DatabaseHandler.COM_TASK_ID, comRecord.getTask_id());
+        cv.put(DatabaseHandler.COM_TITLE, comRecord.getTitle());
+        cv.put(DatabaseHandler.COM_CREATED_AT, comRecord.getCreated_at());
+        cv.put(DatabaseHandler.COM_UPDATED_AT, comRecord.getUpdated_at());
+
+        long id = database.insert(DatabaseHandler.TABLE_COMMENTS, null, cv);
+
+        Log.i("COMMENTS", ""+id);
+    }
 
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private String formatDate(String date){
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat df2 = new SimpleDateFormat("dd-MM-yyyy");
@@ -399,4 +782,6 @@ public class SynchronizeData {
 
         return "";
     }
+
+
 }

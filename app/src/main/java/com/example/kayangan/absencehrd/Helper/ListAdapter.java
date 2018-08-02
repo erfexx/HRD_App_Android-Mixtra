@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by Kevin E on 4/9/2018.
+ * Task List Adapter
  */
 
 public class ListAdapter extends ArrayAdapter<Task>{

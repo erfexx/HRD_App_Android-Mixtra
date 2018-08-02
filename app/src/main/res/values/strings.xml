@@ -50,5 +50,6 @@
 
     <string name="slide_4_title">Sales Order</string>
     <string name="slide_4_desc">Management your Sales Order</string>
+    <string name="title_activity_comment">CommentActivity</string>
 </resources>
 

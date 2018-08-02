@@ -58,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
 
     ProgressDialog dialog;
 
+    DatabaseHandler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
 
         WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
+
+        handler = new DatabaseHandler(this);
 
         int num = display.getRotation();
 
@@ -178,6 +182,11 @@ public class LoginActivity extends AppCompatActivity {
 
                                 startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                 SynchronizeData.getInstance(LoginActivity.this).SyncLocation();
+
+                                //jika tabel user sqlite tidak mempunyai isi
+                                if (handler.isTableExists())
+                                    SynchronizeData.getInstance(LoginActivity.this).syncUsers();
+
                                 finish();
                             }
                             else

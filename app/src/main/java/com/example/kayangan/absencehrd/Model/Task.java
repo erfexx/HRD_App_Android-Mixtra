@@ -9,7 +9,7 @@ public class Task {
     String tname;
     String tdesc;
     String tduedate;
-    String tassign;
+    int tassign, tassign_by;
     int tprogress;
 
     // Empty constructor
@@ -17,8 +17,8 @@ public class Task {
 
     }
     // constructor
-    public Task(int id, String tname, String tdesc, String tduedate, String tassign, int tprogress){
-        this._id = id;
+    public Task(int _id, String tname, String tdesc, String tduedate, int tassign, int tprogress) {
+        this._id = _id;
         this.tname = tname;
         this.tdesc = tdesc;
         this.tduedate = tduedate;
@@ -26,13 +26,22 @@ public class Task {
         this.tprogress = tprogress;
     }
 
+
     // constructor
-    public Task(String tname, String tdesc, String tduedate, String tassign, int tprogress){
+    public Task(String tname, String tdesc, String tduedate, int tassign, int tprogress) {
         this.tname = tname;
         this.tdesc = tdesc;
         this.tduedate = tduedate;
         this.tassign = tassign;
         this.tprogress = tprogress;
+    }
+
+    public int getTassign_by() {
+        return tassign_by;
+    }
+
+    public void setTassign_by(int tassign_by) {
+        this.tassign_by = tassign_by;
     }
 
     public int get_id() {
@@ -67,11 +76,11 @@ public class Task {
         this.tduedate = tduedate;
     }
 
-    public String getTassign() {
+    public int getTassign() {
         return tassign;
     }
 
-    public void setTassign(String tassign) {
+    public void setTassign(int tassign) {
         this.tassign = tassign;
     }
 

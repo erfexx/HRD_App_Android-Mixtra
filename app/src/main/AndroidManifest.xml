@@ -27,9 +27,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Activity.IntroActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Activity.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -98,6 +96,11 @@
             android:name=".Helper.GPSTracker"
             android:enabled="true"
             android:exported="true" />
+
+        <activity
+            android:name=".Activity.CommentActivity"
+            android:label="Comments"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/cdTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TITLE"
+        android:textColor="@color/colorPrimary"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/cdCommenter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="By: "
+        android:textColor="@color/darkgray"
+        />
+
+    <TextView
+        android:id="@+id/cdCreatedOn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Posted at: "
+        android:textColor="@color/darkgray"
+        />
+
+    <TextView
+        android:id="@+id/cdComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="COMMENT"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/input_login"
+        />
+
+</LinearLayout>

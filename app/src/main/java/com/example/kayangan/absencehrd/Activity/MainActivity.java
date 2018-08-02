@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                             data.setClock_out("00:00:00");
                             data.setCreated_at(getDate());
 
-                            if (Constants.currentTIME.compareTo("15:00:00") >= 0)
+                            if (Constants.currentTIME.compareTo("08:30:00") >= 0)
                             {
                                 data.setStatus("LATE");
                             }
