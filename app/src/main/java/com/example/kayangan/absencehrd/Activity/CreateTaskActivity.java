@@ -101,7 +101,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
 
                 db.addTask(task);
 
-                SynchronizeData.getInstance(CreateTaskActivity.this).uploadTask(task);
+                //SynchronizeData.getInstance(CreateTaskActivity.this).uploadTask(task);
 
                 startActivity(new Intent(CreateTaskActivity.this, TaskManagerActivity.class));
                 finish();

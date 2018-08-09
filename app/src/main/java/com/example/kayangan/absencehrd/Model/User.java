@@ -8,35 +8,43 @@ package com.example.kayangan.absencehrd.Model;
 public class User {
     private String Name;
     private String Password;
-    private String Zone;
-    private String created_at;
-    private String updated_at;
+    private String timestamp;
+    private String modified_date;
+    private int id;
 
     public User() {
     }
 
-    public User(String name, String password, String zone, String created_at, String updated_at) {
+    public User(String name, String password, String timestamp, String modified_date, int id) {
         Name = name;
         Password = password;
-        Zone = zone;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
+        this.timestamp = timestamp;
+        this.modified_date = modified_date;
+        this.id = id;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public int getId() {
+        return id;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getUpdated_at() {
-        return updated_at;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setUpdated_at(String updated_at) {
-        this.updated_at = updated_at;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getModified_date() {
+        return modified_date;
+    }
+
+    public void setModified_date(String modified_date) {
+        this.modified_date = modified_date;
     }
 
     public String getName() {
@@ -53,13 +61,5 @@ public class User {
 
     public void setPassword(String password) {
         Password = password;
-    }
-
-    public String getZone() {
-        return Zone;
-    }
-
-    public void setZone(String zone) {
-        Zone = zone;
     }
 }

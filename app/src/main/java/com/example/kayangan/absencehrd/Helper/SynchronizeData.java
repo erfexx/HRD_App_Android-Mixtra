@@ -52,7 +52,7 @@ public class SynchronizeData {
     private String linkAttendance = Constants.url+"attendances";
     private String linkStock = Constants.url+"stocks";
     private String linkTask = Constants.url+"taskmanagers";
-    private String linkUser = Constants.url+"users";
+    private String linkUser = Constants.url+"employees";
     private String linkComm = Constants.url+"comments";
 
     private Coordinates coordinates;
@@ -77,14 +77,14 @@ public class SynchronizeData {
     public void SyncAll(){
         handler = new DatabaseHandler(mCtx);
 
-        SyncAttendance();
+        //SyncAttendance();
         SyncLocation();
-        SyncStock();
+        //SyncStock();
 
         if (handler.isTableExists())
             syncUsers();
 
-        syncTasks();
+        //syncTasks();
 
         Toast.makeText(mCtx, "SYNC COMPLETE", Toast.LENGTH_SHORT).show();
     }
@@ -223,7 +223,7 @@ public class SynchronizeData {
                                 stockRecord.setDepartment(e);
                                 stockRecord.setPrice(Integer.parseInt(f));
 
-                                insertToDatabaseStocks(stockRecord);
+                                //insertToDatabaseStocks(stockRecord);
 
                             }
                         }
@@ -278,7 +278,7 @@ public class SynchronizeData {
                                         )
                                 );
 
-                                insertToDatabaseLocations(coordinates);
+                                //insertToDatabaseLocations(coordinates);
                                 Toast.makeText(mCtx, "LOCATION UPDATED!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -323,15 +323,15 @@ public class SynchronizeData {
 
                                 String name = object.getString("name");
                                 String pass = object.getString("password");
-                                String zone = object.getString("zone");
-                                String created_at = object.getString("created_at");
-                                String updated_at = object.getString("updated_at");
+                                String id = object.getString("employeeID");
+                                String mod = object.getString("modifiedDate");
+                                String tim = object.getString("timestamp");
 
                                 userRecord.setName(name);
                                 userRecord.setPassword(pass);
-                                userRecord.setZone(zone);
-                                userRecord.setCreated_at(created_at);
-                                userRecord.setUpdated_at(updated_at);
+                                userRecord.setId(Integer.parseInt(id));
+                                userRecord.setModified_date(mod);
+                                userRecord.setTimestamp(tim);
 
                                 insertToDatabaseUsers(userRecord);
 
@@ -355,9 +355,8 @@ public class SynchronizeData {
     }
 
 
-
     //download attendance
-    private void SyncAttendance(){
+    public void SyncAttendance(String id){
         helper = new DatabaseHandler(mCtx);
         database = helper.getWritableDatabase();
 
@@ -373,17 +372,19 @@ public class SynchronizeData {
 
                                 JSONObject obj = response.getJSONObject(i);
 
-                                String id = obj.getString("id");
-                                String user_id = obj.getString("user_id");
-                                String date = formatDate(obj.getString("date").substring(0, 10));
-                                String clock_in = obj.getString("clock_in");
-                                String clock_out = obj.getString("clock_out");
+                                String id = obj.getString("attendanceID");
+                                String employeeID = obj.getString("employeeID");
+                                String date = formatDate(obj.getString("modifiedDate").substring(0, 10));
+                                String checkTime = obj.getString("checkTime");
+                                String attendanceType = obj.getString("attendanceType");
+                                String timestamp = obj.getString("timestamp");
 
-                                attRecord.setId(Integer.parseInt(id));
-                                attRecord.setUser_id(user_id);
-                                attRecord.setDate(date);
-                                attRecord.setClock_in(clock_in);
-                                attRecord.setClock_out(clock_out);
+                                attRecord.setId(id);
+                                attRecord.setEmployeeID(employeeID);
+                                attRecord.setModifiedDate(date);
+                                attRecord.setCheckTime(checkTime);
+                                attRecord.setAttendanceType(attendanceType);
+                                attRecord.setTimestamp(timestamp);
 
                                 insertToDatabaseAttendances(attRecord);
                             }
@@ -409,15 +410,13 @@ public class SynchronizeData {
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
                 )
         );
-
         AppController.getInstance(mCtx).addToRequestque(arrayRequest);
-
     }
 
 
 
     //upload attendance
-    public void ExportAttendanceOut(final AttendanceRecord rec){
+    public void PostAttendance(final AttendanceRecord rec){
         String link = Constants.url+"attendances";
 
         StringRequest request = new StringRequest(
@@ -441,22 +440,21 @@ public class SynchronizeData {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> parameter = new HashMap<>();
 
-                parameter.put("id","");
-                parameter.put("date", formatDate1(rec.getDate()));
-                parameter.put("clock_in", rec.getClock_in());
-                parameter.put("clock_out", rec.getClock_out());
-                parameter.put("user_id", rec.getUser_id());
-                parameter.put("status", rec.getStatus());
+                parameter.put("attendanceType", rec.getAttendanceType());
+                parameter.put("checkTime", rec.getCheckTime());
+                parameter.put("employeeID", rec.getEmployeeID());
+                parameter.put("modifiedDate", formatDate1(rec.getModifiedDate()));
+                parameter.put("attendanceID", rec.getId());
 
                 return parameter;
             }
         };
-        Log.i("TANGGAL", formatDate1(rec.getDate()));
+        Log.i("TANGGAL", formatDate1(rec.getModifiedDate()));
         AppController.getInstance(mCtx).addToRequestque(request);
     }
 
     //GET ALL ATTENDANCE RECORD FROM SQLITE
-    public void AttOut() {
+    /*public void AttOut() {
         handler = new DatabaseHandler(mCtx);
 
         Cursor record = handler.getAllAttendance();
@@ -475,7 +473,7 @@ public class SynchronizeData {
                 ExportAttendanceOut(attRecord);
             }
         }
-    }
+    }*/
 
     //upload update attendance
     public void AttUpd(final String clock_out, final String date){
@@ -512,6 +510,7 @@ public class SynchronizeData {
     }
 
 
+    /*ddededede
 
     //download task
     public void syncTasks(){
@@ -669,21 +668,27 @@ public class SynchronizeData {
         AppController.getInstance(mCtx).addToRequestque(req);
     }
 
+    qd3wdde*/
+
 
 
 
     //INSERT TO SQLITE FROM DB SERVER
     private void insertToDatabaseAttendances(AttendanceRecord attRecord) {
         ContentValues cv = new ContentValues();
-        cv.put(DatabaseHandler.ATT_DATE, attRecord.getDate());
+
+        cv.put(DatabaseHandler.ATT_MOD_DATE, attRecord.getModifiedDate());
+        cv.put(DatabaseHandler.ATT_EMP_ID, attRecord.getEmployeeID());
         cv.put(DatabaseHandler.ATT_ID, attRecord.getId());
-        cv.put(DatabaseHandler.ATT_IN, attRecord.getClock_in());
-        cv.put(DatabaseHandler.ATT_OUT, attRecord.getClock_out());
-        cv.put(DatabaseHandler.ATT_USER_ID, attRecord.getUser_id());
+        cv.put(DatabaseHandler.ATT_CHECK_TIME, attRecord.getCheckTime());
+        cv.put(DatabaseHandler.ATT_TYPE, attRecord.getAttendanceType());
+        cv.put(DatabaseHandler.ATT_TIMESTAMP, attRecord.getTimestamp());
 
         database.insert(DatabaseHandler.TABLE_ATTENDANCES, null, cv);
         Log.i("AAA", "INSERTED TO DATABASE");
     }
+
+    /*wdewdwdwdwdw
 
     private void insertToDatabaseLocations(Coordinates c) {
         ContentValues cv = new ContentValues();
@@ -724,16 +729,20 @@ public class SynchronizeData {
         Log.i("TASKMANAGERSSSS", taskRecord.getTduedate() + " " + id);
     }
 
+    cdjeiadjeijiejie*/
+
+
     private void insertToDatabaseUsers(User userRecord) {
         ContentValues cv = new ContentValues();
 
-        cv.put(DatabaseHandler.KEY_NAME, userRecord.getName());
-        cv.put(DatabaseHandler.KEY_PASS, userRecord.getPassword());
-        cv.put(DatabaseHandler.KEY_ZONE, userRecord.getZone());
-        cv.put(DatabaseHandler.KEY_CREATED_AT, userRecord.getCreated_at());
-        cv.put(DatabaseHandler.KEY_UPDATED_AT, userRecord.getUpdated_at());
+        cv.put(DatabaseHandler.EMP_NAME, userRecord.getName());
+        cv.put(DatabaseHandler.EMP_PASS, userRecord.getPassword());
+        cv.put(DatabaseHandler.EMP_ID, userRecord.getId());
+        cv.put(DatabaseHandler.EMP_TIMESTAMP, userRecord.getTimestamp());
+        cv.put(DatabaseHandler.EMP_MODIFIED_DATE, userRecord.getModified_date());
 
-        database.insert(DatabaseHandler.TABLE_USERS, null, cv);
+        database.insert(DatabaseHandler.TABLE_EMPLOYEES, null, cv);
+        Log.i("USERSYNC", userRecord.toString());
     }
 
     public void insertToDatabaseComments(Comment comRecord) {

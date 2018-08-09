@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void LoginService(final String password, final String nama){
 
-        String url = Constants.url+"users?A="+ Encode(nama);
+        String url = Constants.url+"employees?A="+ Encode(nama);
 
         byte[] salt = new byte[0];
         try {
@@ -171,8 +171,10 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "LOGIN SUKSES!", Toast.LENGTH_SHORT).show();
 
                                 String currentUserName = response.getString("name");
-                                String currentID = response.getString("id");
-                                String currentZONE = response.getString("zone");
+                                String currentID = response.getString("employeeID");
+
+                                //tanya mengenai zone saat briefing
+                                String currentZONE = "A";
 
                                 Constants.currentUserID = currentID;
 
@@ -203,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dialog.dismiss();
-                        Toast.makeText(LoginActivity.this, "USER NOT FOUND", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "TRY AGAIN", Toast.LENGTH_SHORT).show();
                         Log.e("AAA", ""+error.toString());
                         error.printStackTrace();
                     }

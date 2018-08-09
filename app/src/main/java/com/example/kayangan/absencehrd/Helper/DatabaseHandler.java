@@ -25,7 +25,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "hrdManager.db";
 
     // Table name
-    public static final String TABLE_USERS = "users";
+    public static final String TABLE_EMPLOYEES = "employees";
     public static final String TABLE_ATTENDANCES = "attendances";
     public static final String TABLE_STOCKS = "stocks";
     public static final String TABLE_LOCATIONS = "locations";
@@ -34,23 +34,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_COMMENTS = "comments";
 
     // Users Table Columns names
-    public static final String KEY_ID = "id";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_PASS = "password";
-    public static final String KEY_ZONE = "zone";
-    public static final String KEY_CREATED_AT = "created_at";
-    public static final String KEY_UPDATED_AT = "updated_at";
+    public static final String EMP_ID = "EmployeeID";
+    public static final String EMP_NAME = "name";
+    public static final String EMP_PASS = "password";
+    public static final String EMP_TIMESTAMP = "timestamp";
+    public static final String EMP_MODIFIED_DATE = "modified_date";
 
     // Attendances Table Columns names
-    public static final String ATT_ID = "id";
-    public static final String ATT_DATE = "date";
-    public static final String ATT_IN = "clock_in";
-    public static final String ATT_OUT = "clock_out";
-    public static final String ATT_USER_ID = "user_id";
-    public static final String ATT_FLAG_TAP= "flag";
-    public static final String ATT_CREATED_AT= "created_at";
-    public static final String ATT_UPDATED_AT= "updated_at";
-    public static final String ATT_STATUS= "status";
+    public static final String ATT_ID = "AttendanceID";
+    public static final String ATT_MOD_DATE = "ModifiedDate";
+    public static final String ATT_CHECK_TIME = "check_time";
+    public static final String ATT_EMP_ID = "EmployeeID";
+    public static final String ATT_TIMESTAMP = "Timestamp";
+    public static final String ATT_TYPE = "AttendanceType";
 
     // Stocks Table Columns names
     public static final String STOCK_ID = "id";
@@ -100,16 +96,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(
-                "CREATE TABLE " + TABLE_USERS +
-                        " (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, password TEXT, zone TEXT, created_at TEXT, updated_at TEXT)"
-        );
+        db.execSQL("CREATE TABLE " + TABLE_EMPLOYEES + "("
+                + EMP_ID + " INTEGER,"
+                + EMP_NAME + " TEXT,"
+                + EMP_PASS + " TEXT,"
+                + EMP_MODIFIED_DATE + " TEXT,"
+                + EMP_TIMESTAMP + " TEXT" + ")" );
 
-        db.execSQL(
-                "CREATE TABLE " + TABLE_ATTENDANCES +
-                        " (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, clock_in TEXT, clock_out TEXT, user_id TEXT, created_at TEXT, updated_at TEXT, status TEXT, " +
-                        "FOREIGN KEY(user_id) REFERENCES users(id))"
-        );
+        db.execSQL("CREATE TABLE " + TABLE_ATTENDANCES + "("
+                + ATT_ID + " INTEGER,"
+                + ATT_EMP_ID + " INTEGER,"
+                + ATT_CHECK_TIME + " TEXT,"
+                + ATT_MOD_DATE + " TEXT,"
+                + ATT_TYPE + " TEXT,"
+                + ATT_TIMESTAMP + " TEXT,"
+                + "FOREIGN KEY(EmployeeID) REFERENCES employees(EmployeeID)" + ")");
 
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + TABLE_STOCKS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, category TEXT, " +
@@ -156,7 +157,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EMPLOYEES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTENDANCES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STOCKS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATIONS);
@@ -182,7 +183,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<String> names = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "SELECT * FROM " + TABLE_USERS;
+        String selectQuery = "SELECT * FROM " + TABLE_EMPLOYEES;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -300,7 +301,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Cursor getAllAttendance(){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_USER_ID + " =? ORDER BY " + ATT_DATE + " ASC", new String[]{Constants.currentUserID});
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_EMP_ID + " =? ORDER BY " + ATT_ID + " ASC", new String[]{Constants.currentUserID});
         return data;
     }
 
@@ -462,7 +463,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor record = db.rawQuery("SELECT COUNT(*) FROM users", null);
+        Cursor record = db.rawQuery("SELECT COUNT(*) FROM employees", null);
 
         if (record != null) {
             record.moveToFirst();                       // Always one row returned.

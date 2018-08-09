@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.kayangan.absencehrd.Helper.AttendanceRecordAdapter;
 import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
@@ -59,9 +60,11 @@ public class ProfileActivity extends AppCompatActivity {
         Cursor record = handler.getAllAttendance();
         recordList = new ArrayList<>();
 
+
         if (record.getCount() > 0){
             while (record.moveToNext()){
-                attendanceRecord = new AttendanceRecord(record.getString(1), record.getString(2), record.getString(3));
+
+                attendanceRecord = new AttendanceRecord(record.getString(3), record.getString(2), record.getString(4));
 
                 recordList.add(attendanceRecord);
             }

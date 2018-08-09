@@ -54,7 +54,7 @@ public class TaskManagerActivity extends AppCompatActivity {
         simpleListView = findViewById(R.id.simpleListView);
         db = new DatabaseHandler(this);
 
-        SynchronizeData.getInstance(this).syncTasks();
+        //SynchronizeData.getInstance(this).syncTasks();
 
         taskList.addAll(db.getAllTasks(id));
 
@@ -152,7 +152,7 @@ public class TaskManagerActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         db.deleteTask(taskList.get(pos));
-                        SynchronizeData.getInstance(TaskManagerActivity.this).TaskDel(id_task);
+                        //SynchronizeData.getInstance(TaskManagerActivity.this).TaskDel(id_task);
                         taskList.remove(pos);
                         mAdapter.notifyDataSetChanged();
                         Toast.makeText(TaskManagerActivity.this, "DELETE", Toast.LENGTH_SHORT).show();

@@ -59,7 +59,7 @@ public class MenuActivity extends AppCompatActivity
         handler = new DatabaseHandler(this);
 
         if (handler.isTableTaskExists())
-            SynchronizeData.getInstance(MenuActivity.this).syncTasks();
+            //SynchronizeData.getInstance(MenuActivity.this).syncTasks();
 
         cvTM = findViewById(R.id.taskID);
         cvA = findViewById(R.id.attendanceID);
@@ -95,7 +95,7 @@ public class MenuActivity extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(MenuActivity.this, TaskManagerActivity.class));
+                        //startActivity(new Intent(MenuActivity.this, TaskManagerActivity.class));
                     }
                 }
         );
@@ -104,7 +104,7 @@ public class MenuActivity extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
+                        //startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
                     }
                 }
         );
@@ -127,7 +127,7 @@ public class MenuActivity extends AppCompatActivity
         cvS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MenuActivity.this, StockActivity.class));
+                //startActivity(new Intent(MenuActivity.this, StockActivity.class));
             }
         });
 
@@ -180,8 +180,8 @@ public class MenuActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sync) {
 
-            SynchronizeData.getInstance(MenuActivity.this).SyncAll();
-
+            //SynchronizeData.getInstance(MenuActivity.this).SyncAll();
+            SynchronizeData.getInstance(MenuActivity.this).SyncAttendance(Constants.currentUserID);
             return true;
         }
 
@@ -200,7 +200,7 @@ public class MenuActivity extends AppCompatActivity
 
         if (id == R.id.nav_task) {
             intent = new Intent(MenuActivity.this, TaskManagerActivity.class);
-            startActivity(intent);
+            //startActivity(intent);
 
         }
         else if (id == R.id.nav_absence) {
@@ -217,15 +217,16 @@ public class MenuActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_geotag) {
             intent = new Intent(MenuActivity.this, MapsActivity.class);
-            if (checkGPS())
-                startActivity(intent);
+            if (checkGPS()) {
+                //startActivity(intent);
+            }
 
         }
         else if (id == R.id.nav_stock){
-            startActivity(new Intent(MenuActivity.this, StockActivity.class));
+            //startActivity(new Intent(MenuActivity.this, StockActivity.class));
         }
         else if (id == R.id.nav_sales_order){
-            startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
+            //startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
 
         }
         else if (id == R.id.nav_profile) {

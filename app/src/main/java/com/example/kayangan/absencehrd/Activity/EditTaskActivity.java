@@ -116,7 +116,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                     public void onClick(View view) {
                         task.setTprogress(f[0]);
                         db.updateTask(task);
-                        SynchronizeData.getInstance(EditTaskActivity.this).TaskEdit(task, task.get_id());
+                        //SynchronizeData.getInstance(EditTaskActivity.this).TaskEdit(task, task.get_id());
                         startActivity(new Intent(EditTaskActivity.this, TaskManagerActivity.class));
                         finish();
                     }

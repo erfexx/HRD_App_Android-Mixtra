@@ -27,9 +27,9 @@ public class AttendanceRecordAdapter extends ArrayAdapter<AttendanceRecord> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String date = getItem(position).getDate();
-        String in = getItem(position).getClock_in();
-        String out = getItem(position).getClock_out();
+        String date = getItem(position).getModifiedDate();
+        String in = getItem(position).getCheckTime();
+        String out = getItem(position).getCheckTime();
 
         AttendanceRecord record = new AttendanceRecord(date, in, out);
 

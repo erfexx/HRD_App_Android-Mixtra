@@ -141,6 +141,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
+    /*KOKOKOKKOKOK
 
     private void insertData(User user){
         ContentValues values = new ContentValues();
@@ -151,13 +152,15 @@ public class RegistrationActivity extends AppCompatActivity {
         long id = database.insert(DatabaseHandler.TABLE_USERS, null, values);
     }
 
+    KOKOKOKOK
+*/
     private boolean checkData(){
         database = helper.getWritableDatabase();
 
         nama = findViewById(R.id.txtName);
         String name = nama.getText().toString();
 
-        cursor = database.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_USERS + " WHERE " + DatabaseHandler.KEY_NAME + " = ?"
+        cursor = database.rawQuery("SELECT * FROM " + DatabaseHandler.TABLE_EMPLOYEES + " WHERE " + DatabaseHandler.EMP_NAME + " = ?"
                 , new String[]{name});
         if (cursor != null)
             if (cursor.getCount() <= 0)
