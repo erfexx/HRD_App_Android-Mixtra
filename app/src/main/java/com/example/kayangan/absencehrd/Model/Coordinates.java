@@ -10,12 +10,6 @@ public class Coordinates {
     public Coordinates() {
     }
 
-    public Coordinates(String name, String zone, LatLng latLng, int id) {
-        this.name = name;
-        this.zone = zone;
-        this.latLng = latLng;
-        this.id = id;
-    }
 
     public Coordinates(String key, String name, String zone, LatLng latLng) {
         this.key = key;

@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.Model.Comment;
@@ -61,6 +62,8 @@ public class SynchronizeData {
     private Task taskRecord;
     private User userRecord;
     private Comment comRecord;
+
+    private SessionManager session;
 
     private SynchronizeData(Context context)
     {
@@ -793,4 +796,40 @@ public class SynchronizeData {
     }
 
 
+    public void LastAttRecord(String currentUserID) {
+
+        session = new SessionManager(mCtx);
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                linkAttendance + "/" + currentUserID,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.i("RESPONSES", response.getString("attendanceType"));
+
+                            String a = response.getString("attendanceType");
+
+                            if(a.equals("IN"))
+                                session.createTapInSession();
+                            else if(a.equals("OUT"))
+                                session.createTapOutSession();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+
+        AppController.getInstance(mCtx).addToRequestque(request);
+    }
 }

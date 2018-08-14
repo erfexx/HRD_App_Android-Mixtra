@@ -49,6 +49,9 @@ public class MenuActivity extends AppCompatActivity
 
     ProgressDialog dialog;
 
+    Runnable runnable;
+    Handler handlerr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sessionManager = new SessionManager(this);
@@ -60,6 +63,9 @@ public class MenuActivity extends AppCompatActivity
 
         if (handler.isTableTaskExists())
             //SynchronizeData.getInstance(MenuActivity.this).syncTasks();
+
+
+
 
         cvTM = findViewById(R.id.taskID);
         cvA = findViewById(R.id.attendanceID);
@@ -86,8 +92,22 @@ public class MenuActivity extends AppCompatActivity
         NAMA = headerView.findViewById(R.id.namaUSER);
 
         HashMap<String, String> user = sessionManager.getUserDetails();
+
         String name = user.get(SessionManager.KEY_NAME);
         Constants.currentUserID = user.get(SessionManager.KEY_ID);
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                SynchronizeData.getInstance(MenuActivity.this).LastAttRecord(Constants.currentUserID);
+                handlerr.postDelayed(runnable, 3000);
+            }
+        };
+
+        handlerr = new Handler();
+        handlerr.postDelayed(runnable, 3000);
+
+
 
         NAMA.setText(name);
 
@@ -112,7 +132,7 @@ public class MenuActivity extends AppCompatActivity
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tracker.inLocation)
+                if (tracker.inLocation)
                 {
                     startActivity(new Intent(MenuActivity.this, MainActivity.class));
                 }
@@ -218,7 +238,7 @@ public class MenuActivity extends AppCompatActivity
         else if (id == R.id.nav_geotag) {
             intent = new Intent(MenuActivity.this, MapsActivity.class);
             if (checkGPS()) {
-                //startActivity(intent);
+                startActivity(intent);
             }
 
         }

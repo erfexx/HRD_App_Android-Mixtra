@@ -101,6 +101,14 @@
             android:name=".Activity.CommentActivity"
             android:label="Comments"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver android:name=".Helper.AlarmReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

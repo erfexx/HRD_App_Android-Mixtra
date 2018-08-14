@@ -104,8 +104,19 @@ public class MapsActivity
                 coordinatesList.add(coordinates);
             }
         }
-        else
+        else {
             Log.d("AAA", "Table Location Kosong");
+            coordinates = new Coordinates(
+                    Constants.GEOFENCE_ID_COMP_LOC,
+                    "MIXTRA",
+                    "A",
+                    new LatLng(
+                            -6.190362,
+                            106.748611
+                    )
+            );
+            coordinatesList.add(coordinates);
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.kayangan.absencehrd.Activity;
 
+import android.app.Notification;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,12 +9,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kayangan.absencehrd.Helper.AlarmReceiver;
 import com.example.kayangan.absencehrd.Helper.Constants;
 import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
+import com.example.kayangan.absencehrd.Helper.NotificationScheduler;
+import com.example.kayangan.absencehrd.Model.LocalData;
 import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
@@ -38,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     Runnable runnable;
 
     SessionManager session;
+
+    LocalData localData;
 
     StickySwitch stickySwitch;
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         Constants.currentUserID = userID;
 
+        SynchronizeData.getInstance(MainActivity.this).LastAttRecord(Constants.currentUserID);
+
         time = new Time();
         helper = new DatabaseHandler(this);
 
@@ -91,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         String currentUSER = "Hello, " + userName;
         txtUser.setText(currentUSER);
 
+        localData.set_hour(17);
+        localData.set_min(30);
+
         cekSwitch();
         stickySwitch.setOnSelectedChangeListener(
                 new StickySwitch.OnSelectedChangeListener() {
@@ -113,15 +123,11 @@ public class MainActivity extends AppCompatActivity {
                             data.setModifiedDate(getDate());
                             data.setId(userID);
 
-                            /*if (Constants.currentTIME.compareTo("08:30:00") >= 0)
-                            {
-                                data.setStatus("LATE");
-                            }
-                            else
-                                data.setStatus("PRESENT");*/
-
-
                             recordIN(data);
+
+                            //localData.setReminderStatus(true);
+
+                            //NotificationScheduler.setReminder(MainActivity.this, AlarmReceiver.class, localData.get_hour(), localData.get_min());
                         }
                         //buat absen pulang
                         else if (s.equals("OUT")){
@@ -138,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
                             data.setId(userID);
 
                             recordOut(data);
+
+                            NotificationScheduler.cancelReminder(MainActivity.this, AlarmReceiver.class);
                         }
                     }
                 }
