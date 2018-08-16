@@ -208,7 +208,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <!--<LinearLayout
             android:clipToPadding="false"
             android:gravity="center"
             android:orientation="horizontal"
@@ -260,7 +260,7 @@
             </android.support.v7.widget.CardView>
 
 
-        </LinearLayout>
+        </LinearLayout>-->
 
     </LinearLayout>
 

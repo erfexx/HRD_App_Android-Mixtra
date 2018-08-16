@@ -1,43 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Activity.ProfileActivity"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:id="@+id/userPict"
-        android:src="@drawable/userimage"
-        android:layout_marginTop="15dp"/>
-
-    <TextView
-        android:id="@+id/txtName"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/lusitana"
-        android:gravity="center"
-        android:text="NAME"
-        android:textSize="28sp" />
+        android:layout_height="wrap_content">
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/piechart"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center" />
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            android:background="@color/colorPrimary2"
+            app:tabTextColor="@android:color/white"
+            app:tabSelectedTextColor="@android:color/white"/>
 
-    <ListView
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView">
-
-    </ListView>
-
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </android.support.v4.view.ViewPager>
 
 
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

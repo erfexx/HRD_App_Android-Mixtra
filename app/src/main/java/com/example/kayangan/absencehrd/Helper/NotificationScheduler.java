@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -95,7 +96,8 @@ public class NotificationScheduler {
                 .setContentText(content)
                 .setAutoCancel(true)
                 .setSound(alarmSound)
-                .setSmallIcon(R.drawable.ic_near_me_orange_24dp)
+                .setSmallIcon(R.drawable.ic_watch_later_blue_24dp)
+                .setColor(Color.rgb(25,118,210))
                 .setContentIntent(pendingIntent).build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

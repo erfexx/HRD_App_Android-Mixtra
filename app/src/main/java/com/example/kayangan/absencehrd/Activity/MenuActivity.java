@@ -1,5 +1,6 @@
 package com.example.kayangan.absencehrd.Activity;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -71,7 +72,7 @@ public class MenuActivity extends AppCompatActivity
         cvA = findViewById(R.id.attendanceID);
         cvS = findViewById(R.id.stockID);
         cvSO = findViewById(R.id.salesorderID);
-        cvP = findViewById(R.id.profileID);
+        //cvP = findViewById(R.id.profileID);
 
         if (!sessionManager.isLoggedIn())
             redirectToLogin();
@@ -90,6 +91,17 @@ public class MenuActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         NAMA = headerView.findViewById(R.id.namaUSER);
+
+        NAMA.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent p = new Intent(MenuActivity.this, ProfileActivity.class);
+                        ActivityOptions a = ActivityOptions.makeCustomAnimation(MenuActivity.this, R.anim.fade_in, R.anim.fade_out);
+                        MenuActivity.this.startActivity(p, a.toBundle());
+                    }
+                }
+        );
 
         HashMap<String, String> user = sessionManager.getUserDetails();
 
@@ -132,9 +144,11 @@ public class MenuActivity extends AppCompatActivity
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tracker.inLocation)
+                if (!tracker.inLocation)
                 {
-                    startActivity(new Intent(MenuActivity.this, MainActivity.class));
+                    Intent p = new Intent(MenuActivity.this, MainActivity.class);
+                    ActivityOptions a = ActivityOptions.makeCustomAnimation(MenuActivity.this, R.anim.fade_in, R.anim.fade_out);
+                    MenuActivity.this.startActivity(p, a.toBundle());
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "ADJUST YOUR POSITION FIRST!", Toast.LENGTH_SHORT).show();
@@ -151,12 +165,12 @@ public class MenuActivity extends AppCompatActivity
             }
         });
 
-        cvP.setOnClickListener(new View.OnClickListener() {
+        /*cvP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
             }
-        });
+        });*/
 
 
 
@@ -203,6 +217,9 @@ public class MenuActivity extends AppCompatActivity
             //SynchronizeData.getInstance(MenuActivity.this).SyncAll();
             SynchronizeData.getInstance(MenuActivity.this).SyncAttendance(Constants.currentUserID);
             return true;
+        }
+        else if (id == R.id.to_profile){
+            startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

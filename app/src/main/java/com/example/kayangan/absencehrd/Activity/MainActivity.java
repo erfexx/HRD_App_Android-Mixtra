@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase DB;
 
     TextView txtUser;
+    TextView txtSalam;
 
     Handler handler;
     Runnable runnable;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Session class instance
         session = new SessionManager(getApplicationContext());
+        localData = new LocalData(this);
 
         Constants.getInstance(MainActivity.this).getServerTime();
 
@@ -95,8 +97,29 @@ public class MainActivity extends AppCompatActivity {
 
         //menampilkan nama user yang sedang login
         txtUser = findViewById(R.id.user);
+        txtSalam = findViewById(R.id.salam);
+
         String currentUSER = "Hello, " + userName;
         txtUser.setText(currentUSER);
+
+        if (Constants.currentTIME.compareTo("00:00:00") >= 0 && Constants.currentTIME.compareTo("10:59:59") <= 0)
+        {
+            txtSalam.setText("Good Morning");
+        }
+        else if (Constants.currentTIME.compareTo("11:00:00") >= 0 && Constants.currentTIME.compareTo("13:59:59") <= 0)
+        {
+            txtSalam.setText("Good Day");
+        }
+        else if (Constants.currentTIME.compareTo("14:00:00") >= 0 && Constants.currentTIME.compareTo("17:59:59") <= 0)
+        {
+            txtSalam.setText("Good Afternoon");
+        }
+        else if (Constants.currentTIME.compareTo("18:00:00") >= 0 && Constants.currentTIME.compareTo("23:59:59") <= 0)
+        {
+            txtSalam.setText("Good Evening");
+        }
+        else
+            txtSalam.setText("How Are You?");
 
         localData.set_hour(17);
         localData.set_min(30);
@@ -115,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
 
                             AttendanceRecord data = new AttendanceRecord();
 
-
                             data.setAttendanceType("IN");
                             data.setCheckTime(Constants.currentTIME);
                             data.setEmployeeID(userID);
@@ -125,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
                             recordIN(data);
 
-                            //localData.setReminderStatus(true);
+                            localData.setReminderStatus(true);
 
-                            //NotificationScheduler.setReminder(MainActivity.this, AlarmReceiver.class, localData.get_hour(), localData.get_min());
+                            NotificationScheduler.setReminder(MainActivity.this, AlarmReceiver.class, localData.get_hour(), localData.get_min());
                         }
                         //buat absen pulang
                         else if (s.equals("OUT")){

@@ -39,7 +39,7 @@
             app:leftText="OUT"
             app:rightText="IN"
             app:selectedTextSize="14sp"
-            app:sliderBackgroundColor="@color/darkgray"
+            app:sliderBackgroundColor="@color/lightgray"
             app:switchColor="@color/colorAccent"
             app:textColor="@android:color/white"
             app:textSize="12sp"
@@ -82,6 +82,17 @@
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
         android:layout_marginVertical="25dp"/>
+
+    <TextView
+        android:id="@+id/salam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Good Morning"
+        android:fontFamily="@font/lusitana"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/user"
+        android:textSize="20sp"/>
 
 
 </RelativeLayout>
