@@ -21,6 +21,8 @@ public class Constants {
     public static final float GEOFENCE_RADIUS_IN_METERS = 50;
     public static String currentUserID = "";
     public static String currentTIME = "";
+
+    //setting ip address web service
     public static String url = "http://172.16.1.62:45455/api/";
 
     private static Context mCtx;

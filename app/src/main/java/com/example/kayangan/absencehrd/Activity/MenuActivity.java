@@ -66,8 +66,6 @@ public class MenuActivity extends AppCompatActivity
             //SynchronizeData.getInstance(MenuActivity.this).syncTasks();
 
 
-
-
         cvTM = findViewById(R.id.taskID);
         cvA = findViewById(R.id.attendanceID);
         cvS = findViewById(R.id.stockID);
@@ -120,7 +118,6 @@ public class MenuActivity extends AppCompatActivity
         handlerr.postDelayed(runnable, 3000);
 
 
-
         NAMA.setText(name);
 
         cvTM.setOnClickListener(
@@ -144,7 +141,7 @@ public class MenuActivity extends AppCompatActivity
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!tracker.inLocation)
+                if (tracker.inLocation)
                 {
                     Intent p = new Intent(MenuActivity.this, MainActivity.class);
                     ActivityOptions a = ActivityOptions.makeCustomAnimation(MenuActivity.this, R.anim.fade_in, R.anim.fade_out);
