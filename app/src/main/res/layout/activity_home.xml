@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/relativeLayout"
-    tools:context="com.example.kayangan.absencehrd.Activity.HomeActivity">
+    tools:context="com.mit.mobile.absencehrd.Activity.HomeActivity">
 
     <ImageView
         android:layout_width="230dp"

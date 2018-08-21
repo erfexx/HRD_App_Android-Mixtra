@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.example.kayangan.absencehrd"
+        applicationId "com.mit.mobile.absencehrd"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1

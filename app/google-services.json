@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:905048056593:android:df01fba2c6db1634",
         "android_client_info": {
-          "package_name": "com.example.kayangan.absencehrd"
+          "package_name": "com.mit.mobile.absencehrd"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "905048056593-ikk7a1d7n3htac6coqbjghhvspidil78.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.kayangan.absencehrd",
+            "package_name": "com.mit.mobile.absencehrd",
             "certificate_hash": "93e25c21a5ae3ae0c7be3df42ba6d6983bcc3f84"
           }
         },
