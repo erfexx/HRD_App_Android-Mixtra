@@ -6,6 +6,11 @@
     <color name="colorAccent">#ff6e40</color>
 
 
+    <color name="colorAccent2">#64B5F6</color>
+
+
+
+
     <color name="bg_login">#5C6BC0</color>
     <color name="bg_register">#2e3237</color>
     <color name="bg_main">#428bca</color>
@@ -28,7 +33,7 @@
     <color name="green">#00bfa5</color>
     <color name="pink">#fe104d</color>
 
-    <color name="lightgray">#ededed</color>
+    <color name="lightgray">#dddddd</color>
     <color name="toolightgray">#f7f9fc</color>
     <color name="darkgray">#a4a9b2</color>
 

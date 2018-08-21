@@ -39,7 +39,6 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 

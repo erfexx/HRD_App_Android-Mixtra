@@ -37,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String EMP_ID = "EmployeeID";
     public static final String EMP_NAME = "name";
     public static final String EMP_PASS = "password";
+    public static final String EMP_GEN = "gender";
     public static final String EMP_TIMESTAMP = "timestamp";
     public static final String EMP_MODIFIED_DATE = "modified_date";
 
@@ -100,6 +101,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + EMP_ID + " INTEGER,"
                 + EMP_NAME + " TEXT,"
                 + EMP_PASS + " TEXT,"
+                + EMP_GEN + " TEXT,"
                 + EMP_MODIFIED_DATE + " TEXT,"
                 + EMP_TIMESTAMP + " TEXT" + ")" );
 

@@ -8,6 +8,7 @@ package com.example.kayangan.absencehrd.Model;
 public class User {
     private String Name;
     private String Password;
+    private String Gender;
     private String timestamp;
     private String modified_date;
     private int id;
@@ -15,12 +16,21 @@ public class User {
     public User() {
     }
 
-    public User(String name, String password, String timestamp, String modified_date, int id) {
+    public User(String name, String password, String gender, String timestamp, String modified_date, int id) {
         Name = name;
         Password = password;
+        Gender = gender;
         this.timestamp = timestamp;
         this.modified_date = modified_date;
         this.id = id;
+    }
+
+    public String getGender() {
+        return Gender;
+    }
+
+    public void setGender(String gender) {
+        Gender = gender;
     }
 
     public int getId() {

@@ -35,6 +35,7 @@ public class SessionManager {
     public static final String KEY_NAME = "name";
     public static final String KEY_ID = "id";
     public static final String KEY_ZONE = "zone";
+    public static final String KEY_GENDER = "gender";
 
 
 
@@ -45,11 +46,12 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String NAMA, String id, String zone){
+    public void createLoginSession(String NAMA, String id, String zone, String gender){
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, NAMA);
         editor.putString(KEY_ID, id);
         editor.putString(KEY_ZONE, zone);
+        editor.putString(KEY_GENDER, gender);
 
         editor.commit();
     }
@@ -81,6 +83,7 @@ public class SessionManager {
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_ID, pref.getString(KEY_ID, null));
         user.put(KEY_ZONE, pref.getString(KEY_ZONE, null));
+        user.put(KEY_GENDER, pref.getString(KEY_GENDER, null));
 
         // return user
         return user;

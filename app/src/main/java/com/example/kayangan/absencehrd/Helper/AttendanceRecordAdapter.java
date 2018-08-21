@@ -3,6 +3,7 @@ package com.example.kayangan.absencehrd.Helper;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,37 +14,53 @@ import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class AttendanceRecordAdapter extends ArrayAdapter<AttendanceRecord> {
+public class AttendanceRecordAdapter extends RecyclerView.Adapter<AttendanceRecordAdapter.MyViewHolder> {
     private Context mContext;
     int mResource;
 
-    public AttendanceRecordAdapter(@NonNull Context context, int resource, @NonNull ArrayList<AttendanceRecord> objects) {
-        super(context, resource, objects);
-        this.mContext = context;
-        this.mResource = resource;
-    }
+    private List<AttendanceRecord> recAtt;
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        String date = getItem(position).getModifiedDate();
-        String in = getItem(position).getCheckTime();
-        String out = getItem(position).getCheckTime();
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        AttendanceRecord record = new AttendanceRecord(date, in, out);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_view_layout, parent, false);
 
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        convertView = inflater.inflate(mResource, parent, false);
+        return new MyViewHolder(itemView);
+    }
 
-        TextView tvDate = convertView.findViewById(R.id.textview1);
-        TextView tvIn = convertView.findViewById(R.id.textview2);
-        TextView tvout = convertView.findViewById(R.id.textview3);
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        AttendanceRecord rec = recAtt.get(position);
+        holder.tvTime.setText(rec.getCheckTime());
+        holder.tvDate.setText(rec.getModifiedDate());
+        holder.tvType.setText(rec.getAttendanceType());
+    }
 
-        tvDate.setText(date);
-        tvIn.setText(in);
-        tvout.setText(out);
+    @Override
+    public int getItemCount() {
+        return recAtt.size();
+    }
 
-        return convertView;
+    public class MyViewHolder extends RecyclerView.ViewHolder{
+        TextView tvDate;
+        TextView tvTime;
+        TextView tvType;
+
+        public MyViewHolder(View view)
+        {
+            super(view);
+            tvDate = view.findViewById(R.id.txtDate);
+            tvTime = view.findViewById(R.id.txtClock);
+            tvType = view.findViewById(R.id.txtType);
+        }
+
+    }
+
+    public AttendanceRecordAdapter(List<AttendanceRecord> attList)
+    {
+        this.recAtt = attList;
     }
 }

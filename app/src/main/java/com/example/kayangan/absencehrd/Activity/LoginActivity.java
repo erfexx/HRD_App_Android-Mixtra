@@ -172,13 +172,16 @@ public class LoginActivity extends AppCompatActivity {
 
                                 String currentUserName = response.getString("name");
                                 String currentID = response.getString("employeeID");
+                                String currentGENDER = response.getString("gender");
+
+                                Log.i("LOGGONG", ""+currentGENDER);
 
                                 //tanya mengenai zone saat briefing
                                 String currentZONE = "A";
 
                                 Constants.currentUserID = currentID;
 
-                                session.createLoginSession(currentUserName, currentID, currentZONE);
+                                session.createLoginSession(currentUserName, currentID, currentZONE, currentGENDER);
 
                                 dialog.dismiss();
 

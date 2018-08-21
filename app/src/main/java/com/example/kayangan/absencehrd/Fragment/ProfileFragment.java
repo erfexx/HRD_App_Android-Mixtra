@@ -1,20 +1,23 @@
 package com.example.kayangan.absencehrd.Fragment;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kayangan.absencehrd.Helper.Constants;
-import com.example.kayangan.absencehrd.Helper.DatabaseHandler;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
-import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.Entry;
@@ -22,6 +25,8 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.apache.commons.text.WordUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,14 +36,10 @@ public class ProfileFragment extends Fragment {
 
     TextView txtName;
     SessionManager sessionManager;
-    DatabaseHandler handler;
-    ListView listView;
-    ArrayList<AttendanceRecord> recordList;
-    AttendanceRecord attendanceRecord;
     PieChart pieChart;
     SimpleDateFormat clockFormat;
 
-
+    ImageView FOTO;
 
     public ProfileFragment() {
     }
@@ -65,7 +66,18 @@ public class ProfileFragment extends Fragment {
         String zoneUser = data.get(SessionManager.KEY_ZONE);
 
         txtName = view.findViewById(R.id.txtName);
-        txtName.setText(namaUser+" (" + Constants.currentUserID +")");
+        String aa = WordUtils.capitalizeFully(namaUser);
+        txtName.setText(aa+" (" + Constants.currentUserID +")");
+
+        FOTO = view.findViewById(R.id.userPict);
+
+        Resources resources = getResources();
+
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimage);
+        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(resources, bitmap);
+        drawable.setCircular(true);
+
+        FOTO.setImageDrawable(drawable);
 
         int countOnTime = 0;
         int countLate = 0;

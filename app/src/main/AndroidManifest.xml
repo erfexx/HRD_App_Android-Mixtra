@@ -48,7 +48,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".Activity.MenuActivity"
-            android:label="Dashboard"
+            android:label="Home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.MapsActivity"

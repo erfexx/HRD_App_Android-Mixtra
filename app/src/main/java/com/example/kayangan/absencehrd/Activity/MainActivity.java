@@ -2,13 +2,17 @@ package com.example.kayangan.absencehrd.Activity;
 
 import android.app.Notification;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,8 @@ import com.example.kayangan.absencehrd.Helper.SynchronizeData;
 import com.example.kayangan.absencehrd.Model.AttendanceRecord;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
+
+import org.apache.commons.text.WordUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
     LocalData localData;
 
     StickySwitch stickySwitch;
+
+    RelativeLayout relativeLayout;
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();
@@ -57,13 +66,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Session class instance
         session = new SessionManager(getApplicationContext());
         localData = new LocalData(this);
 
-        Constants.getInstance(MainActivity.this).getServerTime();
+        relativeLayout = findViewById(R.id.rlay);
+
+        if (!session.isConnectedToNetwork())
+        {
+            Constants.getInstance(MainActivity.this).getServerTime();
+            Snackbar snackbar = Snackbar.make(relativeLayout, "Network Is Not Available!", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            session.isConnectedToNetwork();
+                            startActivity(new Intent(getBaseContext(), MainActivity.class));
+                            finish();
+                        }
+                    });
+            snackbar.show();
+        }
+
 
         stickySwitch = findViewById(R.id.switchs);
 
@@ -71,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, String> data = session.getUserDetails();
         String userName = data.get(SessionManager.KEY_NAME);
         final String userID = data.get(SessionManager.KEY_ID);
-
+        String aa = WordUtils.capitalizeFully(userName);
         Constants.currentUserID = userID;
 
         SynchronizeData.getInstance(MainActivity.this).LastAttRecord(Constants.currentUserID);
@@ -86,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
         runnable = new Runnable() {
             @Override
             public void run() {
-                Constants.getInstance(MainActivity.this).getServerTime();
+                if (!session.isConnectedToNetwork())
+                    Constants.getInstance(MainActivity.this).getServerTime();
+
                 textView.setText(Constants.currentTIME);
                 handler.postDelayed(runnable, 1000);
             }
@@ -99,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         txtUser = findViewById(R.id.user);
         txtSalam = findViewById(R.id.salam);
 
-        String currentUSER = "Hello, " + userName;
+        String currentUSER = "Hello, " + aa;
         txtUser.setText(currentUSER);
 
         if (Constants.currentTIME.compareTo("00:00:00") >= 0 && Constants.currentTIME.compareTo("10:59:59") <= 0)
@@ -173,6 +201,10 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
+
+
+
 
     public void recordIN(AttendanceRecord data){
 

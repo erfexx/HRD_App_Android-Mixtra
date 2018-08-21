@@ -327,6 +327,7 @@ public class SynchronizeData {
                                 String name = object.getString("name");
                                 String pass = object.getString("password");
                                 String id = object.getString("employeeID");
+                                String gender = object.getString("gender");
                                 String mod = object.getString("modifiedDate");
                                 String tim = object.getString("timestamp");
 
@@ -335,6 +336,7 @@ public class SynchronizeData {
                                 userRecord.setId(Integer.parseInt(id));
                                 userRecord.setModified_date(mod);
                                 userRecord.setTimestamp(tim);
+                                userRecord.setGender(gender);
 
                                 insertToDatabaseUsers(userRecord);
 
@@ -742,6 +744,7 @@ public class SynchronizeData {
         cv.put(DatabaseHandler.EMP_PASS, userRecord.getPassword());
         cv.put(DatabaseHandler.EMP_ID, userRecord.getId());
         cv.put(DatabaseHandler.EMP_TIMESTAMP, userRecord.getTimestamp());
+        cv.put(DatabaseHandler.EMP_GEN, userRecord.getGender());
         cv.put(DatabaseHandler.EMP_MODIFIED_DATE, userRecord.getModified_date());
 
         database.insert(DatabaseHandler.TABLE_EMPLOYEES, null, cv);

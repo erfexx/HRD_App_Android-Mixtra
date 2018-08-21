@@ -3,87 +3,51 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:padding="10dp"
-    android:layout_margin="20dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="5dp"
     android:background="@drawable/custom_background"
     >
-    
+
     <TextView
+        android:id="@+id/txtType"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/circlebackgorange"
+        android:text="OUT"
+        android:textSize="17sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:fontFamily="@font/lusitana"
+        android:layout_centerInParent="true"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="31-12-1999"
-        android:id="@+id/textview1"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:fontFamily="@font/lusitana"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/txtClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="23:59:59"
         android:textSize="20sp"
-        android:gravity="center"
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"/>
-
-    <LinearLayout
-        android:id="@+id/latas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/textview1"
-        android:orientation="horizontal"
-        android:weightSum="100"
-        >
-
-        <TextView
-            android:id="@+id/textview4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  IN"
-            android:textSize="18sp"
-            android:layout_weight="40"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/textview5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="   OUT"
-            android:textSize="18sp"
-            android:layout_weight="40"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:gravity="center" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/textview1"
-        android:layout_below="@id/latas"
-        android:orientation="horizontal"
-        android:weightSum="100"
-        >
-
-        <TextView
-            android:id="@+id/textview2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:00"
-            android:textSize="18sp"
-            android:layout_weight="40"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/textview3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:00"
-            android:textSize="18sp"
-            android:layout_weight="40"
-            android:gravity="center" />
-
-
-    </LinearLayout>
+        android:fontFamily="@font/lusitana"
+        android:textColor="@android:color/black"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
 
 
 </RelativeLayout>

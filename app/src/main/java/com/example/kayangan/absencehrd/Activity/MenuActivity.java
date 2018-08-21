@@ -4,11 +4,19 @@ import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.design.internal.NavigationMenuView;
+import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +39,8 @@ import com.example.kayangan.absencehrd.Model.SalesOrder;
 import com.example.kayangan.absencehrd.R;
 import com.example.kayangan.absencehrd.Helper.SessionManager;
 
+import org.apache.commons.text.WordUtils;
+
 import java.util.HashMap;
 
 public class MenuActivity extends AppCompatActivity
@@ -37,6 +48,7 @@ public class MenuActivity extends AppCompatActivity
     GPSTracker tracker;
 
     TextView NAMA;
+    ImageView FOTO;
 
     AlertDialogManager alert = new AlertDialogManager();
     SessionManager sessionManager;
@@ -55,11 +67,11 @@ public class MenuActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sessionManager = new SessionManager(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        sessionManager = new SessionManager(this);
         handler = new DatabaseHandler(this);
 
         if (handler.isTableTaskExists())
@@ -87,9 +99,13 @@ public class MenuActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        View headerView = navigationView.getHeaderView(0);
-        NAMA = headerView.findViewById(R.id.namaUSER);
+        NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+        navigationMenuView.setVerticalScrollBarEnabled(false);
 
+        View headerView = navigationView.getHeaderView(0);
+        NAMA = findViewById(R.id.namaUSER);
+        FOTO = findViewById(R.id.fotoUser);
+        Resources resources = getResources();
         NAMA.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -102,8 +118,9 @@ public class MenuActivity extends AppCompatActivity
         );
 
         HashMap<String, String> user = sessionManager.getUserDetails();
-
         String name = user.get(SessionManager.KEY_NAME);
+        String aa = WordUtils.capitalizeFully(name);
+        String sex = user.get(SessionManager.KEY_GENDER);
         Constants.currentUserID = user.get(SessionManager.KEY_ID);
 
         runnable = new Runnable() {
@@ -117,9 +134,22 @@ public class MenuActivity extends AppCompatActivity
         handlerr = new Handler();
         handlerr.postDelayed(runnable, 3000);
 
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimage);
 
-        NAMA.setText(name);
 
+        if (sex.equals("FEMALE")) {
+            FOTO.setImageDrawable(resources.getDrawable(R.drawable.userimagewoman));
+            bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimagewoman);
+        }
+        else if (sex.equals("MALE")) {
+            FOTO.setImageDrawable(resources.getDrawable(R.drawable.userimage));
+        }
+
+        RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(resources, bitmap);
+        drawable.setCircular(true);
+
+        FOTO.setImageDrawable(drawable);
+        NAMA.setText(aa);
         cvTM.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -128,7 +158,6 @@ public class MenuActivity extends AppCompatActivity
                     }
                 }
         );
-
         cvSO.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -137,11 +166,10 @@ public class MenuActivity extends AppCompatActivity
                     }
                 }
         );
-
         cvA.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tracker.inLocation)
+                if (!tracker.inLocation)
                 {
                     Intent p = new Intent(MenuActivity.this, MainActivity.class);
                     ActivityOptions a = ActivityOptions.makeCustomAnimation(MenuActivity.this, R.anim.fade_in, R.anim.fade_out);
@@ -154,23 +182,18 @@ public class MenuActivity extends AppCompatActivity
                 }
             }
         });
-
         cvS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(MenuActivity.this, StockActivity.class));
             }
         });
-
         /*cvP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
             }
         });*/
-
-
-
     }
 
     @Override
@@ -228,9 +251,7 @@ public class MenuActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-
         Intent intent;
-
 
         if (id == R.id.nav_task) {
             intent = new Intent(MenuActivity.this, TaskManagerActivity.class);
@@ -293,6 +314,7 @@ public class MenuActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
 
     private void redirectToLogin() {
