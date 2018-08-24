@@ -1,47 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/relativeLayout"
-    tools:context="com.mit.mobile.absencehrd.Activity.HomeActivity">
+    android:background="@drawable/bg_login">
 
-    <ImageView
-        android:layout_width="230dp"
-        android:layout_height="280dp"
-        android:src="@drawable/logo_round"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"/>
-
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:weightSum="2"
-        android:layout_margin="10dp">
+        android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/btnToLogin"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabss"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:text="@string/btn_login"
-            android:textColor="@color/white"
-            android:layout_weight="1"
-            android:layout_margin="5dp"/>
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            android:background="@color/colorPrimary2"
+            app:tabTextColor="@android:color/white"
+            app:tabSelectedTextColor="@android:color/white"/>
 
-        <Button
-            android:id="@+id/btnToRegis"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:text="@string/btn_register"
-            android:textColor="@color/white"
-            android:layout_weight="1"
-            android:layout_margin="5dp"/>
-    </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
 
-</RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPagerr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </android.support.v4.view.ViewPager>
+
+</android.support.design.widget.CoordinatorLayout>

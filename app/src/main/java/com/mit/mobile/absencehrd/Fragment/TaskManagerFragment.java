@@ -1,20 +1,27 @@
-package com.mit.mobile.absencehrd.Activity;
+package com.mit.mobile.absencehrd.Fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mit.mobile.absencehrd.Activity.CommentActivity;
+import com.mit.mobile.absencehrd.Activity.CreateTaskActivity;
+import com.mit.mobile.absencehrd.Activity.EditTaskActivity;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
 import com.mit.mobile.absencehrd.Helper.ListAdapter;
 import com.mit.mobile.absencehrd.Helper.SessionManager;
@@ -27,48 +34,45 @@ import com.mit.mobile.absencehrd.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TaskManagerActivity extends AppCompatActivity {
+public class TaskManagerFragment extends Fragment {
     private ListView simpleListView;
     private ArrayList<Task> taskList = new ArrayList<>();
     private DatabaseHandler db;
     private ListAdapter mAdapter;
     SessionManager sessionManager;
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+    public TaskManagerFragment() {
     }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        sessionManager = new SessionManager(this);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task_manager);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_task_manager, container, false);
+
+        sessionManager = new SessionManager(getActivity());
 
         HashMap<String, String> user = sessionManager.getUserDetails();
         String name = user.get(SessionManager.KEY_NAME);
         final int id = Integer.parseInt(user.get(SessionManager.KEY_ID));
 
-        simpleListView = findViewById(R.id.simpleListView);
-        db = new DatabaseHandler(this);
+        simpleListView = view.findViewById(R.id.simpleListView);
+        db = new DatabaseHandler(getActivity());
 
         //SynchronizeData.getInstance(this).syncTasks();
 
         taskList.addAll(db.getAllTasks(id));
 
-        mAdapter = new ListAdapter(taskList,getApplicationContext());
+        mAdapter = new ListAdapter(taskList,getActivity());
         simpleListView.setAdapter(mAdapter);
 
-        FloatingActionButton fab = findViewById(R.id.fabAdd);
+        FloatingActionButton fab = view.findViewById(R.id.fabAdd);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent createIntent = new Intent(getBaseContext(), CreateTaskActivity.class);
+                Intent createIntent = new Intent(getActivity(), CreateTaskActivity.class);
                 createIntent.putExtra("user", id);
                 startActivity(createIntent);
-                finish();
+                //finish();
             }
         });
 
@@ -86,17 +90,17 @@ public class TaskManagerActivity extends AppCompatActivity {
 
         simpleListView.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long rowId) {
-                Task task = taskList.get(position);
-                Intent intent = new Intent(getBaseContext(), CommentActivity.class);
-                intent.putExtra("task_id", task.get_id());
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, final int position, long rowId) {
+                        Task task = taskList.get(position);
+                        Intent intent = new Intent(getActivity(), CommentActivity.class);
+                        intent.putExtra("task_id", task.get_id());
 
-                SynchronizeData.getInstance(TaskManagerActivity.this).SyncComment(task.get_id());
+                        SynchronizeData.getInstance(getActivity()).SyncComment(task.get_id());
 
-                startActivity(intent);
-            }
-        });
+                        startActivity(intent);
+                    }
+                });
 
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(
@@ -105,8 +109,8 @@ public class TaskManagerActivity extends AppCompatActivity {
                         {
                             @Override
                             public boolean canDismiss(int position) {
-                        return true;
-                    }
+                                return true;
+                            }
 
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
@@ -114,7 +118,7 @@ public class TaskManagerActivity extends AppCompatActivity {
                                     /**/
                                     final Task task = taskList.get(position);
 
-                                    Intent editIntent = new Intent(getBaseContext(),EditTaskActivity.class);
+                                    Intent editIntent = new Intent(getActivity(),EditTaskActivity.class);
                                     editIntent.putExtra("pos", task.get_id());
                                     startActivity(editIntent);
                                 }
@@ -123,13 +127,17 @@ public class TaskManagerActivity extends AppCompatActivity {
 
 
         simpleListView.setOnTouchListener(touchListener);
+
+        return view;
     }
 
+
+
     private void showDetail(final int pos, final String tname, String tdesc, String tduedate, final int tassign, int tprogress, int tassign_by, final int id_task) {
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.view_task_details, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
 
         TextView tvName = view.findViewById(R.id.tvname);
@@ -152,10 +160,10 @@ public class TaskManagerActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         db.deleteTask(taskList.get(pos));
-                        //SynchronizeData.getInstance(TaskManagerActivity.this).TaskDel(id_task);
+                        //SynchronizeData.getInstance(TaskManagerFragment.this).TaskDel(id_task);
                         taskList.remove(pos);
                         mAdapter.notifyDataSetChanged();
-                        Toast.makeText(TaskManagerActivity.this, "DELETE", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "DELETE", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -173,13 +181,4 @@ public class TaskManagerActivity extends AppCompatActivity {
 
 
 
-
-
-
-    /*@Override
-    public void onBackPressed() {
-       Intent backIntent = new Intent(this, MenuActivity.class);
-       startActivity(backIntent);
-       finish();
-    }*/
 }

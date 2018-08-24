@@ -1,6 +1,5 @@
-package com.mit.mobile.absencehrd.Activity;
+package com.mit.mobile.absencehrd.Fragment;
 
-import android.app.Notification;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,10 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,14 +40,14 @@ import java.util.HashMap;
 
 import io.ghyeok.stickyswitch.widget.StickySwitch;
 
-public class MainActivity extends AppCompatActivity {
+public class AttendanceFragment extends Fragment {
     Time time;
     ////////////////////////////////////////////////////////////////////////////////////////////////
     SQLiteOpenHelper helper;
     SQLiteDatabase DB;
 
     TextView txtUser;
-    TextView txtSalam;
+    TextView txtSalam, txtLat, txtLong;
 
     Handler handler;
     Runnable runnable;
@@ -56,64 +61,53 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout relativeLayout;
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+
+    public AttendanceFragment() {
     }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_main, container, false);
 
         // Session class instance
-        session = new SessionManager(getApplicationContext());
-        localData = new LocalData(this);
+        session = new SessionManager(getActivity());
+        localData = new LocalData(getActivity());
 
-        relativeLayout = findViewById(R.id.rlay);
+        relativeLayout = view.findViewById(R.id.rlay);
 
-        if (!session.isConnectedToNetwork())
-        {
-            Constants.getInstance(MainActivity.this).getServerTime();
-            Snackbar snackbar = Snackbar.make(relativeLayout, "Network Is Not Available!", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("RETRY", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            session.isConnectedToNetwork();
-                            startActivity(new Intent(getBaseContext(), MainActivity.class));
-                            finish();
-                        }
-                    });
-            snackbar.show();
-        }
+        stickySwitch = view.findViewById(R.id.switchs);
 
-
-        stickySwitch = findViewById(R.id.switchs);
+        txtLat = view.findViewById(R.id.latitudeTxt);
+        txtLong = view.findViewById(R.id.longitudeTxt);
 
         //Get Session data
         HashMap<String, String> data = session.getUserDetails();
         String userName = data.get(SessionManager.KEY_NAME);
         final String userID = data.get(SessionManager.KEY_ID);
         String aa = WordUtils.capitalizeFully(userName);
+        String la = data.get(SessionManager.KEY_LAT);
+        String lo = data.get(SessionManager.KEY_LONG);
+
+        txtLat.setText(la);
+        txtLong.setText(lo);
+
         Constants.currentUserID = userID;
 
-        SynchronizeData.getInstance(MainActivity.this).LastAttRecord(Constants.currentUserID);
+        Log.i("RESPONSES", ""+Constants.currentUserID);
 
         time = new Time();
-        helper = new DatabaseHandler(this);
+        helper = new DatabaseHandler(getActivity());
 
-        final TextView textView = findViewById(R.id.jam);
+        final TextView textView = view.findViewById(R.id.jam);
 
         textView.setText(Constants.currentTIME);
         //buat tampilin jam dinamis
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (!session.isConnectedToNetwork())
-                    Constants.getInstance(MainActivity.this).getServerTime();
+
+                Constants.getInstance(getActivity()).getServerTime();
 
                 textView.setText(Constants.currentTIME);
                 handler.postDelayed(runnable, 1000);
@@ -124,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 1000);
 
         //menampilkan nama user yang sedang login
-        txtUser = findViewById(R.id.user);
-        txtSalam = findViewById(R.id.salam);
+        txtUser = view.findViewById(R.id.user);
+        txtSalam = view.findViewById(R.id.salam);
 
         String currentUSER = "Hello, " + aa;
         txtUser.setText(currentUSER);
@@ -177,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
                             localData.setReminderStatus(true);
 
-                            NotificationScheduler.setReminder(MainActivity.this, AlarmReceiver.class, localData.get_hour(), localData.get_min());
+                            NotificationScheduler.setReminder(getActivity(), AlarmReceiver.class, localData.get_hour(), localData.get_min());
                         }
                         //buat absen pulang
                         else if (s.equals("OUT")){
@@ -195,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
 
                             recordOut(data);
 
-                            NotificationScheduler.cancelReminder(MainActivity.this, AlarmReceiver.class);
+                            NotificationScheduler.cancelReminder(getActivity(), AlarmReceiver.class);
                         }
                     }
-                }
-        );
-    }
+                });
 
+        return view;
+    }
 
 
 
@@ -224,14 +218,14 @@ public class MainActivity extends AppCompatActivity {
             //Log.i("DBCEK", "Status: "+data.getAttendanceType());
 
             //upload data attendance record ke db server
-            SynchronizeData.getInstance(MainActivity.this).PostAttendance(data);
+            SynchronizeData.getInstance(getActivity()).PostAttendance(data);
 
             session.createTapInSession();
 
-            Toast.makeText(this, "YOU ARE IN, THANK YOU! :)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "YOU ARE IN, THANK YOU! :)", Toast.LENGTH_SHORT).show();
         }
         else{
-            Toast.makeText(this, "YOU ARE ALREADY IN :O", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "YOU ARE ALREADY IN :O", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -248,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
         String formatDate = df.format(c);
         String formatDate2 = df2.format(c);
 
-        SynchronizeData.getInstance(MainActivity.this).PostAttendance(data);
-        Toast.makeText(this, "YOU ARE OUT, HAVE A NICE DAY", Toast.LENGTH_SHORT).show();
+        SynchronizeData.getInstance(getActivity()).PostAttendance(data);
+        Toast.makeText(getActivity(), "YOU ARE OUT, HAVE A NICE DAY", Toast.LENGTH_SHORT).show();
 
     }
 

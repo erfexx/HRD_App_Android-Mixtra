@@ -11,7 +11,7 @@ import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.mit.mobile.absencehrd.Activity.MapsActivity;
+import com.mit.mobile.absencehrd.Fragment.MapsFragment;
 import com.mit.mobile.absencehrd.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
@@ -61,7 +61,7 @@ public class GPSTracker extends IntentService{
 
         NotificationManager manager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent intent = new Intent(this, MapsActivity.class);
+        Intent intent = new Intent(this, MapsFragment.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this,0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         builder.setContentIntent(contentIntent);

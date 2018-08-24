@@ -36,6 +36,8 @@ public class SessionManager {
     public static final String KEY_ID = "id";
     public static final String KEY_ZONE = "zone";
     public static final String KEY_GENDER = "gender";
+    public static final String KEY_LAT = "latitude";
+    public static final String KEY_LONG = "longitude";
 
 
 
@@ -84,6 +86,8 @@ public class SessionManager {
         user.put(KEY_ID, pref.getString(KEY_ID, null));
         user.put(KEY_ZONE, pref.getString(KEY_ZONE, null));
         user.put(KEY_GENDER, pref.getString(KEY_GENDER, null));
+        user.put(KEY_LAT, pref.getString(KEY_LAT, null));
+        user.put(KEY_LONG, pref.getString(KEY_LONG, null));
 
         // return user
         return user;
@@ -122,6 +126,13 @@ public class SessionManager {
 
     public void createTapInSession(){
         editor.putBoolean(IS_TAP_IN, true);
+
+        editor.commit();
+    }
+
+    public void createPosSession(String lat, String longi){
+        editor.putString(KEY_LAT, lat);
+        editor.putString(KEY_LONG, longi);
 
         editor.commit();
     }

@@ -1,7 +1,6 @@
 package com.mit.mobile.absencehrd.Activity;
 
 import android.app.ActivityOptions;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,13 +9,13 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.design.internal.NavigationMenuView;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,12 +29,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mit.mobile.absencehrd.Helper.AlertDialogManager;
+import com.mit.mobile.absencehrd.Fragment.AttendanceFragment;
+import com.mit.mobile.absencehrd.Fragment.DashboardFragment;
+import com.mit.mobile.absencehrd.Fragment.MapsFragment;
+import com.mit.mobile.absencehrd.Fragment.SalesOrderFragment;
+import com.mit.mobile.absencehrd.Fragment.StockFragment;
+import com.mit.mobile.absencehrd.Fragment.TaskManagerFragment;
 import com.mit.mobile.absencehrd.Helper.Constants;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
 import com.mit.mobile.absencehrd.Helper.GPSTracker;
 import com.mit.mobile.absencehrd.Helper.SynchronizeData;
-import com.mit.mobile.absencehrd.Model.SalesOrder;
 import com.mit.mobile.absencehrd.R;
 import com.mit.mobile.absencehrd.Helper.SessionManager;
 
@@ -50,20 +53,33 @@ public class MenuActivity extends AppCompatActivity
     TextView NAMA;
     ImageView FOTO;
 
-    AlertDialogManager alert = new AlertDialogManager();
     SessionManager sessionManager;
 
     NavigationView navigationView;
-    CardView cvTM, cvA, cvS, cvSO, cvP;
+    DrawerLayout drawer;
+    View navHeader;
+    Toolbar toolbar;
+    public static int navItemIndex = 0;
+    public static final String TAG_NOL = "nol", TAG_SATU = "satu",
+            TAG_DUA = "dua", TAG_TIGA = "tiga", TAG_EMPAT = "empat",
+            TAG_LIMA = "lima", TAG_ENAM = "enam", TAG_TUJUH = "tujuh";
+
+    public static String CURRENT_TAG = TAG_SATU;
+    private String[] activityTitles;
+    boolean shouldLoadHomeFragOnBackPress = true;
+    private Handler mHandler;
+
 
     boolean doubleBackToExitPressedOnce = false;
 
     DatabaseHandler handler;
 
-    ProgressDialog dialog;
-
     Runnable runnable;
     Handler handlerr;
+
+    CardView cvTM, cvA, cvS, cvSO;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,34 +90,41 @@ public class MenuActivity extends AppCompatActivity
         sessionManager = new SessionManager(this);
         handler = new DatabaseHandler(this);
 
-        if (handler.isTableTaskExists())
-            //SynchronizeData.getInstance(MenuActivity.this).syncTasks();
+        if (!sessionManager.isConnectedToNetwork())
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this);
 
+            builder.setCancelable(false)
+                    .setTitle("Network Disconnect")
+                    .setMessage("Not Connected to Network")
+                    .setPositiveButton("RETRY", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startActivity(new Intent(MenuActivity.this, MenuActivity.class));
+                        }
+                    });
 
-        cvTM = findViewById(R.id.taskID);
-        cvA = findViewById(R.id.attendanceID);
-        cvS = findViewById(R.id.stockID);
-        cvSO = findViewById(R.id.salesorderID);
-        //cvP = findViewById(R.id.profileID);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
+        SynchronizeData.getInstance(MenuActivity.this).LastAttRecord(Constants.currentUserID);
 
         if (!sessionManager.isLoggedIn())
             redirectToLogin();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView = findViewById(R.id.nav_view);
 
-        NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
-        navigationMenuView.setVerticalScrollBarEnabled(false);
-
+        navHeader = navigationView.getHeaderView(0);
         View headerView = navigationView.getHeaderView(0);
         NAMA = findViewById(R.id.namaUSER);
         FOTO = findViewById(R.id.fotoUser);
@@ -118,7 +141,7 @@ public class MenuActivity extends AppCompatActivity
         );
 
         HashMap<String, String> user = sessionManager.getUserDetails();
-        String name = user.get(SessionManager.KEY_NAME);
+        final String name = user.get(SessionManager.KEY_NAME);
         String aa = WordUtils.capitalizeFully(name);
         String sex = user.get(SessionManager.KEY_GENDER);
         Constants.currentUserID = user.get(SessionManager.KEY_ID);
@@ -136,7 +159,6 @@ public class MenuActivity extends AppCompatActivity
 
         Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimage);
 
-
         if (sex.equals("FEMALE")) {
             FOTO.setImageDrawable(resources.getDrawable(R.drawable.userimagewoman));
             bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimagewoman);
@@ -150,50 +172,208 @@ public class MenuActivity extends AppCompatActivity
 
         FOTO.setImageDrawable(drawable);
         NAMA.setText(aa);
-        cvTM.setOnClickListener(
-                new View.OnClickListener() {
+
+        activityTitles = getResources().getStringArray(R.array.activity_titles);
+        mHandler = new Handler();
+
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public void onClick(View v) {
-                        //startActivity(new Intent(MenuActivity.this, TaskManagerActivity.class));
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId())
+                        {
+                            case R.id.nav_dash:
+                                navItemIndex = 0;
+                                CURRENT_TAG = TAG_NOL;
+                                break;
+                            case R.id.nav_task:
+                                navItemIndex = 1;
+                                CURRENT_TAG = TAG_SATU;
+                                break;
+                            case R.id.nav_absence:
+                            {
+                                if (tracker.inLocation)
+                                {
+                                    navItemIndex = 2;
+                                    CURRENT_TAG = TAG_DUA;
+                                }
+                                else 
+                                {
+                                    Toast.makeText(MenuActivity.this, "Can't Get The Last Position", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                                break;
+                            case R.id.nav_geotag:
+                            {
+                                if (checkGPS())
+                                {
+                                    navItemIndex = 3;
+                                    CURRENT_TAG = TAG_TIGA;
+                                }
+                            }
+                                break;
+                            case R.id.nav_stock:
+                                navItemIndex = 4;
+                                CURRENT_TAG = TAG_EMPAT;
+                                break;
+                            case R.id.nav_sales_order:
+                                navItemIndex = 5;
+                                CURRENT_TAG = TAG_LIMA;
+                                break;
+                            case R.id.nav_profile:
+                            {
+                                navItemIndex = 6;
+                                CURRENT_TAG = TAG_ENAM;
+                            }
+                                break;
+                            case R.id.nav_out:
+                            {
+                                navItemIndex = 7;
+                                CURRENT_TAG = TAG_TUJUH;
+
+                                AlertDialog.Builder alert = new AlertDialog.Builder(MenuActivity.this);
+                                alert.setCancelable(false)
+                                        .setTitle("Log Out")
+                                        .setMessage("Are You sure want to log out?");
+
+                                alert.setPositiveButton("YES",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                sessionManager.logoutUser();
+                                                tracker.inLocation = false;
+                                                finish();
+                                            }
+                                        });
+
+                                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        navItemIndex = 0;
+                                        CURRENT_TAG = TAG_NOL;
+                                        loadHomeFragment();
+                                    }
+                                });
+
+                                AlertDialog dialog = alert.create();
+                                dialog.show();
+                            }
+                                break;
+                            default:
+                                navItemIndex = 0;
+                        }
+
+                        /*if (item.isChecked())
+                            item.setChecked(false);
+                        else
+                            item.setChecked(true);
+
+                        item.setChecked(true);*/
+
+                        loadHomeFragment();
+
+                        return true;
                     }
                 }
         );
-        cvSO.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
-                    }
-                }
-        );
-        cvA.setOnClickListener(new View.OnClickListener() {
+
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawer,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        )
+        {
             @Override
-            public void onClick(View v) {
-                if (!tracker.inLocation)
-                {
-                    Intent p = new Intent(MenuActivity.this, MainActivity.class);
-                    ActivityOptions a = ActivityOptions.makeCustomAnimation(MenuActivity.this, R.anim.fade_in, R.anim.fade_out);
-                    MenuActivity.this.startActivity(p, a.toBundle());
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "ADJUST YOUR POSITION FIRST!", Toast.LENGTH_SHORT).show();
-                    /*if (checkGPS())
-                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));*/
-                }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
             }
-        });
-        cvS.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(MenuActivity.this, StockActivity.class));
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
             }
-        });
-        /*cvP.setOnClickListener(new View.OnClickListener() {
+        };
+        drawer.setDrawerListener(drawerToggle);
+        if (savedInstanceState == null) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_NOL;
+            loadHomeFragment();
+        }
+
+    }
+
+    public void loadHomeFragment() {
+        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
+        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+
+        if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null)
+        {
+            drawer.closeDrawers();
+            return;
+        }
+
+        Runnable mpend = new Runnable() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
+            public void run() {
+                Fragment fragment = getHomeFragment();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.frame, fragment, CURRENT_TAG);
+                ft.commitAllowingStateLoss();
             }
-        });*/
+        };
+
+        if (mpend != null)
+            mHandler.post(mpend);
+
+        drawer.closeDrawers();
+
+        invalidateOptionsMenu();
+    }
+
+    private Fragment getHomeFragment() {
+        switch (navItemIndex){
+            case 0:
+                DashboardFragment zero = new DashboardFragment();
+                return zero;
+
+            case 1:
+                TaskManagerFragment one = new TaskManagerFragment();
+                return one;
+
+            case 2:
+            {
+                AttendanceFragment two = new AttendanceFragment();
+                return two;
+            }
+
+            case 3:
+            {
+                MapsFragment three = new MapsFragment();
+                return three;
+            }
+
+            case 4:
+                StockFragment four = new StockFragment();
+                return four;
+
+            case 5:
+                SalesOrderFragment five = new SalesOrderFragment();
+                return five;
+
+            case 6:
+            {
+                Intent a = new Intent(MenuActivity.this, ProfileActivity.class);
+                ActivityOptions options = ActivityOptions.makeCustomAnimation(MenuActivity.this, R.anim.fade_in, R.anim.fade_out);
+                MenuActivity.this.startActivity(a, options.toBundle());
+            }
+
+                default:
+                    return new DashboardFragment();
+        }
     }
 
     @Override
@@ -201,7 +381,18 @@ public class MenuActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+
+        if (shouldLoadHomeFragOnBackPress){
+            if (navItemIndex != 0) {
+                navItemIndex = 0;
+                CURRENT_TAG = TAG_NOL;
+                loadHomeFragment();
+                return;
+            }
+        }
+        super.onBackPressed();
+        /*else {
 
             if (doubleBackToExitPressedOnce) {
                 MenuActivity.this.finish();
@@ -217,13 +408,16 @@ public class MenuActivity extends AppCompatActivity
                     doubleBackToExitPressedOnce=false;
                 }
             }, 2000);
-        }
+        }*/
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
+
+        if (navItemIndex == 0)
+            getMenuInflater().inflate(R.menu.menu, menu);
+
         return true;
     }
 
@@ -253,62 +447,13 @@ public class MenuActivity extends AppCompatActivity
 
         Intent intent;
 
-        if (id == R.id.nav_task) {
-            intent = new Intent(MenuActivity.this, TaskManagerActivity.class);
-            //startActivity(intent);
-
-        }
-        else if (id == R.id.nav_absence) {
-            if (tracker.inLocation)
-            {
-                intent = new Intent(MenuActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-            else{
-                Toast.makeText(this, "ADJUST YOUR POSITION FIRST!", Toast.LENGTH_SHORT).show();
-                if (checkGPS())
-                    startActivity(new Intent(this, MapsActivity.class));
-            }
-        }
-        else if (id == R.id.nav_geotag) {
-            intent = new Intent(MenuActivity.this, MapsActivity.class);
-            if (checkGPS()) {
-                startActivity(intent);
-            }
-
-        }
-        else if (id == R.id.nav_stock){
-            //startActivity(new Intent(MenuActivity.this, StockActivity.class));
-        }
-        else if (id == R.id.nav_sales_order){
-            //startActivity(new Intent(MenuActivity.this, SalesOrderActivity.class));
-
-        }
-        else if (id == R.id.nav_profile) {
-            intent = new Intent(MenuActivity.this, ProfileActivity.class);
-            startActivity(intent);
-        }
-        else if (id == R.id.nav_out) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setCancelable(false)
-                    .setTitle("Log Out")
-                    .setMessage("Are You sure want to log out?");
-
-            alert.setPositiveButton("YES",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            sessionManager.logoutUser();
-                            tracker.inLocation = false;
-                            finish();
-                        }
-                    });
-
-            alert.setNegativeButton("NO", null);
-
-            AlertDialog dialog = alert.create();
-            dialog.show();
-        }
+        if (id == R.id.nav_task) {}
+        else if (id == R.id.nav_absence) {}
+        else if (id == R.id.nav_geotag) {}
+        else if (id == R.id.nav_stock){}
+        else if (id == R.id.nav_sales_order){}
+        else if (id == R.id.nav_profile) {}
+        else if (id == R.id.nav_out) {}
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -352,4 +497,5 @@ public class MenuActivity extends AppCompatActivity
 
         return false;
     }
+
 }

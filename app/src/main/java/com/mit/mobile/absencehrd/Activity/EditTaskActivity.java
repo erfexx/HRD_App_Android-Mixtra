@@ -9,22 +9,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.mit.mobile.absencehrd.Fragment.TaskManagerFragment;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
-import com.mit.mobile.absencehrd.Helper.SynchronizeData;
 import com.mit.mobile.absencehrd.Model.Task;
 import com.mit.mobile.absencehrd.R;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 public class EditTaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -117,7 +112,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
                         task.setTprogress(f[0]);
                         db.updateTask(task);
                         //SynchronizeData.getInstance(EditTaskActivity.this).TaskEdit(task, task.get_id());
-                        startActivity(new Intent(EditTaskActivity.this, TaskManagerActivity.class));
+                        startActivity(new Intent(EditTaskActivity.this, TaskManagerFragment.class));
                         finish();
                     }
                 });
@@ -157,7 +152,7 @@ public class EditTaskActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent(this,TaskManagerActivity.class);
+        Intent backIntent = new Intent(this,TaskManagerFragment.class);
         startActivity(backIntent);
         finish();
     }

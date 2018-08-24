@@ -13,7 +13,10 @@ import android.widget.TextView;
 import com.mit.mobile.absencehrd.Model.AttendanceRecord;
 import com.mit.mobile.absencehrd.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AttendanceRecordAdapter extends RecyclerView.Adapter<AttendanceRecordAdapter.MyViewHolder> {
@@ -35,7 +38,20 @@ public class AttendanceRecordAdapter extends RecyclerView.Adapter<AttendanceReco
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         AttendanceRecord rec = recAtt.get(position);
         holder.tvTime.setText(rec.getCheckTime());
-        holder.tvDate.setText(rec.getModifiedDate());
+
+        try {
+            SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+            Date ds = df1.parse(rec.getModifiedDate());
+            SimpleDateFormat df2 = new SimpleDateFormat("EEEE, dd MMM yyyy");
+
+            holder.tvDate.setText(df2.format(ds));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (rec.getAttendanceType().equals("IN"))
+            holder.tvType.setBackgroundResource(R.drawable.circlebackgroundlightgreen);
+
         holder.tvType.setText(rec.getAttendanceType());
     }
 

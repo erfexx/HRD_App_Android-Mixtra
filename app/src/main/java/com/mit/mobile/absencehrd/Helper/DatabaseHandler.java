@@ -111,8 +111,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ATT_CHECK_TIME + " TEXT,"
                 + ATT_MOD_DATE + " TEXT,"
                 + ATT_TYPE + " TEXT,"
-                + ATT_TIMESTAMP + " TEXT,"
-                + "FOREIGN KEY(EmployeeID) REFERENCES employees(EmployeeID)" + ")");
+                + ATT_TIMESTAMP + " TEXT" + ")");
 
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS " + TABLE_STOCKS + "(id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, category TEXT, " +
@@ -303,7 +302,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Cursor getAllAttendance(){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " WHERE " + ATT_EMP_ID + " =? ORDER BY " + ATT_ID + " ASC", new String[]{Constants.currentUserID});
+        Cursor data = db.rawQuery("SELECT * FROM " + TABLE_ATTENDANCES + " ORDER BY " + ATT_CHECK_TIME + " =? DESC  LIMIT 2", null);
         return data;
     }
 

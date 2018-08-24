@@ -44,33 +44,12 @@
             android:name=".Activity.RegistrationActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".Activity.LoginActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity
             android:name=".Activity.MenuActivity"
             android:label="Home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.MapsActivity"
-            android:label="Location" />
-        <activity
-            android:name=".Activity.MainActivity"
-            android:label="Attendance Machine" />
-        <activity
             android:name=".Activity.ProfileActivity"
             android:label="Profile Menu"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".Activity.StockActivity"
-            android:label="Stock"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".Activity.SalesOrderActivity"
-            android:label="Sales Order"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".Activity.TaskManagerActivity"
-            android:label="Task Manager"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Activity.AddOrderActivity"

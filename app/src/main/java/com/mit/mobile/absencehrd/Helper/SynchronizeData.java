@@ -803,17 +803,15 @@ public class SynchronizeData {
 
         session = new SessionManager(mCtx);
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
+        JsonArrayRequest request = new JsonArrayRequest(
                 linkAttendance + "/" + currentUserID,
-                null,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         try {
-                            Log.i("RESPONSES", response.getString("attendanceType"));
+                            JSONObject obj = response.getJSONObject(0);
 
-                            String a = response.getString("attendanceType");
+                            String a = obj.getString("attendanceType");
 
                             if(a.equals("IN"))
                                 session.createTapInSession();
@@ -828,10 +826,11 @@ public class SynchronizeData {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Log.e("RESPONSES", error.toString());
                     }
                 }
         );
+
 
         AppController.getInstance(mCtx).addToRequestque(request);
     }

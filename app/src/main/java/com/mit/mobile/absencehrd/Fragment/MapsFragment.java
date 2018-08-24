@@ -1,4 +1,4 @@
-package com.mit.mobile.absencehrd.Activity;
+package com.mit.mobile.absencehrd.Fragment;
 
 import android.Manifest;
 import android.app.PendingIntent;
@@ -18,12 +18,15 @@ import com.google.android.gms.location.LocationListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -50,9 +53,9 @@ import com.mit.mobile.absencehrd.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MapsActivity
+public class MapsFragment
         extends
-        AppCompatActivity
+        Fragment
         implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -83,8 +86,11 @@ public class MapsActivity
     double latitude = 0;
     double longitude = 0;
 
+    public MapsFragment() {
+    }
+
     private void getCoordinate(String userZone){
-        handler = new DatabaseHandler(this);
+        handler = new DatabaseHandler(getActivity());
 
         Cursor record = handler.getAllCoordinates(userZone);
         coordinatesList = new ArrayList<>();
@@ -119,34 +125,25 @@ public class MapsActivity
         }
     }
 
+    @Nullable
     @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_maps, container, false);
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
-
-        sessionManager = new SessionManager(this);
+        sessionManager = new SessionManager(getActivity());
 
         HashMap<String, String> data = sessionManager.getUserDetails();
         userZone = data.get(SessionManager.KEY_ZONE);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getCoordinate(userZone);
 
         GPSTracker.inLocation= false;
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
 
-        apiClient = new GoogleApiClient.Builder(this)
+        apiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
@@ -154,7 +151,7 @@ public class MapsActivity
         if (!checkPermission())
             checkPermission();
 
-        btnSetLocation = findViewById(R.id.btnReqPos);
+        btnSetLocation = view.findViewById(R.id.btnReqPos);
 
         btnSetLocation.setOnClickListener(
                 new View.OnClickListener() {
@@ -163,13 +160,16 @@ public class MapsActivity
                         startGeofencing();
 
                         if (GPSTracker.inLocation)
-                            Toast.makeText(MapsActivity.this, "In Location", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "In Location", Toast.LENGTH_SHORT).show();
                         else if (!GPSTracker.inLocation)
-                            Toast.makeText(MapsActivity.this, "Not In Location", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Not In Location", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
+
+        return view;
     }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -191,36 +191,36 @@ public class MapsActivity
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         apiClient.reconnect();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         apiClient.disconnect();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
+        int response = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
         if (response != ConnectionResult.SUCCESS) {
             Log.d("AAA", "Google Play Service Not Available");
-            GoogleApiAvailability.getInstance().getErrorDialog(MapsActivity.this, response, 1).show();
+            GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), response, 1).show();
         } else {
             Log.d("AAA", "Google play service available");
         }
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
     }
 
@@ -246,7 +246,7 @@ public class MapsActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
@@ -267,18 +267,7 @@ public class MapsActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        if (isMonitoring) {
-            menu.findItem(R.id.action_start_monitor).setVisible(false);
-            menu.findItem(R.id.action_stop_monitor).setVisible(false);
-        } else {
-            menu.findItem(R.id.action_start_monitor).setVisible(false);
-            menu.findItem(R.id.action_stop_monitor).setVisible(false);
-        }
-        return true;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -316,6 +305,7 @@ public class MapsActivity
                             }
 
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18f));
+                            sessionManager.createPosSession(String.valueOf(latitude), String.valueOf(longitude));
                         }
                     });
         }
@@ -349,8 +339,8 @@ public class MapsActivity
     private PendingIntent getGeofencePendingIntent(){
         if (pendingIntent != null)
             return pendingIntent;
-        Intent intent = new Intent(this, GPSTracker.class);
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(getActivity(), GPSTracker.class);
+        return PendingIntent.getService(getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void startGeofencing(){
@@ -379,7 +369,7 @@ public class MapsActivity
             }
         }
         isMonitoring = true;
-        invalidateOptionsMenu();
+        //invalidateOptionsMenu();
     }
 
     private void stopGeoFencing() {
@@ -397,16 +387,16 @@ public class MapsActivity
                 });
 
         isMonitoring = false;
-        invalidateOptionsMenu();
+        //invalidateOptionsMenu();
     }
 
     private boolean checkPermission(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             //Request Runtime Permission
             ActivityCompat.requestPermissions(
-                    this,
+                    getActivity(),
                     new String[]{
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION

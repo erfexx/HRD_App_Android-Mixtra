@@ -5,19 +5,11 @@
     android:id="@+id/loginlayout"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="10dp"
+    >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:fontFamily="@font/lusitana"
-        android:gravity="center"
-        android:text="LOGIN"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="42dp"
-        android:textStyle="bold" />
+
+
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -27,6 +19,12 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp" >
 
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="40dp"
+            android:src="@drawable/logo_round"
+            android:layout_gravity="center"/>
 
         <EditText
             android:id="@+id/txtName"
@@ -34,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@color/white"
-            android:hint="Name"
+            android:hint="Nickname"
             android:inputType="text"
             android:padding="10dp"
             android:singleLine="true"
@@ -62,21 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
             android:background="@color/colorAccent"
-            android:text="@string/btn_login"
+            android:text="LOGIN"
             android:textColor="@color/white" />
 
-        <!-- Link to Login Screen -->
-
-        <Button
-            android:id="@+id/btnLinkToRegisterScreen"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dip"
-            android:background="@null"
-            android:text="@string/btn_link_to_register"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15dp" />
     </LinearLayout>
 
 </LinearLayout>

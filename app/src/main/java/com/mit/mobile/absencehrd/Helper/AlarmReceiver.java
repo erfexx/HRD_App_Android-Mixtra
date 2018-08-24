@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.mit.mobile.absencehrd.Activity.MainActivity;
+import com.mit.mobile.absencehrd.Fragment.AttendanceFragment;
 import com.mit.mobile.absencehrd.Model.LocalData;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -25,7 +25,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d(TAG, "onReceive: ");
 
         //Trigger the notification
-        NotificationScheduler.showNotification(context, MainActivity.class,
+        NotificationScheduler.showNotification(context, AttendanceFragment.class,
                 "Check Out now?", "Have you checked out today?");
     }
 }

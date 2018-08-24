@@ -16,14 +16,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 
+import com.mit.mobile.absencehrd.Fragment.TaskManagerFragment;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
-import com.mit.mobile.absencehrd.Helper.SynchronizeData;
 import com.mit.mobile.absencehrd.Model.Task;
-import com.mit.mobile.absencehrd.Model.User;
 import com.mit.mobile.absencehrd.R;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -103,7 +101,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
 
                 //SynchronizeData.getInstance(CreateTaskActivity.this).uploadTask(task);
 
-                startActivity(new Intent(CreateTaskActivity.this, TaskManagerActivity.class));
+                startActivity(new Intent(CreateTaskActivity.this, TaskManagerFragment.class));
                 finish();
                 spinner.setAdapter(null);
             }
@@ -151,7 +149,7 @@ public class CreateTaskActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent(this, TaskManagerActivity.class);
+        Intent backIntent = new Intent(this, TaskManagerFragment.class);
         startActivity(backIntent);
         finish();
     }

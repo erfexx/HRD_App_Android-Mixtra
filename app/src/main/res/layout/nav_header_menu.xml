@@ -6,10 +6,10 @@
     android:background="@drawable/header"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
+    android:paddingBottom="15dp"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="40dp"
+    android:paddingTop="45dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
 
@@ -47,7 +47,7 @@
         android:id="@+id/namaUSER"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:paddingTop="15dp"
         android:text="Android Studio"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="20sp"

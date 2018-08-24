@@ -16,7 +16,7 @@
         android:id="@+id/txtType"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/circlebackgorange"
+        android:background="@drawable/circlebackgroundred"
         android:text="OUT"
         android:textSize="17sp"
         android:textColor="@android:color/white"

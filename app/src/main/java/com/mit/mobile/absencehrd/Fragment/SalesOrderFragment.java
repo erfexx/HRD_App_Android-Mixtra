@@ -1,15 +1,20 @@
-package com.mit.mobile.absencehrd.Activity;
+package com.mit.mobile.absencehrd.Fragment;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -18,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.mit.mobile.absencehrd.Activity.AddOrderActivity;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
 import com.mit.mobile.absencehrd.Helper.OrderAdapter;
 import com.mit.mobile.absencehrd.Model.SalesOrder;
@@ -27,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class SalesOrderActivity extends AppCompatActivity {
+public class SalesOrderFragment extends Fragment {
     private ListView listView1;
     private ArrayList<SalesOrder> orderList = new ArrayList<>();
     private ArrayList<SalesOrder> orderSearch = new ArrayList<>();
@@ -36,25 +42,21 @@ public class SalesOrderActivity extends AppCompatActivity {
     private DatePickerDialog startdate, enddate;
     private SimpleDateFormat dateFormatter;
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+    public SalesOrderFragment() {
     }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sales_order);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_sales_order, container, false);
 
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        final EditText etStartDate = (EditText) findViewById(R.id.etStartDate);
-        final EditText etEndDate = (EditText) findViewById(R.id.etEndDate);
+        final EditText etStartDate = (EditText) view.findViewById(R.id.etStartDate);
+        final EditText etEndDate = (EditText) view.findViewById(R.id.etEndDate);
         etStartDate.setInputType(InputType.TYPE_NULL);
         etEndDate.setInputType(InputType.TYPE_NULL);
-        final ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
+        final ImageButton btnSearch = (ImageButton) view.findViewById(R.id.btnSearch);
 
         etStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +71,8 @@ public class SalesOrderActivity extends AppCompatActivity {
             }
         });
         Calendar newCalendar = Calendar.getInstance();
-        startdate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+        startdate = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
@@ -77,7 +80,8 @@ public class SalesOrderActivity extends AppCompatActivity {
                 etStartDate.setText(dateFormatter.format(newDate.getTime()));
             }
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-        enddate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+        enddate = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
@@ -87,11 +91,11 @@ public class SalesOrderActivity extends AppCompatActivity {
         },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
 
-        listView1 = (ListView) findViewById(R.id.listView1);
-        db = new DatabaseHandler(this);
+        listView1 = (ListView) view.findViewById(R.id.listView1);
+        db = new DatabaseHandler(getActivity());
         orderList.addAll(db.getAllOrders());
 
-        mAdapter = new OrderAdapter(orderList,getApplicationContext());
+        mAdapter = new OrderAdapter(orderList,getActivity());
         listView1.setAdapter(mAdapter);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -99,28 +103,28 @@ public class SalesOrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(etStartDate.getText().toString() == null && etEndDate.getText().toString() == null)
                 {
-                    Toast.makeText(getBaseContext(), "Please enter the date", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Please enter the date", Toast.LENGTH_SHORT).show();
                 }
                 else if(etStartDate.getText().toString() != null && etEndDate.getText().toString() != null)
                 {
-                    sAdapter = new OrderAdapter(orderSearch,getApplicationContext());
+                    sAdapter = new OrderAdapter(orderSearch,getActivity());
                     sAdapter.clear();
                     sAdapter.notifyDataSetChanged();
                     orderSearch.addAll(db.getSearchOrders(etStartDate.getText().toString(), etEndDate.getText().toString()));
                     listView1.setAdapter(sAdapter);
-                    Toast.makeText(getBaseContext(), "Start Date:" + etStartDate.getText().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Start Date:" + etStartDate.getText().toString(), Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
 
-        FloatingActionButton fab = findViewById(R.id.fabAdd);
+        FloatingActionButton fab = view.findViewById(R.id.fabAdd);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent createIntent = new Intent(getBaseContext(), AddOrderActivity.class);
+                Intent createIntent = new Intent(getActivity(), AddOrderActivity.class);
                 startActivity(createIntent);
-                finish();
+                //finish();
             }
         });
 
@@ -128,7 +132,7 @@ public class SalesOrderActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final SalesOrder order = orderList.get(position);
-                AlertDialog.Builder alert = new AlertDialog.Builder(SalesOrderActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                 alert.setTitle("Options");
                 alert.setMessage("What do you want to do?");
                 alert.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -138,18 +142,13 @@ public class SalesOrderActivity extends AppCompatActivity {
                         // removing the note from the list
                         orderList.remove(position);
                         mAdapter.notifyDataSetChanged();
-                        Toast.makeText(getBaseContext(), "Order Deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Order Deleted", Toast.LENGTH_SHORT).show();
                     }
                 });
                 alert.show();
             }
         });
-    }
 
-    @Override
-    public void onBackPressed() {
-        Intent backIntent = new Intent(this, MenuActivity.class);
-        startActivity(backIntent);
-        finish();
+        return view;
     }
 }

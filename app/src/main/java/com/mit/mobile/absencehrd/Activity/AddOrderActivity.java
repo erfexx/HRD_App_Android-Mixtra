@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.mit.mobile.absencehrd.Fragment.SalesOrderFragment;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
 import com.mit.mobile.absencehrd.Model.SalesOrder;
 import com.mit.mobile.absencehrd.R;
@@ -82,7 +83,7 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
                 db.addOrder(new SalesOrder(
                         etTransDate.getText().toString(),
                         sales, voucherNo));
-                Intent orderIntent = new Intent(getBaseContext(), SalesOrderActivity.class);
+                Intent orderIntent = new Intent(getBaseContext(), SalesOrderFragment.class);
                 startActivity(orderIntent);
                 finish();
             }
@@ -121,7 +122,7 @@ public class AddOrderActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onBackPressed() {
-        Intent backIntent = new Intent(this, SalesOrderActivity.class);
+        Intent backIntent = new Intent(this, SalesOrderFragment.class);
         startActivity(backIntent);
         finish();
     }

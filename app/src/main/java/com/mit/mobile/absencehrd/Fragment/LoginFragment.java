@@ -1,18 +1,25 @@
-package com.mit.mobile.absencehrd.Activity;
+package com.mit.mobile.absencehrd.Fragment;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +30,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.mit.mobile.absencehrd.Helper.AlertDialogManager;
+import com.mit.mobile.absencehrd.Activity.MenuActivity;
 import com.mit.mobile.absencehrd.Helper.AppController;
 import com.mit.mobile.absencehrd.Helper.Constants;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
@@ -40,7 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.text.SimpleDateFormat;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment extends Fragment {
     AttendanceRecord data;
 
     Time time;
@@ -51,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
     SessionManager session;
 
-    AlertDialogManager alertDialogManager = new AlertDialogManager();
+    AlertDialog.Builder builder;
 
     Button login, link;
     EditText name, password;
@@ -60,57 +67,50 @@ public class LoginActivity extends AppCompatActivity {
 
     DatabaseHandler handler;
 
+    public LoginFragment() {
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_login, container, false);
 
+        handler = new DatabaseHandler(getActivity());
 
-        //bg orientation
-        LinearLayout layout = findViewById(R.id.loginlayout);
-        Resources resources = getResources();
-        Drawable portrait = resources.getDrawable(R.drawable.bg_login);
-        Drawable landscape = resources.getDrawable(R.drawable.bg_loginlans);
+        builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
+        builder.setTitle("LOGIN FAILED");
+        builder.setMessage("Please Enter Name and Password!");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
-
-        handler = new DatabaseHandler(this);
-
-        int num = display.getRotation();
-
-        if (num == 0){
-            layout.setBackgroundDrawable(portrait);
-        }else if (num == 1 || num == 3){
-            layout.setBackgroundDrawable(landscape);
-        }else{
-            layout.setBackgroundDrawable(portrait);
-        }
-
+            }
+        });
 
         time = new Time();
 
-        session = new SessionManager(getApplicationContext());
+        session = new SessionManager(getActivity());
 
         if (session.isLoggedIn())
             redirectToMainMenu();
 
         data = new AttendanceRecord();
 
-        name = findViewById(R.id.txtName);
-        password = findViewById(R.id.txtPassword);
+        name = view.findViewById(R.id.txtName);
+        password = view.findViewById(R.id.txtPassword);
 
-        link = findViewById(R.id.btnLinkToRegisterScreen);
-        login = findViewById(R.id.btnSignin);
+        //link = findViewById(R.id.btnLinkToRegisterScreen);
+        login = view.findViewById(R.id.btnSignin);
 
-        helper = new DatabaseHandler(this);
+        helper = new DatabaseHandler(getActivity());
         db = helper.getReadableDatabase();
 
         login.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog = new ProgressDialog(LoginActivity.this);
+                        dialog = new ProgressDialog(getActivity());
                         dialog.setMessage("Loading Process ...");
                         dialog.setTitle("LOGIN PROCESS");
                         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -124,24 +124,19 @@ public class LoginActivity extends AppCompatActivity {
                             LoginService(pass, nama);
                         }
                         else
-                            alertDialogManager.showAlertDialog(LoginActivity.this, "LOGIN FAILED", "Please Enter Name and Password", false);
+                        {
+                            builder.create();
+                            builder.show();
+                        }
+                        //alertDialogManager.showAlertDialog(LoginFragment.this, "LOGIN FAILED", "Please Enter Name and Password", false);
                     }
                 }
         );
 
-        link.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                }
-        );
-
-
+        return view;
     }
+
+
 
     private void LoginService(final String password, final String nama){
 
@@ -168,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             if (pass.equals(response.getString("password").toString())  )
                             {
-                                Toast.makeText(LoginActivity.this, "LOGIN SUKSES!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "LOGIN SUKSES!", Toast.LENGTH_SHORT).show();
 
                                 String currentUserName = response.getString("name");
                                 String currentID = response.getString("employeeID");
@@ -185,19 +180,18 @@ public class LoginActivity extends AppCompatActivity {
 
                                 dialog.dismiss();
 
-                                startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-                                SynchronizeData.getInstance(LoginActivity.this).SyncLocation();
+                                startActivity(new Intent(getActivity(), MenuActivity.class));
+                                SynchronizeData.getInstance(getActivity()).SyncLocation();
 
                                 //jika tabel user sqlite tidak mempunyai isi
                                 if (handler.isTableExists())
-                                    SynchronizeData.getInstance(LoginActivity.this).syncUsers();
+                                    SynchronizeData.getInstance(getActivity()).syncUsers();
 
-                                finish();
                             }
                             else
                             {
                                 dialog.dismiss();
-                                Toast.makeText(LoginActivity.this, "PASSWORD SALAH", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "PASSWORD SALAH", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -208,14 +202,14 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dialog.dismiss();
-                        Toast.makeText(LoginActivity.this, "TRY AGAIN", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "TRY AGAIN", Toast.LENGTH_SHORT).show();
                         Log.e("AAA", ""+error.toString());
                         error.printStackTrace();
                     }
                 });
 
 
-        AppController.getInstance(LoginActivity.this).addToRequestque(objectRequest);
+        AppController.getInstance(getActivity()).addToRequestque(objectRequest);
     }
 
     public String Encode(String text)
@@ -237,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void redirectToMainMenu(){
-        startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-        finish();
+        startActivity(new Intent(getActivity(), MenuActivity.class));
+
     }
 }

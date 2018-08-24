@@ -8,17 +8,21 @@
 
     <string name="action_settings">Synchronize Data</string>
 
-    <string-array name="nav_item_activity_titles">
-        <item>TASK MANAGER</item>
-        <item>ATTENDANCE</item>
-        <item>LOCATION</item>
-        <item>PROFILE</item>
+    <string-array name="activity_titles">
+        <item>Dashboard</item>
+        <item>My Task</item>
+        <item>My Attendance</item>
+        <item>Location</item>
+        <item>Stock</item>
+        <item>Sales Order</item>
+        <item>Profile</item>
+        <item>Log Out</item>
     </string-array>
 
     <string name="hint_email">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_name">Fullname</string>
-    <string name="btn_login">LOGIN</string>
+    <string name="btn_login">&lt;&lt;&lt; Swipe Right to Login</string>
     <string name="btn_register">REGISTER</string>
     <string name="btn_link_to_register">Not a member? Sign up now.</string>
     <string name="btn_link_to_login">Already registered? Login Here.</string>

@@ -62,6 +62,7 @@ public class ProfileFragment extends Fragment {
 
         String namaUser = data.get(SessionManager.KEY_NAME);
         String idUser = data.get(SessionManager.KEY_ID);
+        String sex = data.get(SessionManager.KEY_GENDER);
         Constants.currentUserID = idUser;
         String zoneUser = data.get(SessionManager.KEY_ZONE);
 
@@ -74,6 +75,13 @@ public class ProfileFragment extends Fragment {
         Resources resources = getResources();
 
         Bitmap bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimage);
+        if (sex.equals("FEMALE")) {
+            FOTO.setImageDrawable(resources.getDrawable(R.drawable.userimagewoman));
+            bitmap = BitmapFactory.decodeResource(resources, R.drawable.userimagewoman);
+        }
+        else if (sex.equals("MALE")) {
+            FOTO.setImageDrawable(resources.getDrawable(R.drawable.userimage));
+        }
         RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(resources, bitmap);
         drawable.setCircular(true);
 

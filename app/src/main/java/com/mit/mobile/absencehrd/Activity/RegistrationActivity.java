@@ -1,7 +1,6 @@
 package com.mit.mobile.absencehrd.Activity;
 
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -24,12 +23,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.mit.mobile.absencehrd.Helper.AlertDialogManager;
+import com.mit.mobile.absencehrd.Fragment.LoginFragment;
 import com.mit.mobile.absencehrd.Helper.AppController;
 import com.mit.mobile.absencehrd.Helper.Constants;
 import com.mit.mobile.absencehrd.Helper.DatabaseHandler;
 import com.mit.mobile.absencehrd.Helper.SessionManager;
-import com.mit.mobile.absencehrd.Model.User;
 import com.mit.mobile.absencehrd.R;
 
 
@@ -49,8 +47,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
     Cursor cursor;
 
-    AlertDialogManager alertDialogManager = new AlertDialogManager();
-
     SessionManager sessionManager;
 
     ProgressDialog dialog;
@@ -59,7 +55,6 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-
 
         //bg orientation
         LinearLayout layout = findViewById(R.id.registLayout);
@@ -79,7 +74,6 @@ public class RegistrationActivity extends AppCompatActivity {
         }else{
             layout.setBackgroundDrawable(portrait);
         }
-
 
         sessionManager = new SessionManager(this);
 
@@ -132,7 +126,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(RegistrationActivity.this, LoginFragment.class);
                         startActivity(intent);
                         finish();
                     }
@@ -186,7 +180,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         dialog.dismiss();
-                        startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
+                        startActivity(new Intent(RegistrationActivity.this, LoginFragment.class));
                         Toast.makeText(RegistrationActivity.this, "REGISTRATION COMPLETE", Toast.LENGTH_SHORT).show();
                     }
                 },

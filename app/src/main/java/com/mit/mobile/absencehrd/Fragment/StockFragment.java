@@ -1,7 +1,10 @@
-package com.mit.mobile.absencehrd.Activity;
+package com.mit.mobile.absencehrd.Fragment;
 
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,7 +32,7 @@ import com.mit.mobile.absencehrd.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockActivity extends AppCompatActivity {
+public class StockFragment extends Fragment {
     private List<DummyModel> modelList = new ArrayList<>();
     private RecyclerView recyclerView;
     private DummyAdapter adapter;
@@ -43,31 +47,25 @@ public class StockActivity extends AppCompatActivity {
     DatabaseHandler handler;
 
 
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        return true;
+    public StockFragment() {
     }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_stock, container, false);
 
-        handler = new DatabaseHandler(this);
+        handler = new DatabaseHandler(getActivity());
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        recyclerView = view.findViewById(R.id.recycler_view);
 
-        recyclerView = findViewById(R.id.recycler_view);
+        spinner = view.findViewById(R.id.sepinner);
+        spinner1 = view.findViewById(R.id.sepinner_satu);
 
-        spinner = findViewById(R.id.sepinner);
-        spinner1 = findViewById(R.id.sepinner_satu);
-
-        btnFilter = findViewById(R.id.btnFilter);
+        btnFilter = view.findViewById(R.id.btnFilter);
 
 
-        arrayAdapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
+        arrayAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.planets_array, android.R.layout.simple_spinner_item);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(arrayAdapter);
@@ -76,12 +74,12 @@ public class StockActivity extends AppCompatActivity {
 
 
         adapter = new DummyAdapter(modelList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 //DummyModel movieModel = modelList.get(position);
@@ -104,7 +102,7 @@ public class StockActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         //show all data
                         if (spinner.getSelectedItem().toString().equals("--") && spinner1.getSelectedItem().toString().equals("--")) {
-                            Toast.makeText(StockActivity.this, "Select Branch", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Select Branch", Toast.LENGTH_SHORT).show();
                             modelList.clear();
                             prepareListData();
 
@@ -131,16 +129,18 @@ public class StockActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        return view;
     }
 
 
 
 
     private void showDesc(String item, String category, int price, String branch, String department) {
-        LayoutInflater inflater = LayoutInflater.from(this);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.stock_desc, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
 
         TextView txtItem = view.findViewById(R.id.txtItem);
